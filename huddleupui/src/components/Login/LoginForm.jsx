@@ -10,7 +10,6 @@ const Register = () => {
 	const { onLogin } = useAuth()
 
 	const onFinishFailed = (errorInfo) => {
-		console.log('Failed:', errorInfo);
 		alert("Bir sorun oluştu sonra tekrar deneyiniz")
 	};
 
@@ -20,7 +19,7 @@ const Register = () => {
 
 		if (response && response.success) {
 			onLogin(response.data)
-			navigate('/dashboard/projects');
+			// navigate('/feed');
 		}else {
 			alert('Bir hata oluştu')
 		}
@@ -38,33 +37,25 @@ const Register = () => {
 			autoComplete="off"
 		>
 			<Form.Item
-				label="Email"
-				name="email"
+				label="Username"
+				name="username"
 				rules={[
-					{ required: true, message: 'Lütfen mail adresinizi yazın!' },
-					{ type: 'email', message: 'Geçerli bir mail adresi girin!' }
+					{ required: true, message: 'Please enter your username!' },
 				]}
 			>
 				<Input />
 			</Form.Item>
 
 			<Form.Item
-				label="Şifre"
+				label="Password"
 				name="password"
-				rules={[{ required: true, message: 'Lütfen şifrenizi girin!' },
-				{ min: 10, message: 'Şifre minimum 10 karakterden oluşmalıdır.' },
+				rules={[{ required: true, message: 'Please enter your passsword!' },
+				{ min: 10, message: 'Min 10 characters.' },
 				]}
 			>
 				<Input.Password />
 			</Form.Item>
 
-			<Form.Item
-				name="remember"
-				valuePropName="checked"
-				wrapperCol={{ offset: 8, span: 16 }}
-			>
-				<Checkbox>Beni hatırla</Checkbox>
-			</Form.Item>
 
 			<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
 				<Button type="primary" htmlType="submit">

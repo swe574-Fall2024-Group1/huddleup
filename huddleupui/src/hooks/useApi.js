@@ -13,7 +13,7 @@ const useApi = async (url, payload) => {
   const fetchApi = async () => {
 	try {
 		const id = uuid4();
-		const sessionCookie = Cookies.get('dubSession')
+		const sessionCookie = Cookies.get('hudSession')
 		const session = {}
 		if(sessionCookie){
 			const decryptedSession = CryptoJS.AES.decrypt(
@@ -35,7 +35,7 @@ const useApi = async (url, payload) => {
 			},
 			body: JSON.stringify(payload), // body data type must match "Content-Type" header
 		});
-		console.log(response)
+
 
 		if (response.ok) {
 		  // Successful response, handle it here

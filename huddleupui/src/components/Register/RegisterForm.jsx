@@ -1,18 +1,12 @@
-import React, { useEffect } from 'react';
-import { Button, Checkbox, Form, Input, Select } from 'antd';
-import useApi from 'hooks/useApi';
+import React from 'react';
+import { Button, Form, Input} from 'antd';
 import fetchApi from 'api/fetchApi';
 import { useNavigate } from 'react-router-dom';
-
-
 
 const Register = () => {
 	const navigate = useNavigate()
 
-	const { Option } = Select;
-
 	const onFinishFailed = (errorInfo) => {
-		console.log('Failed:', errorInfo);
 		alert("Bir sorun oluştu sonra tekrar deneyiniz")
 	};
 
@@ -24,14 +18,6 @@ const Register = () => {
 			navigate('/login');
 		}
 	};
-
-	const prefixSelector = (
-		<Form.Item name="prefix" noStyle>
-			<Select style={{ width: 70 }} defaultValue="90" disabled>
-				<Option value="90">+90</Option>
-			</Select>
-		</Form.Item>
-	);
 
 
 	return (
@@ -46,39 +32,18 @@ const Register = () => {
 			autoComplete="off"
 		>
 			<Form.Item
-				label="Ad Soyad"
-				name="name"
-				rules={[{ required: true, message: 'Lütfen ad soyadınızı yazın!' }]}
+				label="Username"
+				name="username"
+				rules={[{ required: true, message: 'Please eneter username!' }]}
 			>
 				<Input />
 			</Form.Item>
 
 			<Form.Item
-				label="Email"
-				name="email"
-				rules={[
-					{ required: true, message: 'Lütfen mail adresinizi yazın!' },
-					{ type: 'email', message: 'Geçerli bir mail adresi girin!' }
-				]}
-			>
-				<Input />
-			</Form.Item>
-
-			<Form.Item
-				name="phone"
-				label="Telefon numarası"
-				rules={
-					[{ required: true, message: 'Lütfen telefon numaranızı giriniz!', pattern: new RegExp(/^\d{10}$/) },
-					]}
-			>
-				<Input addonBefore={prefixSelector} style={{ width: '100%' }} />
-			</Form.Item>
-
-			<Form.Item
-				label="Şifre"
+				label="Password"
 				name="password"
-				rules={[{ required: true, message: 'Lütfen şifrenizi girin!' },
-				{ min: 10, message: 'Şifre minimum 10 karakterden oluşmalıdır.' },
+				rules={[{ required: true, message: 'Please enter password!' },
+				{ min: 10, message: 'Min 10 characters.' },
 				]}
 			>
 				<Input.Password />
@@ -86,7 +51,7 @@ const Register = () => {
 
 			<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
 				<Button type="primary" htmlType="submit">
-					Kaydet
+					Register
 				</Button>
 			</Form.Item>
 		</Form>

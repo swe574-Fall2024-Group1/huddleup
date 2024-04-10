@@ -5,57 +5,44 @@ import CryptoJS from "crypto-js";
 import fetchApi from "api/fetchApi";
 
 
-const getUserInfo = async (userId) => {
-	const response = await fetchApi('/api/auth/get-user-info', { userId })
-	const data = await response.json()
-	return data
-}
-
-
 const AuthProvider = ({ children }) => {
-	const initialSessionCookie = Cookies.get('dubSession')
+	const initialSessionCookie = Cookies.get('hudSession')
 	let initialSessionToken
 
 	if (initialSessionCookie) {
-		const decryptedSession = CryptoJS.AES.decrypt(
-			initialSessionCookie,
-			'supersecret'
-		).toString(CryptoJS.enc.Utf8);
-		const sessionData = JSON.parse(decryptedSession)
-		initialSessionToken = sessionData.session
+		initialSessionToken = initialSessionCookie
 	}
+
 	const [token, setToken] = useState(initialSessionToken);
 	const [userInfo, setUserInfo] = useState(null)
 
-	const handleLogin = async () => {
-		const sessionCookie = Cookies.get('dubSession')
-		if (sessionCookie) {
-			const decryptedSession = CryptoJS.AES.decrypt(
-				sessionCookie,
-				'supersecret'
-			).toString(CryptoJS.enc.Utf8);
-			const sessionData = JSON.parse(decryptedSession)
-			setToken(sessionData.session)
+	const handleLogin = async (data) => {
+		console.log(data)
+		if (data.sessionToken) {
+			setToken(data.sessionToken);
+			Cookies.set('hudSession', data.sessionToken)
 		}
 	};
 
 	const handleLogout = () => {
 		setToken(null);
-		Cookies.remove('dubSession')
+		Cookies.remove('hudSession')
 	};
 
 	useEffect(() => {
+		console.log('heree')
 		const getUserInfo = async (userId) => {
-
+			console.log('daf')
 			if(userId){
 				const response = await fetchApi('/api/auth/get-user-info', {})
+				console.log(response)
 				if(response && response.success){
 					setUserInfo(response.data.user)
 				}
 			}
 		}
 
-		getUserInfo(token?.userId)
+		getUserInfo('dfsdfds')
 	}, [token])
 
 	const value = {

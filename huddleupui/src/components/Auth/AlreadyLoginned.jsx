@@ -5,7 +5,7 @@ const  AlreadyLoginned = ({ children }) => {
     const { token } = useAuth();
 
     if (token) {
-      return <Navigate to="/dashboard/projects" replace />;
+      return <Navigate to="/feed" replace />;
     }
 
     return children;
