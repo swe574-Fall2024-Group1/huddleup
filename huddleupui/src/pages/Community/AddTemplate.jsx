@@ -5,7 +5,6 @@ import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 export default function AddTemplate() {
     const [form] = Form.useForm();
 
-    // New Type options with key-value pair
     const typeOptions = [
         { key: "string", value: "Text" },
         { key: "normalizedString", value: "Single-space Text" },
