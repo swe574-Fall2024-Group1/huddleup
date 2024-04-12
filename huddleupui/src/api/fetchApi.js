@@ -22,8 +22,6 @@ const fetchApi = async (url, payload) => {
 			body: JSON.stringify(payload), // body data type must match "Content-Type" header
 		});
 
-		console.log(response)
-
 
 		if (response.ok) {
 		  // Successful response, handle it here
