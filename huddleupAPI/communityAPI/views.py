@@ -3,8 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 
-from communityAPI.models import Community, CommunityUserConnection
-from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer
+from communityAPI.models import Community, CommunityUserConnection, Template
+from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer
 
 
 # Create your views here.
@@ -65,5 +65,29 @@ def get_community_info(request):
 		return JsonResponse(response_data, status=200)
 
 # Template related views
+@csrf_exempt
+def create_template(request):
+	if request.method == 'POST':
+		request_data = JSONParser().parse(request)
 
+		template_data = {
+				'createdBy': request.user.id,
+				'community': request_data['communityId'],
+				'templateName': request_data['templateName'],
+				'rows': request_data['rows']
+		}
+		template_serializer = TemplateSerializer(data=template_data)
+		if template_serializer.is_valid():
+			template_serializer.save()
+			saved_template = Template.objects.last()
+
+			response_data = {
+				'success': True,
+				'data': {
+					'id': template_serializer.data['id']
+				}
+			}
+			return JsonResponse(response_data, status=201)
+		return JsonResponse(template_serializer.errors, status=400)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
