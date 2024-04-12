@@ -17,7 +17,6 @@ const AuthProvider = ({ children }) => {
 	const [userInfo, setUserInfo] = useState(null)
 
 	const handleLogin = async (data) => {
-		console.log(data)
 		if (data.sessionToken) {
 			setToken(data.sessionToken);
 			Cookies.set('hudSession', data.sessionToken)
@@ -30,12 +29,10 @@ const AuthProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		console.log('heree')
 		const getUserInfo = async (userId) => {
 			console.log('daf')
 			if(userId){
 				const response = await fetchApi('/api/auth/get-user-info', {})
-				console.log(response)
 				if(response && response.success){
 					setUserInfo(response.data.user)
 				}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Form, Input } from 'antd';
 import fetchApi from 'api/fetchApi';
 import { useNavigate } from 'react-router-dom';
 import useAuth from 'components/Auth/useAuth';
@@ -8,6 +8,7 @@ import useAuth from 'components/Auth/useAuth';
 const Register = () => {
 	const navigate = useNavigate()
 	const { onLogin } = useAuth()
+
 
 	const onFinishFailed = (errorInfo) => {
 		alert("Bir sorun oluştu sonra tekrar deneyiniz")
