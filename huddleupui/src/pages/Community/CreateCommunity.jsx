@@ -31,7 +31,7 @@ export default function CommunityForm() {
 
 				const { id } = response.data
 
-				navigate(`/community/${id}`)
+				navigate(`/communities/${id}`)
 			}
 		} catch (error) {
 			console.error('Error creating community:', error);

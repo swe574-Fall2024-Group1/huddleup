@@ -34,3 +34,30 @@ class Template(models.Model):
 	rows = models.JSONField(default=list)
 	createdAt = models.DateTimeField(auto_now_add=True)
 
+class Post(models.Model):
+	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	community = models.ForeignKey('Community', on_delete=models.CASCADE)
+	template = models.ForeignKey('Template', on_delete=models.CASCADE)
+	rowValues = models.JSONField(default=list)
+	createdAt = models.DateTimeField(auto_now_add=True)
+
+class Comment(models.Model):
+	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	post = models.ForeignKey('Post', on_delete=models.CASCADE)
+	comment = models.CharField(max_length=500)
+	createdAt = models.DateTimeField(auto_now_add=True)
+
+class PostLike(models.Model):
+	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	post = models.ForeignKey('Post', on_delete=models.CASCADE)
+	createdAt = models.DateTimeField(auto_now_add=True)
+	direction = models.BooleanField()
+
+class CommentLike(models.Model):
+	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
+	createdAt = models.DateTimeField(auto_now_add=True)
+	direction = models.BooleanField()
+
+
+

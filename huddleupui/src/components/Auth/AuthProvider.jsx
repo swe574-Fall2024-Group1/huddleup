@@ -30,7 +30,6 @@ const AuthProvider = ({ children }) => {
 
 	useEffect(() => {
 		const getUserInfo = async (userId) => {
-			console.log('daf')
 			if(userId){
 				const response = await fetchApi('/api/auth/get-user-info', {})
 				if(response && response.success){

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Select, Checkbox, Row, Col, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import fetchApi from 'api/fetchApi';
@@ -48,7 +48,8 @@ export default function AddTemplate() {
 		{ key: "NCName", value: "Local Identifier Name" },
 		{ key: "anyURI", value: "Web Address (URL or URN)" },
 		{ key: "language", value: "Language Code" },
-		{ key: "image", value: "Image File" }
+		{ key: "image", value: "Image File" },
+		{ key: "geolocation", value: "Geographic Location" },
 	];
 
 	const onFinish = async (values) => {
@@ -60,9 +61,7 @@ export default function AddTemplate() {
 			if (response.success) {
 				message.success('Community created successfully!')
 
-				const { id } = response.data
-
-				navigate(`/community/${id}`)
+				navigate(`/communities/${communityId}`)
 			}
 		} catch (error) {
 			console.error('Error creating template:', error);

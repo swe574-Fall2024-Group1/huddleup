@@ -10,6 +10,7 @@ import AlreadyLoginned from "components/Auth/AlreadyLoginned";
 import CreateCommunity from "pages/Community/CreateCommunity";
 import CommunityFeed from "pages/Community/CommunityFeed";
 import AddTemplate from "pages/Community/AddTemplate";
+import CreatePost from "pages/Community/CreatePost";
 
 function App() {
 
@@ -45,6 +46,16 @@ function App() {
 								<CommunityProvider>
 									<CommunityLayout>
 										<AddTemplate />
+									</CommunityLayout>
+								</CommunityProvider>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/communities/:communityId/create-post" element={
+							<ProtectedRoute>
+								<CommunityProvider>
+									<CommunityLayout>
+										<CreatePost />
 									</CommunityLayout>
 								</CommunityProvider>
 							</ProtectedRoute>

@@ -1,54 +1,40 @@
-import { Form, Input, Button, Switch, message } from 'antd';
 import { useState } from 'react';
-import fetchApi from 'api/fetchApi';
 import { useNavigate } from 'react-router-dom';
+import useApi from 'hooks/useApi';
+import { useParams } from 'react-router-dom';
+import Post from 'components/Community/Post';
+import { Spin } from 'antd';
 
-
-const { TextArea } = Input;
-
-export default function CommunityForm() {
-	const [communityImageBase64, setCommunityImageBase64] = useState(null);
+export default function CommunityFeed() {
 	const navigate = useNavigate()
-	
+	const [posts, setPosts] = useState([]);
+	const [postsLoading, setPostsLoading] = useState(true);
 
-	const handleImageChange = (event) => {
-		const file = event.target.files[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setCommunityImageBase64(reader.result);
-			};
-			reader.readAsDataURL(file);
+	const { communityId } = useParams();
+
+	const posts_result = useApi('/api/communities/get-community-posts', { communityId });
+
+	posts_result.then((response) => {
+		if (response && !response.loading && posts.length === 0) {
+			setPosts(response.data.data)
+			setPostsLoading(false)
 		}
-	};
-
-	const onFinish = async (values) => {
-		const payload = { ...values, mainImage: communityImageBase64 || '' };
-
-		try {
-			const response = await fetchApi('/api/communities/create-community', payload)
-
-			if (response.success) {
-				message.success('Community created successfully!')
-
-				const { id } = response.data
-
-				navigate(`/community/${id}`)
-			}
-		} catch (error) {
-			console.error('Error creating community:', error);
-			message.error('Error creating community. Please try again later.');
-		}
-	};
-
-	const onFinishFailed = (errorInfo) => {
-		console.log('Form submission failed:', errorInfo);
-		message.error('Please fill in all required fields!');
-	};
+	})
 
 	return (
 		<div>
-		
+			{posts.length > 0 && posts.map((post) => (
+				<Post postData={post} key={post.id}></Post>
+			))}
+			{postsLoading ? (
+				<div style={{ marginTop: '20px', textAlign: 'center' }}>
+					<Spin tip="Loading Posts" size="large">
+						<div className="content" />
+					</Spin>
+				</div>
+			) : (
+				!posts.length === 0 && <div>No posts found</div>
+			)}
 		</div>
-	);
+	)
 }
