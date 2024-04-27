@@ -3,7 +3,7 @@ version: '3.7'
 services:
   huddleupapi:
     volumes:
-      - ./static:/static
+      - static:/static
     env_file:
       - .env
     build:
@@ -14,7 +14,7 @@ services:
     build:
       context: ./huddleupui
     volumes:
-      - ./huddleupui:/app/build
+      - huddleupui:/app/build
   nginx:
     build:
       context: ./nginx
