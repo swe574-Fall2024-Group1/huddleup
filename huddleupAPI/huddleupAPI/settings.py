@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-9k_2o*mn24s_9jb6mu2+4n-@m&*_p*di498cfkr!mp+cq8t2gs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS=['*']
+ALLOWED_HOSTS=['http://100.24.63.191']
 
 
 # Application definition
@@ -48,14 +48,15 @@ INSTALLED_APPS = [
 	'communityAPI.apps.CommunityapiConfig',
 ]
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
 	'http://localhost',
-    'http://127.0.0.1',
-    'http://0.0.0.0'
+	'http://127.0.0.1',
+    'http://100.24.63.191'
 ]
 
 CORS_ALLOW_CREDENTIALS = True
-
 
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
