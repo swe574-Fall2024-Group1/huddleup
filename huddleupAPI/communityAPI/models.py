@@ -27,6 +27,11 @@ class CommunityUserConnection(models.Model):
 	)
 	createdAt = models.DateTimeField(auto_now_add=True)
 
+class CommunityInvitation(models.Model):
+	user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	community = models.ForeignKey('Community', on_delete=models.CASCADE)
+	createdAt = models.DateTimeField(auto_now_add=True)
+
 class Template(models.Model):
 	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
 	community = models.ForeignKey('Community', on_delete=models.CASCADE)
@@ -58,6 +63,8 @@ class CommentLike(models.Model):
 	comment = models.ForeignKey('Comment', on_delete=models.CASCADE)
 	createdAt = models.DateTimeField(auto_now_add=True)
 	direction = models.BooleanField()
+
+
 
 
 

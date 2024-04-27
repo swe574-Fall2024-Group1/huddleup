@@ -53,13 +53,17 @@ def login(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
+# Get username. req.user.id is the user id
 @csrf_exempt
 def get_user_info(request):
 	if request.method == 'POST':
-
+		user_id = request.user.id
+		user = User.objects.get(id=user_id)
+		user_serializer = UserSerializer(user)
 		response_data = {
 			'success': True,
-			'data': 'hello'
+			'data': {
+				'username': user_serializer.data['username']
+			}
 		}
-
 		return JsonResponse(response_data, status=200)

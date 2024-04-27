@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike
+from .models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation
 
 class CommunitySerializer(serializers.ModelSerializer):
 
@@ -12,6 +12,12 @@ class CommunityUserConnectionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommunityUserConnection
 		fields = ['user', 'community', 'type', 'id', 'createdAt']
+
+class CommunityInvitationSerializer(serializers.ModelSerializer):
+
+	class Meta:
+		model = CommunityInvitation
+		fields = ['user', 'community', 'id', 'createdAt']
 
 class TemplateSerializer(serializers.ModelSerializer):
 
@@ -44,3 +50,4 @@ class CommentLikeSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = CommentLike
 		fields = ['createdBy', 'comment', 'direction', 'id', 'createdAt']
+

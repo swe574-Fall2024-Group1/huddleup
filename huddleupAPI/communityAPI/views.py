@@ -2,11 +2,12 @@ from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
-from djongo.exceptions import SQLDecodeError
+from django.core.exceptions import ObjectDoesNotExist
 
 
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike
-from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer
+from authAPI.models import User
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation
+from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer
 
 
 # Create your views here.
@@ -60,40 +61,299 @@ def create_community(request):
 		return JsonResponse(community_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+
+# Get users that has connection with type 'member' of the comminty
+@csrf_exempt
+def get_community_members(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		connections = CommunityUserConnection.objects.filter(community=community.id, type='member')
+		members_data = []
+		for connection in connections:
+			members_data.append({
+				'username': connection.user.username,
+				'type': connection.type
+			})
+		response_data = {
+			'success': True,
+			'data': members_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Get users that has connection with type 'moderator' of the comminty
+@csrf_exempt
+def get_community_moderators(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		connections = CommunityUserConnection.objects.filter(community=community.id, type='moderator')
+		moderators_data = []
+		for connection in connections:
+			moderators_data.append({
+				'username': connection.user.username,
+				'type': connection.type
+			})
+		response_data = {
+			'success': True,
+			'data': moderators_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Get users that has connection with type 'owner' of the comminty
+@csrf_exempt
+def get_community_owners(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		connections = CommunityUserConnection.objects.filter(community=community.id, type='owner')
+		owners_data = []
+		for connection in connections:
+			owners_data.append({
+				'username': connection.user.username,
+				'type': connection.type
+			})
+		response_data = {
+			'success': True,
+			'data': owners_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+@csrf_exempt
+def assign_moderator(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		user = User.objects.get(username=payload['username'])
+		connection = CommunityUserConnection.objects.get(user=user.id, community=community.id)
+		connection.type = 'moderator'
+		connection.save()
+		return JsonResponse({'success': True, 'message': 'Moderator assigned successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
 @csrf_exempt
 def get_community_info(request):
+    if request.method == 'POST':
+        payload = JSONParser().parse(request)
+        community_id = payload.get('communityId')
+
+        try:
+            community = Community.objects.get(id=community_id)
+        except Community.DoesNotExist:
+            return JsonResponse({'success': False, 'error': 'Community not found'}, status=404)
+
+        try:
+            connection = CommunityUserConnection.objects.get(user=request.user.id, community=community_id)
+            member_type = connection.type
+        except ObjectDoesNotExist:
+            connection = None
+            member_type = 'notMember'
+
+        response_data = {
+            'success': True,
+            'data': {
+                'name': community.name,
+                'description': community.description,
+                'isPrivate': community.isPrivate,
+                'mainImage': community.mainImage,
+                'memberType': member_type,
+            }
+        }
+
+        return JsonResponse(response_data, status=200)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+# gets all communites that user is either member or moderator
+@csrf_exempt
+def get_user_communities(request):
+	if request.method == 'POST':
+		connections = CommunityUserConnection.objects.filter(user=request.user.id)
+		communities_data = []
+
+		for connection in connections:
+			communities_data.append({
+				'id': connection.community.id,
+				'name': connection.community.name,
+				'mainImage': connection.community.mainImage,
+				'description': connection.community.description,
+				'isPrivate': connection.community.isPrivate,
+				'type': connection.type
+			})
+
+		response_data = {
+			'success': True,
+			'data': communities_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# If community is not private and user is not member of the community, add user to the community
+@csrf_exempt
+def join_community(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		# Check if the community is private
+		if community.isPrivate:
+			return JsonResponse({'error': 'Community is private'}, status=400)
+
+		# Check if the user is already a member of the community
+		communityUserConnection = CommunityUserConnection.objects.filter(user=request.user.id, community=community.id).first()
+		if communityUserConnection is not None:
+			return JsonResponse({'error': 'User is already a member of the community'}, status=400)
+
+		communityUserConnection_data = {
+			'user': request.user.id,
+			'community': community.id,
+			'type': 'member'
+		}
+		communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
+		if communityUserConnection_serializer.is_valid():
+			communityUserConnection_serializer.save()
+			return JsonResponse({'success': True, 'message': 'User added to the community successfully'}, status=201)
+		return JsonResponse(communityUserConnection_serializer.errors, status=400)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# If community is private and user is member or moderator of the community, remove user from the community (owners cant leave the community)
+@csrf_exempt
+def leave_community(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
 		community = Community.objects.get(id=payload['communityId'])
 		connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
-		if connection is None:
-			response_data = {
-				'success': False,
-				'data': {
-					'name': community.name,
-					'description': community.description,
-					'isPrivate': community.isPrivate,
-					'memberType': 'notMember',
-				}
-			}
-		else:
-			response_data = {
-				'success': True,
-				'data': {
-					'name': community.name,
-					'description': community.description,
-					'isPrivate': community.isPrivate,
-					'memberType': connection.type,
-				}
-			}
-		return JsonResponse(response_data, status=200)
 
-# Get posts of a community with like and dislike counts
+		if connection.type == 'owner':
+			return JsonResponse({'error': 'Owners cannot leave the community'}, status=403)
+
+		connection.delete()
+		return JsonResponse({'success': True, 'message': 'User removed from the community successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+# Create a invitation for a user to join a community if community is private and inviter user is owner or moderator of the community and invited user is not member of the community 
+# username and communityId in request
+@csrf_exempt
+def create_invitation(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if connection.type == 'member':
+			return JsonResponse({'error': 'User is not authorized to create invitations'}, status=403)
+
+		try:
+			invitedUser = User.objects.get(username=payload['username'])
+		except User.DoesNotExist:
+			return JsonResponse({'error': 'User not found'}, status=404)
+
+		# Check if the user is already a member of the community
+		invitedUserConnection = CommunityUserConnection.objects.filter(user=invitedUser.id, community=community.id).first()
+		if invitedUserConnection is not None:
+			return JsonResponse({'error': 'User is already a member of the community'}, status=400)
+
+		invitation_data = {
+			'user': invitedUser.id,
+			'community': community.id
+		}
+		invitation_serializer = CommunityInvitationSerializer(data=invitation_data)
+		if invitation_serializer.is_valid():
+			invitation_serializer.save()
+			return JsonResponse({'success': True, 'message': 'Invitation created successfully'}, status=201)
+		return JsonResponse(invitation_serializer.errors, status=400)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+# If community is private and user is owner or moderator of the community, get all invitations of the community
+@csrf_exempt
+def get_invitations_by_community(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if connection.type == 'member':
+			return JsonResponse({'error': 'User is not authorized to view invitations'}, status=403)
+
+		invitations = CommunityInvitation.objects.filter(community=community.id)
+		invitations_data = []
+		for invitation in invitations:
+			invitations_data.append({
+				'id': invitation.id,
+				'username': invitation.user.username,
+				'community': invitation.community.name,
+				'createdAt': invitation.createdAt
+			})
+		response_data = {
+			'success': True,
+			'data': invitations_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+@csrf_exempt
+def get_invitations_by_user(request):
+	if request.method == 'POST':
+		invitations = CommunityInvitation.objects.filter(user=request.user.id)
+		invitations_data = []
+		for invitation in invitations:
+			invitations_data.append({
+				'id': invitation.id,
+				'community': invitation.community.name,
+				'createdAt': invitation.createdAt
+			})
+		response_data = {
+			'success': True,
+			'data': invitations_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Response invitation either as accept or decline, delete invitation in both cases and add user to the community if accepted
+@csrf_exempt
+def response_invitation(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		invitation = CommunityInvitation.objects.get(id=payload['invitationId'])
+		community = invitation.community
+		invitedUser = invitation.user
+		invitedUserConnection = CommunityUserConnection.objects.filter(user=invitedUser.id, community=community.id).first()
+
+		if invitedUserConnection is not None:
+			return JsonResponse({'error': 'User is already a member of the community'}, status=400)
+
+		if payload['response'] == 'accept':
+			# Add user to the community
+			communityUserConnection_data = {
+				'user': invitedUser.id,
+				'community': community.id,
+				'type': 'member'
+			}
+			communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
+			if communityUserConnection_serializer.is_valid():
+				communityUserConnection_serializer.save()
+			else:
+				return JsonResponse(communityUserConnection_serializer.errors, status=400)
+
+		invitation.delete()
+		return JsonResponse({'success': True, 'message': 'Invitation response processed successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 @csrf_exempt
 def get_community_posts(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
-		posts = Post.objects.filter(community=payload['communityId'])
+		community_id = payload.get('communityId')
+
+		# Filter posts by community and order by createdAt (latest to oldest)
+		posts = Post.objects.filter(community=community_id).order_by('-createdAt')
+
 		posts_data = []
 		for post in posts:
 			likes = PostLike.objects.filter(post=post.id)
@@ -115,7 +375,6 @@ def get_community_posts(request):
 				else:
 					dislikedByUser = True
 
-
 			posts_data.append({
 				'id': post.id,
 				'username': post.createdBy.username,
@@ -127,11 +386,13 @@ def get_community_posts(request):
 				'liked': likedByUser,
 				'disliked': dislikedByUser
 			})
+
 		response_data = {
 			'success': True,
 			'data': posts_data
 		}
 		return JsonResponse(response_data, status=200)
+
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
@@ -364,6 +625,8 @@ def like_comment(request):
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
 
 
 
