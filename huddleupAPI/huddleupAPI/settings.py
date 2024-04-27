@@ -48,7 +48,7 @@ INSTALLED_APPS = [
 	'communityAPI.apps.CommunityapiConfig',
 ]
 
-CORS_ORIGIN_WHITELIST = [
+CORS_ALLOWED_ORIGINS = [
 	'http://100.24.63.191',
     'http://127.0.0.1',
     'http://localhost:3000',
@@ -59,7 +59,6 @@ CORS_ORIGIN_WHITELIST = [
 
 CORS_ALLOW_HEADERS = ['*']
 
-CORS_ALLOW_CREDENTIALS = True
 
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
