@@ -27,9 +27,11 @@ const useApi = async (url, payload) => {
 			body: JSON.stringify(payload), // body data type must match "Content-Type" header
 		});
 
+
 		if (response.ok) {
 		  // Successful response, handle it here
 			const json = await response.json()
+
 			setData(json)
 			setLoading(false)
 			return json

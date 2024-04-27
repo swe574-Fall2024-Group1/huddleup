@@ -105,7 +105,7 @@ export default function AddTemplate() {
 										name={[name, 'type']}
 										rules={[{ required: true, message: 'Missing type' }]}
 									>
-										<Select placeholder="Select a type" style={{ width: '100%' }}>
+										<Select placeholder="Select a type" style={{ width: '100%' }} >
 											{typeOptions.map(option => (
 												<Select.Option key={option.key} value={option.key}>{option.value}</Select.Option>
 											))}

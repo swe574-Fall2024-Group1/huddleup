@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex } from 'antd';
 import { Comment } from '@ant-design/compatible';
-import { CommentOutlined, LikeOutlined, DislikeOutlined } from '@ant-design/icons';
+import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined } from '@ant-design/icons';
 import useApi from 'hooks/useApi';
 import fetchApi from 'api/fetchApi';
 import { Spin } from 'antd';
@@ -14,7 +14,6 @@ const Post = ({ postData }) => {
 	const [comments, setComments] = useState([]);
 	const [newComment, setNewComment] = useState('');
 	const [showAllComments, setShowAllComments] = useState(false);
-	console.log(postData)
 	const [postLikes, setPostLikes] = useState(postData.likeCount);
 	const [postDislikes, setPostDislikes] = useState(postData.dislikeCount);
 
@@ -195,9 +194,9 @@ const Post = ({ postData }) => {
 		</Tooltip>,
 		comment.dislikeCount,
 	];
-	console.log('post component updated')
+
 	return (
-		<Card style={{ marginBottom: '16px' }}>
+		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			<Card.Meta
 				avatar={<Avatar src={userInfo.userpp} />}
 				title={userInfo.username}
@@ -247,7 +246,7 @@ const Post = ({ postData }) => {
 							actions={renderCommentActions(comment)} // Pass the comment object to renderCommentActions function
 							author={comment.username}
 							content={comment.comment}
-							datetime={new Date(comment.createdAt).toLocaleString('en-GB', {
+							datetime={new Date(comment.createdAt).toLocaleString('tr-TR', {
 								day: '2-digit',
 								month: '2-digit',
 								year: 'numeric',
@@ -257,10 +256,8 @@ const Post = ({ postData }) => {
 						/>
 					))
 				) : (
-					<div style={{ marginTop: 40 }}>
-						<Spin tip="Loading Comments" size="small">
-							<div className="content" />
-						</Spin>
+					<div style={{ marginTop: 40, textAlign: 'center' }}>
+						<Spin  size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC' }} spin /> } />
 					</div>
 
 				)}

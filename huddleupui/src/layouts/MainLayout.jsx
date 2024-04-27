@@ -1,51 +1,40 @@
-import { Layout, Avatar } from 'antd';
-import { UserOutlined, BellOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { Layout, Avatar, Card, Button, Modal, Row, Col } from 'antd';
+import { UserOutlined, BellOutlined, TeamOutlined, PlusOutlined, UsergroupAddOutlined, NotificationOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import useAuth from "components/Auth/useAuth";
+import LeftSidebar from 'components/MainLayout/LeftSidebar';
+import '../assets/logo.css';
 import Navbar from 'components/MainLayout/Navbar';
+import RightSidebar from 'components/MainLayout/RighSidebar';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 
-export default function AppLayout({ children }) {
-	const { onLogout, userInfo } = useAuth();
-	const navigate = useNavigate();
+export default function MainLayout({ children }) {
+    const { userInfo } = useAuth();
+    const navigate = useNavigate();
 
-	return (
-		<Layout style={{ minHeight: '100vh' }}>
-			<Header style={{ background: '#fff', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-				<div style= {{ color: "#552299"}}>huddleup</div>
-				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<input type="text" placeholder="Search communities" style={{ marginRight: 16 }} />
-					<BellOutlined style={{ marginRight: 16 }} />
-				</div>
-				{/* Profile Section */}
-				<div style={{ display: 'flex', alignItems: 'center' }}>
-					<Avatar icon={<UserOutlined />} style={{ marginRight: 8 }} />
-					<span>{userInfo?.username}</span>
-				</div>
-			</Header>
-			<Layout>
-				<Sider width={200} style={{ background: '#fff' }}>
-					{/* Sider Content */}
-				</Sider>
-				<Layout style={{ padding: '0 24px 24px' }}>
-
-					<Content
-						className="site-layout-background"
-						style={{
-							padding: 24,
-							margin: 0,
-							minHeight: 280,
-						}}
-					>
-						{children}
-					</Content>
-					<Footer style={{ textAlign: 'center' }}>huddleup ©{new Date().getFullYear()}</Footer>
-				</Layout>
-				<Sider width={200} style={{ background: '#fff' }}>
-					{/* Sider Content */}
-				</Sider>
-			</Layout>
-		</Layout>
-	);
+    return (
+        <Layout style={{ minHeight: '100vh' }}>
+            <Navbar />
+            <Layout>
+                <LeftSidebar />
+                <Layout style={{ padding: '0 24px 24px' }}>
+                    <Content
+                        className="site-layout-background"
+                        style={{
+                            padding: 10,
+                            margin: 0,
+                            minHeight: 280,
+                        }}
+                    >
+                        {children}
+                    </Content>
+                    <Footer className='logo' style={{ textAlign: 'center', fontWeight: 700, color: '#a1a1a1', fontSize: 18 }}>huddleup ©{new Date().getFullYear()}</Footer>
+                </Layout>
+                <RightSidebar />
+            </Layout>
+        </Layout>
+    );
 }

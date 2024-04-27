@@ -11,6 +11,12 @@ import CreateCommunity from "pages/Community/CreateCommunity";
 import CommunityFeed from "pages/Community/CommunityFeed";
 import AddTemplate from "pages/Community/AddTemplate";
 import CreatePost from "pages/Community/CreatePost";
+import CommunityInvitations from "pages/Community/CommunityInvitations";
+import UserInvitations from "pages/UserInvitations";
+import UserFeed from "pages/Feed";
+import { Navigate } from "react-router-dom";
+import Communities from "pages/Communities";
+import Connections from "pages/Connections";
 
 function App() {
 
@@ -23,6 +29,38 @@ function App() {
 							<Route path="/register" element={<AlreadyLoginned><Register /> </AlreadyLoginned>} />
 							<Route path="/login" element={<AlreadyLoginned><Login /></AlreadyLoginned>} />
 						</Route>
+						<Route path="/feed" element={
+							<ProtectedRoute>
+								<AppLayout>
+									<UserFeed />
+								</AppLayout>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/invitations" element={
+							<ProtectedRoute>
+								<AppLayout>
+									<UserInvitations />
+								</AppLayout>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/connections" element={
+							<ProtectedRoute>
+								<AppLayout>
+									<Connections />
+								</AppLayout>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/communities" element={
+							<ProtectedRoute>
+								<AppLayout>
+									<Communities />
+								</AppLayout>
+							</ProtectedRoute>
+						}
+						/>
 						<Route path="/communities/new" element={
 							<ProtectedRoute>
 								<AppLayout>
@@ -34,7 +72,7 @@ function App() {
 						<Route path="/communities/:communityId" element={
 							<ProtectedRoute>
 								<CommunityProvider>
-									<CommunityLayout>
+									<CommunityLayout allowedUserTypes={['owner', 'moderator', 'member']}>
 										<CommunityFeed />
 									</CommunityLayout>
 								</CommunityProvider>
@@ -54,13 +92,25 @@ function App() {
 						<Route path="/communities/:communityId/create-post" element={
 							<ProtectedRoute>
 								<CommunityProvider>
-									<CommunityLayout>
+									<CommunityLayout allowedUserTypes={['owner', 'moderator', 'member']}>
 										<CreatePost />
 									</CommunityLayout>
 								</CommunityProvider>
 							</ProtectedRoute>
 						}
 						/>
+						<Route path="/communities/:communityId/invitations" element={
+							<ProtectedRoute>
+								<CommunityProvider>
+									<CommunityLayout allowedUserTypes={['owner', 'moderator']}>
+										<CommunityInvitations />
+									</CommunityLayout>
+								</CommunityProvider>
+							</ProtectedRoute>
+						}
+						/>
+						{/* Wildcard Route */}
+						<Route path="*" element={<Navigate to="/feed" replace />} />
 					</Route>
 				</Routes>
 			</BrowserRouter>

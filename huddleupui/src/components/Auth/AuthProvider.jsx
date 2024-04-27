@@ -29,16 +29,14 @@ const AuthProvider = ({ children }) => {
 	};
 
 	useEffect(() => {
-		const getUserInfo = async (userId) => {
-			if(userId){
-				const response = await fetchApi('/api/auth/get-user-info', {})
-				if(response && response.success){
-					setUserInfo(response.data.user)
-				}
+		const getUserInfo = async () => {
+			const response = await fetchApi('/api/auth/get-user-info', {})
+			if (response && response.success) {
+				setUserInfo(response.data)
 			}
 		}
 
-		getUserInfo('dfsdfds')
+		getUserInfo()
 	}, [token])
 
 	const value = {
