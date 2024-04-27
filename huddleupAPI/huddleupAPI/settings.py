@@ -49,10 +49,13 @@ INSTALLED_APPS = [
 ]
 
 CORS_ORIGIN_WHITELIST = [
-    'http://100.24.63.191'
+	'http://100.24.63.191'
 ]
 
 CORS_ALLOW_HEADERS = ['*']
+
+CORS_ALLOW_CREDENTIALS = True
+
 
 MIDDLEWARE = [
 	'corsheaders.middleware.CorsMiddleware',
