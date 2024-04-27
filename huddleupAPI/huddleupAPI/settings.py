@@ -48,7 +48,9 @@ INSTALLED_APPS = [
 	'communityAPI.apps.CommunityapiConfig',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_WHITELIST = [
+    'http://100.24.63.191'
+]
 
 CORS_ALLOW_HEADERS = ['*']
 
