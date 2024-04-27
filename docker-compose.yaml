@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  huddleupapi:
+    volumes:
+      - ./static:/static
+    env_file:
+      - .env
+    build:
+      context: ./huddleupapi
+    ports:
+      - "8000:8000"
+  huddleupui:
+    build:
+      context: ./huddleupui
+    volumes:
+      - ./huddleupui:/app/build
+  nginx:
+    build:
+      context: ./nginx
+    volumes:
+      - static:/static
+      - huddleupui:/var/www/huddleupui
+    ports:
+      - "80:80"
+    depends_on:
+      - huddleupapi
+      - huddleupui
+
+volumes:
+  static:
+  huddleupui:
+
