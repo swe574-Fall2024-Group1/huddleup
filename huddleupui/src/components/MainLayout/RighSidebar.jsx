@@ -3,7 +3,7 @@ import { TeamOutlined, PlusOutlined, UsergroupAddOutlined, NotificationOutlined 
 import { Layout, Avatar, Card, Button, Modal, Row, Col } from 'antd';
 import { useNavigate } from "react-router-dom";
 import "../../assets/main-layout.css"
-import useAuth from 'components/Auth/useAuth';
+import useAuth from '../../components/Auth/useAuth';
 
 const { Sider } = Layout;
 

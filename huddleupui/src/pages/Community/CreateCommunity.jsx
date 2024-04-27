@@ -1,6 +1,6 @@
 import { Form, Input, Button, Switch, message, Card } from 'antd';
 import { useState } from 'react';
-import fetchApi from 'api/fetchApi';
+import fetchApi from '../../api/fetchApi';
 import { useNavigate } from 'react-router-dom';
 
 const { TextArea } = Input;

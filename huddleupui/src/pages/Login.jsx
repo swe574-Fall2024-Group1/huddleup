@@ -1,8 +1,8 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Layout, message } from 'antd';
-import 'components/Register/Register.css'
-import LoginForm from 'components/Login/LoginForm';
+import '../components/Register/Register.css'
+import LoginForm from '../components/Login/LoginForm';
 import '../assets/logo.css';
 
 

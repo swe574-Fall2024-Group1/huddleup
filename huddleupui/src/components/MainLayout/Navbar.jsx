@@ -1,7 +1,7 @@
 import { Layout, Avatar, Input } from 'antd';
 import { UserOutlined, BellOutlined, SearchOutlined } from '@ant-design/icons';
 import { Link, } from 'react-router-dom';
-import useAuth from "components/Auth/useAuth";
+import useAuth from "../Auth/useAuth";
 
 const { Header } = Layout;
 

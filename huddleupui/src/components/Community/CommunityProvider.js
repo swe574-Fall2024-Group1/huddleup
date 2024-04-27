@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CommunityContext from "../../contexts/CommunityContext";
-import fetchApi from "api/fetchApi";
+import fetchApi from "../../api/fetchApi";
 import { useParams } from 'react-router-dom';
 
 

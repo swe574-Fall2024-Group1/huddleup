@@ -2,8 +2,8 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { Layout, message } from 'antd';
 
-import 'components/Register/Register.css'
-import RegisterForm from 'components/Register/RegisterForm';
+import '../components/Register/Register.css'
+import RegisterForm from '../components/Register/RegisterForm';
 
 const Login = (props) => {
 

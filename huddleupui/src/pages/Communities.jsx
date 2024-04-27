@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Card, Button, Flex } from 'antd';
 import { EyeOutlined, LockOutlined, UserOutlined, CrownOutlined } from '@ant-design/icons';
-import useApi from 'hooks/useApi';
+import useApi from '../hooks/useApi';
 
 const { Meta } = Card;
 

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useApi from 'hooks/useApi';
+import useApi from '../../hooks/useApi';
 import { useParams } from 'react-router-dom';
 import { LoadingOutlined } from '@ant-design/icons';
-import Post from 'components/Community/Post';
+import Post from '../../components/Community/Post';
 import { Button, Card, Spin } from 'antd';
 
 export default function CommunityFeed() {

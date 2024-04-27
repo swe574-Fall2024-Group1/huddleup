@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined } from '@ant-design/icons';
-import useApi from 'hooks/useApi';
-import fetchApi from 'api/fetchApi';
+import useApi from '../../hooks/useApi';
+import fetchApi from '../../api/fetchApi';
 import { Spin } from 'antd';
 
 const { Text } = Typography;

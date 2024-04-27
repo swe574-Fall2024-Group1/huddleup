@@ -2,11 +2,11 @@ import { useState } from 'react';
 import { Layout, Avatar, Card, Button, Modal, Row, Col } from 'antd';
 import { UserOutlined, BellOutlined, TeamOutlined, PlusOutlined, UsergroupAddOutlined, NotificationOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
-import useAuth from "components/Auth/useAuth";
-import LeftSidebar from 'components/MainLayout/LeftSidebar';
+import useAuth from "../components/Auth/useAuth";
+import LeftSidebar from '../components/MainLayout/LeftSidebar';
 import '../assets/logo.css';
-import Navbar from 'components/MainLayout/Navbar';
-import RightSidebar from 'components/MainLayout/RighSidebar';
+import Navbar from '../components/MainLayout/Navbar';
+import RightSidebar from '../components/MainLayout/RighSidebar';
 
 
 const { Header, Content, Footer, Sider } = Layout;

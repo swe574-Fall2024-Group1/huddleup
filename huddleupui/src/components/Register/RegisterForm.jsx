@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button, Form, Input} from 'antd';
-import fetchApi from 'api/fetchApi';
+import fetchApi from '../../api/fetchApi';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {

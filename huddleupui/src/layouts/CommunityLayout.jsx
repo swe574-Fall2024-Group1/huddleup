@@ -1,12 +1,12 @@
 import { Layout, Card, Avatar, Row, Col, Modal, Button, Spin } from 'antd';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
-import Navbar from "components/MainLayout/Navbar";
-import fetchApi from 'api/fetchApi';
+import Navbar from "../components/MainLayout/Navbar";
+import fetchApi from '../api/fetchApi';
 import { useParams } from 'react-router-dom';
-import useApi from 'hooks/useApi';
-import useCommunity from 'components/Community/useCommunity';
-import LeftSidebar from 'components/MainLayout/LeftSidebar';
+import useApi from '../hooks/useApi';
+import useCommunity from '../components/Community/useCommunity';
+import LeftSidebar from '../components/MainLayout/LeftSidebar';
 import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;

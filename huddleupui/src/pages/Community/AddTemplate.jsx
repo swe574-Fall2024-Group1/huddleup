@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Form, Input, Button, Select, Checkbox, Row, Col, message } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import fetchApi from 'api/fetchApi';
+import fetchApi from '../../api/fetchApi';
 import { useNavigate, useParams } from 'react-router-dom';
 
 export default function AddTemplate() {

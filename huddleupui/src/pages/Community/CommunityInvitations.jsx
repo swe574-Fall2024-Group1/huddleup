@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useApi from 'hooks/useApi';
-import fetchApi from 'api/fetchApi';
+import useApi from '../../hooks/useApi';
+import fetchApi from '../../api/fetchApi';
 import { useParams } from 'react-router-dom';
 import { Spin, message, Table, Button, Form, Input } from 'antd';
 

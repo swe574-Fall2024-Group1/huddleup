@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import AuthContext from "../../contexts/AuthContext";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
-import fetchApi from "api/fetchApi";
+import fetchApi from "../../api/fetchApi";
 
 
 const AuthProvider = ({ children }) => {

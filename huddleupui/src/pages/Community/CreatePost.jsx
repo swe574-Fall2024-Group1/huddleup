@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card } from 'antd';
 
 import { useParams } from 'react-router-dom';
-import fetchApi from 'api/fetchApi';
-import useApi from 'hooks/useApi';
+import fetchApi from '../../api/fetchApi';
+import useApi from '../../hooks/useApi';
 import '../../assets/community.css';
 import { useNavigate } from 'react-router-dom';
 

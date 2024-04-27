@@ -3,20 +3,20 @@ import Register from "./pages/Register"
 import AuthProvider from "./components/Auth/AuthProvider";
 import CommunityProvider from "./components/Community/CommunityProvider";
 import ProtectedRoute from "./components/Auth/ProtectedRoute";
-import AppLayout from "layouts/MainLayout";
-import CommunityLayout from "layouts/CommunityLayout";
-import Login from "pages/Login";
-import AlreadyLoginned from "components/Auth/AlreadyLoginned";
-import CreateCommunity from "pages/Community/CreateCommunity";
-import CommunityFeed from "pages/Community/CommunityFeed";
-import AddTemplate from "pages/Community/AddTemplate";
-import CreatePost from "pages/Community/CreatePost";
-import CommunityInvitations from "pages/Community/CommunityInvitations";
-import UserInvitations from "pages/UserInvitations";
-import UserFeed from "pages/Feed";
+import AppLayout from "./layouts/MainLayout";
+import CommunityLayout from "./layouts/CommunityLayout";
+import Login from "./pages/Login";
+import AlreadyLoginned from "./components/Auth/AlreadyLoginned";
+import CreateCommunity from "./pages/Community/CreateCommunity";
+import CommunityFeed from "./pages/Community/CommunityFeed";
+import AddTemplate from "./pages/Community/AddTemplate";
+import CreatePost from "./pages/Community/CreatePost";
+import CommunityInvitations from "./pages/Community/CommunityInvitations";
+import UserInvitations from "./pages/UserInvitations";
+import UserFeed from "./pages/Feed";
 import { Navigate } from "react-router-dom";
-import Communities from "pages/Communities";
-import Connections from "pages/Connections";
+import Communities from "./pages/Communities";
+import Connections from "./pages/Connections";
 
 function App() {
 
