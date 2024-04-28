@@ -17,6 +17,7 @@ import UserFeed from "./pages/Feed";
 import { Navigate } from "react-router-dom";
 import Communities from "./pages/Communities";
 import Connections from "./pages/Connections";
+import CommunitySettings from "./pages/Community/CommunitySettings";
 
 function App() {
 
@@ -79,10 +80,20 @@ function App() {
 							</ProtectedRoute>
 						}
 						/>
+						<Route path="/communities/:communityId/settings" element={
+							<ProtectedRoute>
+								<CommunityProvider>
+									<CommunityLayout allowedUserTypes={['owner', 'moderator']}>
+										<CommunitySettings />
+									</CommunityLayout>
+								</CommunityProvider>
+							</ProtectedRoute>
+						}
+						/>
 						<Route path="/communities/:communityId/create-template" element={
 							<ProtectedRoute>
 								<CommunityProvider>
-									<CommunityLayout>
+									<CommunityLayout allowedUserTypes={['owner', 'moderator']}>
 										<AddTemplate />
 									</CommunityLayout>
 								</CommunityProvider>

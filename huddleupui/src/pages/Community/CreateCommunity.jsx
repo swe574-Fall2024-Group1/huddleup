@@ -21,8 +21,8 @@ export default function CommunityForm() {
     };
 
     const onFinish = async (values) => {
-        const payload = { ...values, mainImage: communityImageBase64 || '' };
-
+        const payload = { ...values, mainImage: communityImageBase64 || '', isPrivate: values.isPrivate || false};
+        console.log(payload)
         try {
             const response = await fetchApi('/api/communities/create-community', payload);
 
@@ -75,6 +75,7 @@ export default function CommunityForm() {
                         label="Make this community private"
                         name="isPrivate"
                         valuePropName="checked"
+                        defaultValue={false}
                     >
                         <Switch />
                     </Form.Item>

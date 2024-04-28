@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex } from 'antd';
 import { Comment } from '@ant-design/compatible';
-import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined } from '@ant-design/icons';
+import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import useApi from '../../hooks/useApi';
 import fetchApi from '../../api/fetchApi';
 import { Spin } from 'antd';
@@ -158,7 +158,7 @@ const Post = ({ postData }) => {
 					comment.disliked = false;
 				}
 			}
-		}else {
+		} else {
 			if (comment.disliked) {
 				comment.dislikeCount -= 1;
 				comment.disliked = false;
@@ -182,14 +182,14 @@ const Post = ({ postData }) => {
 		<Tooltip title="Upvote">
 			<LikeOutlined
 				onClick={() => handleCommentLike(comment.id, true)}
-				style={{ marginRight: 8, fontSize: 20 }}
+				style={{ marginRight: 8, fontSize: 20, color: comment.liked ? '#7952CC' : 'black' }}
 			/>
 		</Tooltip>,
-		comment.likeCount,
+		<span >{comment.likeCount}</span>,
 		<Tooltip title="Downvote">
 			<DislikeOutlined
 				onClick={() => handleCommentLike(comment.id, false)}
-				style={{ fontSize: 20 }}
+				style={{ fontSize: 20, fontSize: 20, color: comment.disliked ? '#7952CC' : 'black' }}
 			/>
 		</Tooltip>,
 		comment.dislikeCount,
@@ -198,33 +198,33 @@ const Post = ({ postData }) => {
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			<Card.Meta
-				avatar={<Avatar src={userInfo.userpp} />}
-				title={userInfo.username}
+				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} src={userInfo.userpp} icon={<UserOutlined />} />}
+				title={<div style={{ color: "#7952CC" }}>{userInfo.username}</div>}
 				description={new Date(postData.createdAt).toLocaleString()}
 			/>
-			<div>
-				<strong>Template:</strong> {templateName || ''}
+			<div style={{ marginTop: 20 }}>
+				<span style={{ color: "#240763", fontWeight: 600 }}>Template:</span> {templateName || ''}
 			</div>
 			<Divider />
-			<div>
+			<div >
 				{templateRows && templateRows.map((row, index) => (
 					<div key={index} style={{ marginBottom: '8px' }}>
-						<Space direction="vertical">
-							<Text strong>{row.title}:</Text>
+						<Space direction="vertical" style={{ marginBottom: 5 }}>
+							<Text strong style={{ color: "#240763", marginTop: 5 }}>{row.title}</Text>
 							{renderRow(row)}
 						</Space>
-						{index !== templateRows.length - 1 && <Divider style={{ margin: '8px 0', backgroundColor: '#f0f0f0' }} />}
+						{index !== templateRows.length - 1 && <Divider style={{ margin: '8px 0' }} />}
 					</div>
 				))}
 			</div>
 			<Divider />
 			<div style={{ marginBottom: 10 }}>
 				<Tooltip title="Upvote">
-					<LikeOutlined onClick={() => handlePostLike(true)} style={{ marginRight: 8, fontSize: 20 }} />
+					<LikeOutlined onClick={() => handlePostLike(true)} style={{ marginRight: 3, fontSize: 20, color: liked ? '#7952CC' : 'black' }} />
 				</Tooltip>
-				{postLikes}
+				<span style={{ marginRight: 20 }}>	{postLikes}</span>
 				<Tooltip title="Downvote">
-					<DislikeOutlined onClick={() => handlePostLike(false)} style={{ fontSize: 20 }} />
+					<DislikeOutlined onClick={() => handlePostLike(false)} style={{ marginRight: 5, fontSize: 20 }} />
 				</Tooltip>
 				{postDislikes}
 			</div>
@@ -241,23 +241,26 @@ const Post = ({ postData }) => {
 
 				{!loadingComments ? (
 					visibleComments.map((comment, index) => (
-						<Comment
-							key={index}
-							actions={renderCommentActions(comment)} // Pass the comment object to renderCommentActions function
-							author={comment.username}
-							content={comment.comment}
-							datetime={new Date(comment.createdAt).toLocaleString('tr-TR', {
-								day: '2-digit',
-								month: '2-digit',
-								year: 'numeric',
-								hour: '2-digit',
-								minute: '2-digit',
-							})}
-						/>
+						<div>
+							<Comment
+								key={index}
+								actions={renderCommentActions(comment)} // Pass the comment object to renderCommentActions function
+								author={comment.username}
+								content={comment.comment}
+								datetime={new Date(comment.createdAt).toLocaleString('tr-TR', {
+									day: '2-digit',
+									month: '2-digit',
+									year: 'numeric',
+									hour: '2-digit',
+									minute: '2-digit',
+								})}
+								style={{borderTop: "1px solid #f0f0f0" }}
+							/>
+						</div>
 					))
 				) : (
 					<div style={{ marginTop: 40, textAlign: 'center' }}>
-						<Spin  size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC' }} spin /> } />
+						<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC' }} spin />} />
 					</div>
 
 				)}

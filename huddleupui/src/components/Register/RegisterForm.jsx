@@ -49,8 +49,8 @@ const Register = () => {
 				<Input.Password />
 			</Form.Item>
 
-			<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-				<Button type="primary" htmlType="submit">
+			<Form.Item wrapperCol={{ offset: 8, span: 16 }}  style={{textAlign: 'center'}}>
+				<Button size='large' style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} htmlType="submit">
 					Register
 				</Button>
 			</Form.Item>

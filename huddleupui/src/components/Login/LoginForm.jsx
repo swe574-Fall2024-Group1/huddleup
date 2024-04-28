@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import useAuth from '../Auth/useAuth';
 
 
-const Register = () => {
+const Login = () => {
 	const navigate = useNavigate()
 	const { onLogin } = useAuth()
 
@@ -58,8 +58,8 @@ const Register = () => {
 			</Form.Item>
 
 
-			<Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-				<Button type="primary" htmlType="submit">
+			<Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{textAlign: 'center'}}>
+				<Button size='large' style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} htmlType="submit">
 					Login
 				</Button>
 			</Form.Item>
@@ -68,4 +68,4 @@ const Register = () => {
 	)
 }
 
-export default Register
+export default Login

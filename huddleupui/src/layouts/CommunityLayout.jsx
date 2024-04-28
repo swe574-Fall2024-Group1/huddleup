@@ -241,6 +241,15 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 									</Row>
 								)}
 							</Card>
+
+							{communityInfo && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+								<Card title="Moderator Menu" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+									<Row justify="center">
+										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => navigate(`/communities/${communityId}/settings`)}>Community Settings</Button>
+									</Row>
+								</Card>
+							)
+							}
 						</div>
 					) : (
 						<div>

@@ -38,7 +38,7 @@ const Communities = () => {
                 {communities && communities.map((community) => (
                     <Card
                         key={community.id}
-                        style={{ width: 350, marginBottom: 20, marginRight: 20 }}
+                        style={{ width: 350, marginBottom: 20, marginRight: 20, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}
                         actions={[
                             <Link to={`/communities/${community.id}`}>
                                 <Button style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800 }} size="middle">
@@ -72,8 +72,8 @@ const Communities = () => {
             </div>
 
             {communities && communities.length === 0 && (
-                <Card style={{ marginBottom: 20, marginRight: 20 }}>
-                    <div style={{ color: '#5c5b5b', marginTop: 20, fontSize:15, fontWeight: 600 }}>You haven't joined any communities yet. <Link style={{color: '#7952CC'}} to="/communities/new">Create one now!</Link></div>
+                <Card style={{ marginBottom: 20, marginRight: 20, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
+                    <div style={{ color: '#5c5b5b', marginTop: 20, fontSize: 15, fontWeight: 600 }}>You haven't joined any communities yet. <Link style={{ color: '#7952CC' }} to="/communities/new">Create one now!</Link></div>
                 </Card>
             )}
         </div>
