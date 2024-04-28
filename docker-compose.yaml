@@ -22,6 +22,8 @@ services:
     volumes:
       - static:/static
       - huddleupui:/var/www/huddleupui
+      - /etc/letsencrypt/live/huddleup.space/fullchain.pem:/etc/letsencrypt/live/huddleup.space/fullchain.pem
+      - /etc/letsencrypt/live/huddleup.space/privkey.pem:/etc/letsencrypt/live/huddleup.space/privkey.pem
     ports:
       - 80:80
       - 443:443
