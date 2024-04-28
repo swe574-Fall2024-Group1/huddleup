@@ -4,9 +4,10 @@ from djongo.models.fields import ObjectIdField
 # Create your models here.
 class Community(models.Model):
 	name = models.CharField(max_length=50)
-	description = models.CharField(max_length=50)
+	description = models.CharField(max_length=500)
 	mainImage = models.CharField(max_length=5000000)
 	isPrivate = models.BooleanField()
+	archived = models.BooleanField('archived', default=False)
 
 class CommunityUserConnection(models.Model):
 	MEMBER = 'member'
