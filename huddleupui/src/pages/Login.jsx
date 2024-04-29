@@ -26,14 +26,19 @@ const Login = (props) => {
             </Sider>
             <Layout className="login-layout">
                 <div style={{ marginLeft: 300, fontSize: 25, color: "#7952CC", fontWeight: 400, marginBottom: 30 }}>
-                    <p style={{marginLeft:10}}>
-                          Welcome back!
+                    <p style={{ marginLeft: 10 }}>
+                        Welcome back!
                     </p>
                     <p>
                         Login to Huddleup.
                     </p>
                 </div>
                 <LoginForm />
+                <div>
+                    <div style={{ textAlign: 'left', marginLeft: 280, fontSize: 15, color: "#5c5b5b", fontWeight: 400, marginTop: 20 }}>
+                        Don't have an account? <a href="/register" style={{ color: "#7952CC" }}>Sign Up</a>
+                    </div>
+                </div>
             </Layout>
 
         </Layout>

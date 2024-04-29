@@ -29,6 +29,11 @@ const Login = (props) => {
                     Create Account
                 </div>
                 <RegisterForm />
+                <div>
+                    <div style={{textAlign:'left',marginLeft:280, fontSize: 15, color: "#5c5b5b", fontWeight: 400, marginTop: 20}}>
+                        Already have an account? <a href="/login" style={{color: "#7952CC"}}>Login</a>
+                    </div>
+                </div>
             </Layout>
 
         </Layout>
