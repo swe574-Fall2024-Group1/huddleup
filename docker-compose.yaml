@@ -11,16 +11,12 @@ services:
     ports:
       - "8000:8000"
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
   huddleupui:
     build:
       context: ./huddleupui
     volumes:
       - huddleupui:/app/build
+    restart: always
   nginx:
     build:
       context: ./nginx
