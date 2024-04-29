@@ -10,17 +10,14 @@ services:
       context: ./huddleupapi
     ports:
       - "8000:8000"
-    restart: always
   huddleupui:
     build:
       context: ./huddleupui
     volumes:
       - huddleupui:/app/build
-    restart: always
   nginx:
     build:
       context: ./nginx
-    restart: always
     volumes:
       - static:/static
       - huddleupui:/var/www/huddleupui
