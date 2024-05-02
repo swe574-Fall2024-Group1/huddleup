@@ -1,15 +1,18 @@
 FROM node:alpine
 
-RUN npm install -g create-react-app
-
+# set working directory
 WORKDIR /app
-COPY package*.json ./
 
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
 RUN npm install
-COPY . .
 
-# Expose the React app port
-EXPOSE 3000
+# add app
+COPY . ./
 
-# Command to start the React app
-CMD ["npm","run", "start"]
+# start app
+CMD ["npm", "start"]
