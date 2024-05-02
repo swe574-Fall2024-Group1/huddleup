@@ -1,36 +1,19 @@
-version: '3.7'
+version: '3'
 
 services:
-  huddleupapi:
-    volumes:
-      - static:/static
-    env_file:
-      - .env
+  backend:
     build:
       context: ./huddleupapi
     ports:
       - "8000:8000"
-  huddleupui:
+    volumes:
+      - ./huddleupapi:/code
+  frontend:
     build:
       context: ./huddleupui
-    volumes:
-      - huddleupui:/app/build
-  nginx:
-    build:
-      context: ./nginx
-    volumes:
-      - static:/static
-      - huddleupui:/var/www/huddleupui
-      - /etc/letsencrypt/live/huddleup.space/fullchain.pem:/etc/letsencrypt/live/huddleup.space/fullchain.pem
-      - /etc/letsencrypt/live/huddleup.space/privkey.pem:/etc/letsencrypt/live/huddleup.space/privkey.pem
     ports:
-      - 80:80
-      - 443:443
+      - "80:3000"
+    volumes:
+      - ./huddleupui:/app
     depends_on:
-      - huddleupapi
-      - huddleupui
-
-volumes:
-  static:
-  huddleupui:
-
+      - backend

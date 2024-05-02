@@ -1,8 +1,12 @@
-FROM node:alpine
-
-WORKDIR '/app'
+FROM node:21-alpine as builder
+WORKDIR /app
+COPY package*.json .
+COPY yarn*.lock .
+RUN yarn install
 COPY . .
 
-RUN npm install
+# Expose the React app port
+EXPOSE 3000
 
-CMD ["npm", "run", "build"]
+# Command to start the React app
+CMD ["yarn", "start"]
