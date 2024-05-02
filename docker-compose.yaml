@@ -12,7 +12,7 @@ services:
     build:
       context: ./huddleupui
     ports:
-      - "80:3000"
+      - "3000:3000"
     volumes:
       - ./huddleupui:/app
     depends_on:
