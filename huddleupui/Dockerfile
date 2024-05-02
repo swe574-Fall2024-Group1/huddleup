@@ -10,4 +10,4 @@ COPY . .
 EXPOSE 3000
 
 # Command to start the React app
-CMD ["yarn", "start"]
+CMD ["npm","run", "start"]
