@@ -3,11 +3,11 @@ version: '3'
 services:
   backend:
     build:
-      context: ./huddleupapi
+      context: ./huddleupAPI
     ports:
       - "8000:8000"
     volumes:
-      - ./huddleupapi:/code
+      - ./huddleupAPI:/code
   frontend:
     build:
       context: ./huddleupui
