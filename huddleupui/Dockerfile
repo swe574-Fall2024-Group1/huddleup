@@ -3,10 +3,7 @@ FROM node:alpine
 WORKDIR /app
 COPY package.json .
 
-RUN npm install yarn -g
-
-COPY yarn*.lock .
-RUN yarn install
+RUN npm install
 COPY . .
 
 # Expose the React app port
