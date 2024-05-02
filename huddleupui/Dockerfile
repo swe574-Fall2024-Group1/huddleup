@@ -1,13 +1,15 @@
-FROM node:16.14.2
+FROM node:alpine
 
-WORKDIR /usr/src/app
+RUN npm install -g create-react-app
 
-RUN npm install -g react-scripts
+WORKDIR /app
+COPY package*.json ./
 
-RUN chown -Rh node:node /usr/src/app
+RUN npm install
+COPY . .
 
-USER node
-
+# Expose the React app port
 EXPOSE 3000
 
-CMD [ "sh", "-c", "npm install && npm run start" ]
+# Command to start the React app
+CMD ["npm","run", "start"]
