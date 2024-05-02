@@ -17,6 +17,6 @@ services:
       - "3000:3000"
     volumes:
       - ./huddleupui:/app
-      - ./app/node_modules
+      - ./huddleupui/node_modules:/app/node_modules
     depends_on:
       - backend
