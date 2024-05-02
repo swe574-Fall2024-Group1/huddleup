@@ -3,6 +3,7 @@ FROM node:alpine
 WORKDIR /app
 COPY package.json .
 
+RUN npm install -g create-react-app
 RUN npm install
 COPY . .
 
