@@ -4,11 +4,13 @@ FROM node:alpine
 WORKDIR /app
 
 # install app dependencies
-COPY package.json ./
+COPY package.json .
 RUN npm install
 
 # add app
-COPY . ./
+COPY . .
+
+EXPOSE 3000
 
 # start app
-CMD ["tail","-F","Something"]
+CMD ["npm", "start"]
