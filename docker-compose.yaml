@@ -4,6 +4,8 @@ services:
   backend:
     build:
       context: ./huddleupAPI
+    environment:
+      - NODE_OPTIONS=--max-old-space-size=4096
     ports:
       - "8000:8000"
     volumes:
