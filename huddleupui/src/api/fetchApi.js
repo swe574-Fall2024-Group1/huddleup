@@ -13,7 +13,7 @@ const fetchApi = async (url, payload) => {
 			session['x-dub-session-token'] = sessionToken
 		}
 
-		const response = await fetch(BASE_URL + url, {
+		const response = await fetch(BASE_URL + url + '/', {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
 			headers: {
 			  "Content-Type": "application/json",
