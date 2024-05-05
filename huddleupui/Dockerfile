@@ -3,6 +3,6 @@ FROM node:21-alpine
 WORKDIR /app
 COPY . .
 
-RUN yarn install
+RUN npm install
 
-CMD ["yarn",  "start"]
+CMD ["npm", "run",  "start"]
