@@ -7,7 +7,7 @@ const useApi = async (url, payload) => {
 
 
   const fetchApi = async () => {
-	const BASE_URL = 'http://backend:8000'
+	const BASE_URL = 'http://huddleup.space:8000'
 
 	try {
 		const sessionToken = Cookies.get('hudSession')
