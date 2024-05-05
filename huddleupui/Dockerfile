@@ -1,16 +1,8 @@
-FROM node:alpine
+FROM node:21-alpine
 
-# set working directory
 WORKDIR /app
-
-# install app dependencies
-COPY package.json .
-RUN npm install
-
-# add app
 COPY . .
 
-EXPOSE 3000
+RUN yarn install
 
-# start app
-CMD ["npm","run", "start"]
+CMD ["yarn",  "start"]
