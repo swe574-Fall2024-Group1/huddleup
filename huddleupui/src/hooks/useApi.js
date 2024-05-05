@@ -5,10 +5,9 @@ const useApi = async (url, payload) => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
 
-  const BASE_URL = 'http://localhost:8000'
 
   const fetchApi = async () => {
-	const BASE_URL = 'http://localhost:8000'
+	const BASE_URL = 'http://backend:8000'
 
 	try {
 		const sessionToken = Cookies.get('hudSession')
