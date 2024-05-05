@@ -8,6 +8,8 @@ services:
       - NODE_OPTIONS=--max-old-space-size=4096
     ports:
       - "8000:8000"
+    network:
+      - mynetwork
     volumes:
       - ./huddleupAPI:/code
   frontend:
@@ -15,6 +17,8 @@ services:
       context: ./huddleupui
     ports:
       - "3000:3000"
+    network:
+      - mynetwork
     volumes:
       - ./huddleupui:/app
       - ./huddleupui/node_modules:/app/node_modules
