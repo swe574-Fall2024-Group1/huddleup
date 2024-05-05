@@ -7,7 +7,7 @@ const useApi = async (url, payload) => {
 
 
   const fetchApi = async () => {
-	const BASE_URL = 'http://localhost:8000'
+	const BASE_URL = 'http://0.0.0.0:8000'
 
 	try {
 		const sessionToken = Cookies.get('hudSession')

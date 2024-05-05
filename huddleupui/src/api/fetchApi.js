@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 
 
 const fetchApi = async (url, payload) => {
-	const BASE_URL = 'http://localhost:8000'
+	const BASE_URL = 'http://0.0.0.0:8000'
 
 	try {
 		const sessionToken = Cookies.get('hudSession')
