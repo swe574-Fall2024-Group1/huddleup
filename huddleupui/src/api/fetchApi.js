@@ -3,7 +3,6 @@ import Cookies from "js-cookie";
 
 
 const fetchApi = async (url, payload) => {
-	const BASE_URL = 'http://localhost:8000'
 
 	try {
 		const sessionToken = Cookies.get('hudSession')
@@ -13,7 +12,7 @@ const fetchApi = async (url, payload) => {
 			session['x-dub-session-token'] = sessionToken
 		}
 
-		const response = await fetch(BASE_URL + url + '/', {
+		const response = await fetch( url + '/', {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
 			headers: {
 			  "Content-Type": "application/json",

@@ -7,7 +7,7 @@ const useApi = async (url, payload) => {
 
 
   const fetchApi = async () => {
-	const BASE_URL = 'http://localhost:8000'
+
 
 	try {
 		const sessionToken = Cookies.get('hudSession')
@@ -17,7 +17,7 @@ const useApi = async (url, payload) => {
 			session['x-dub-session-token'] = sessionToken
 		}
 
-		const response = await fetch(BASE_URL + url + '/', {
+		const response = await fetch( url + '/', {
 			method: "POST", // *GET, POST, PUT, DELETE, etc.
 			headers: {
 			  "Content-Type": "application/json",
