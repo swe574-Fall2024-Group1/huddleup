@@ -5,6 +5,7 @@ import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOu
 import useApi from '../../hooks/useApi';
 import fetchApi from '../../api/fetchApi';
 import { Spin } from 'antd';
+import useAuth from '../Auth/useAuth';
 
 const { Text } = Typography;
 
@@ -23,13 +24,11 @@ const Post = ({ postData }) => {
 	const [liked, setLiked] = useState(postData.liked); // Track whether the user has liked the post or not
 	const [disliked, setDisliked] = useState(postData.disliked); // Track whether the user has disliked the post or not
 
-	const userInfo = {
-		username: 'sdfsdsf',
-		userpp: 'dfdsf',
-	};
 
 	const template_result = useApi('/api/communities/templates/get-template', { templateId: postData.templateId });
 	const comments_result = useApi('/api/communities/get-post-comments', { postId: postData.id });
+
+	const { userInfo } = useAuth();
 
 	template_result.then((response) => {
 		if (response && !response.loading && loadingTemplate) {
@@ -86,6 +85,7 @@ const Post = ({ postData }) => {
 			case 'QName':
 			case 'anyURI':
 			case 'language':
+				return <Text>{getRowValue(row.title)}</Text>;
 			case 'image':
 				return <img src={getRowValue(row.title)} alt={row.title} style={{ maxWidth: '100%', maxHeight: '100px' }} />;
 
@@ -198,8 +198,8 @@ const Post = ({ postData }) => {
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			<Card.Meta
-				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} src={userInfo.userpp} icon={<UserOutlined />} />}
-				title={<div style={{ color: "#7952CC" }}>{userInfo.username}</div>}
+				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }}  icon={<UserOutlined />} />}
+				title={<div style={{ color: "#7952CC" }}>{postData.username}</div>}
 				description={new Date(postData.createdAt).toLocaleString()}
 			/>
 			<div style={{ marginTop: 20 }}>

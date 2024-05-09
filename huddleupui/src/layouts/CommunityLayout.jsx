@@ -64,7 +64,6 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 
 	owners_result.then((response) => {
 		if (response && !response.loading && ownersLoading) {
-			console.log(response.data.data);
 			setOwners(response.data.data);
 			setOwnersLoading(false);
 		}

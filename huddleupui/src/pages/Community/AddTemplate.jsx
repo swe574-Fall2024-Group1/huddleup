@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Form, Input, Button, Select, Checkbox, Row, Col, message } from 'antd';
+import { Form, Input, Button, Select, Checkbox, Row, Col, message, Card } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import fetchApi from '../../api/fetchApi';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -59,7 +59,7 @@ export default function AddTemplate() {
 			const response = await fetchApi('/api/communities/templates/create-template', payload)
 
 			if (response.success) {
-				message.success('Community created successfully!')
+				message.success('Template created successfully!')
 
 				navigate(`/communities/${communityId}`)
 			}
@@ -70,76 +70,85 @@ export default function AddTemplate() {
 	};
 
 	return (
-		<Form form={form} name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">
-			<Form.Item
-				name="templateName"
-				label="Template Name"
-				rules={[{ required: true, message: 'Missing template name' }]}
-			>
-				<Input placeholder="Enter template name" />
-			</Form.Item>
+		<div>
+			<h2 style={{ color: '#5c5b5b' }}>
+				Creating new template
+			</h2>
 
-			<Form.List
-				name="rows"
-				initialValue={[{ title: '', type: typeOptions[0].key, required: false }]}
-			>
-				{(fields, { add, remove }) => (
-					<>
-						{fields.map(({ key, name, fieldKey }, index) => (
-							<Row key={key} gutter={16} align="middle">
-								<Col span={2}>
-									<div style={{ textAlign: 'center', padding: '6px 0' }}>{index + 1}</div>
-								</Col>
-								<Col span={6}>
-									<Form.Item
-										{...fieldKey}
-										name={[name, 'title']}
-										rules={[{ required: true, message: 'Missing title' }]}
-									>
-										<Input placeholder="Title" />
-									</Form.Item>
-								</Col>
-								<Col span={10}>
-									<Form.Item
-										{...fieldKey}
-										name={[name, 'type']}
-										rules={[{ required: true, message: 'Missing type' }]}
-									>
-										<Select placeholder="Select a type" style={{ width: '100%' }} >
-											{typeOptions.map(option => (
-												<Select.Option key={option.key} value={option.key}>{option.value}</Select.Option>
-											))}
-										</Select>
-									</Form.Item>
-								</Col>
-								<Col span={4}>
-									<Form.Item
-										valuePropName="checked"
-										{...fieldKey}
-										name={[name, 'required']}
-									>
-										<Checkbox>Required</Checkbox>
-									</Form.Item>
-								</Col>
-								<Col span={2}>
-									{fields.length > 1 ? (
-										<Button type="danger" onClick={() => remove(name)} icon={<MinusCircleOutlined />} />
-									) : null}
-								</Col>
-							</Row>
-						))}
-						<Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
-							Add Data Row
+			<Card>
+				<Form form={form} name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">
+					<Form.Item
+						name="templateName"
+						label="Template Name"
+						rules={[{ required: true, message: 'Missing template name' }]}
+					>
+						<Input placeholder="Enter template name" />
+					</Form.Item>
+
+					<Form.List
+						name="rows"
+						initialValue={[{ title: '', type: typeOptions[0].key, required: false }]}
+					>
+						{(fields, { add, remove }) => (
+							<>
+								{fields.map(({ key, name, fieldKey }, index) => (
+									<Row key={key} gutter={16} align="middle">
+										<Col span={2}>
+											<div style={{ textAlign: 'center', padding: '6px 0' }}>{index + 1}</div>
+										</Col>
+										<Col span={6}>
+											<Form.Item
+												{...fieldKey}
+												name={[name, 'title']}
+												rules={[{ required: true, message: 'Missing title' }]}
+											>
+												<Input placeholder="Title" />
+											</Form.Item>
+										</Col>
+										<Col span={10}>
+											<Form.Item
+												{...fieldKey}
+												name={[name, 'type']}
+												rules={[{ required: true, message: 'Missing type' }]}
+											>
+												<Select placeholder="Select a type" style={{ width: '100%' }} >
+													{typeOptions.map(option => (
+														<Select.Option key={option.key} value={option.key}>{option.value}</Select.Option>
+													))}
+												</Select>
+											</Form.Item>
+										</Col>
+										<Col span={4}>
+											<Form.Item
+												valuePropName="checked"
+												{...fieldKey}
+												name={[name, 'required']}
+											>
+												<Checkbox>Required</Checkbox>
+											</Form.Item>
+										</Col>
+										<Col span={2}>
+											{fields.length > 1 ? (
+												<Button type="danger" onClick={() => remove(name)} icon={<MinusCircleOutlined />} />
+											) : null}
+										</Col>
+									</Row>
+								))}
+								<Button type="dashed" onClick={() => add()} block icon={<PlusOutlined />}>
+									Add Data Row
+								</Button>
+							</>
+						)}
+					</Form.List>
+
+					<Form.Item>
+						<Button type="primary" htmlType="submit">
+							Create
 						</Button>
-					</>
-				)}
-			</Form.List>
+					</Form.Item>
+				</Form>
+			</Card>
+		</div>
 
-			<Form.Item>
-				<Button type="primary" htmlType="submit">
-					Create
-				</Button>
-			</Form.Item>
-		</Form>
 	);
 }

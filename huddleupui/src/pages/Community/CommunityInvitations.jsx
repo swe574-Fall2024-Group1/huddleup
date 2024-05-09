@@ -79,7 +79,6 @@ export default function CommunityInvitations() {
 
     invitations_result.then((response) => {
         if (response && !response.loading && invitationsLoading) {
-            console.log(response.data.data);
             setInvitations(response.data.data);
             setInvitationsLoading(false);
         }
