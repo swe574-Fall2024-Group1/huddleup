@@ -485,6 +485,8 @@ def get_community_posts(request):
 				else:
 					dislikedByUser = True
 
+			isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=post.createdBy).exists()
+
 			posts_data.append({
 				'id': post.id,
 				'username': post.createdBy.username,
@@ -494,7 +496,8 @@ def get_community_posts(request):
 				'likeCount': like_count,
 				'dislikeCount': dislike_count,
 				'liked': likedByUser,
-				'disliked': dislikedByUser
+				'disliked': dislikedByUser,
+				'isFollowing': isFollowing
 			})
 
 		response_data = {
@@ -737,20 +740,29 @@ def like_comment(request):
 				return JsonResponse(like_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+
+# Follor if user is not followed yet, unfollow if user is already followed
 @csrf_exempt
 def follow_user(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
 		followee = User.objects.get(username=payload['username'])
-		follow_connection_data = {
-			'follower': request.user.id,
-			'followee': followee.id
-		}
-		follow_connection_serializer = UserFollowConnectionSerializer(data=follow_connection_data)
-		if follow_connection_serializer.is_valid():
-			follow_connection_serializer.save()
-			return JsonResponse({'success': True, 'message': 'User followed successfully'}, status=201)
-		return JsonResponse(follow_connection_serializer.errors, status=400)
+
+		if UserFollowConnection.objects.filter(follower=request.user, followee=followee).exists():
+			UserFollowConnection.objects.filter(follower=request.user, followee=followee).delete()
+			return JsonResponse({'success': True, 'message': 'User unfollowed successfully'}, status=200)
+		else:
+			follow_data = {
+				'follower': request.user.id,
+				'followee': followee.id
+			}
+			follow_serializer = UserFollowConnectionSerializer(data=follow_data)
+
+			if follow_serializer.is_valid():
+				follow_serializer.save()
+				return JsonResponse({'success': True, 'message': 'User followed successfully'}, status=201)
+			else:
+				return JsonResponse(follow_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 

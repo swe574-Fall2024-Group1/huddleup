@@ -17,6 +17,7 @@ const Post = ({ postData }) => {
 	const [showAllComments, setShowAllComments] = useState(false);
 	const [postLikes, setPostLikes] = useState(postData.likeCount);
 	const [postDislikes, setPostDislikes] = useState(postData.dislikeCount);
+	const [isFollowing, setIsFollowing] = useState(postData.isFollowing);
 
 	const [loadingComments, setLoadingComments] = useState(true);
 	const [loadingTemplate, setLoadingTemplate] = useState(true);
@@ -189,17 +190,22 @@ const Post = ({ postData }) => {
 		<Tooltip title="Downvote">
 			<DislikeOutlined
 				onClick={() => handleCommentLike(comment.id, false)}
-				style={{ fontSize: 20, fontSize: 20, color: comment.disliked ? '#7952CC' : 'black' }}
+				style={{ fontSize: 20, color: comment.disliked ? '#7952CC' : 'black' }}
 			/>
 		</Tooltip>,
 		comment.dislikeCount,
 	];
 
+	const handleFollowUser = async (username) => {
+		await fetchApi('/api/communities/follow-user', { username });
+		setIsFollowing(!isFollowing);
+	};
+
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }}  icon={<UserOutlined />} />}
-				title={<div style={{ color: "#7952CC" }}>{postData.username}</div>}
+				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ?  <Button size='small' onClick={() => {handleFollowUser(postData.username)}}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null }</div>}
 				description={new Date(postData.createdAt).toLocaleString()}
 			/>
 			<div style={{ marginTop: 20 }}>
