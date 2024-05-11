@@ -765,6 +765,35 @@ def follow_user(request):
 				return JsonResponse(follow_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Get all users that user is following and followers of the user
+@csrf_exempt
+def get_user_connections(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		followers = UserFollowConnection.objects.filter(followee=request.user)
+		followers_data = []
+		for follower in followers:
+			followers_data.append({
+				'username': follower.follower.username
+			})
+
+		following = UserFollowConnection.objects.filter(follower=request.user)
+		following_data = []
+		for followee in following:
+			following_data.append({
+				'username': followee.followee.username
+			})
+
+		response_data = {
+			'success': True,
+			'data': {
+				'followers': followers_data,
+				'following': following_data
+			}
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 
 
