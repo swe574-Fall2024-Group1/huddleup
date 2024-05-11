@@ -65,6 +65,11 @@ class CommentLike(models.Model):
 	createdAt = models.DateTimeField(auto_now_add=True)
 	direction = models.BooleanField()
 
+class UserFollowConnection(models.Model):
+	follower = models.ForeignKey('authAPI.User', on_delete=models.CASCADE, related_name='follower')
+	followee = models.ForeignKey('authAPI.User', on_delete=models.CASCADE, related_name='followee')
+	createdAt = models.DateTimeField(auto_now_add=True)
+
 
 
 

@@ -3,11 +3,15 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation
-from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection
+from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer
+
+import json
+import datetime
 
 
 # Create your views here.
@@ -138,36 +142,36 @@ def assign_moderator(request):
 
 @csrf_exempt
 def get_community_info(request):
-    if request.method == 'POST':
-        payload = JSONParser().parse(request)
-        community_id = payload.get('communityId')
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community_id = payload.get('communityId')
 
-        try:
-            community = Community.objects.get(id=community_id)
-        except Community.DoesNotExist:
-            return JsonResponse({'success': False, 'error': 'Community not found'}, status=404)
+		try:
+			community = Community.objects.get(id=community_id)
+		except Community.DoesNotExist:
+			return JsonResponse({'success': False, 'error': 'Community not found'}, status=404)
 
-        try:
-            connection = CommunityUserConnection.objects.get(user=request.user.id, community=community_id)
-            member_type = connection.type
-        except ObjectDoesNotExist:
-            connection = None
-            member_type = 'notMember'
+		try:
+			connection = CommunityUserConnection.objects.get(user=request.user.id, community=community_id)
+			member_type = connection.type
+		except ObjectDoesNotExist:
+			connection = None
+			member_type = 'notMember'
 
-        response_data = {
-            'success': True,
-            'data': {
-                'name': community.name,
-                'description': community.description,
-                'isPrivate': community.isPrivate,
-                'mainImage': community.mainImage,
-                'memberType': member_type,
-            }
-        }
+		response_data = {
+			'success': True,
+			'data': {
+				'name': community.name,
+				'description': community.description,
+				'isPrivate': community.isPrivate,
+				'mainImage': community.mainImage,
+				'memberType': member_type,
+			}
+		}
 
-        return JsonResponse(response_data, status=200)
-    else:
-        return JsonResponse({'error': 'Invalid request method'}, status=400)
+		return JsonResponse(response_data, status=200)
+	else:
+		return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 # gets all communites that user is either member or moderator
 @csrf_exempt
@@ -350,9 +354,115 @@ def get_community_posts(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
 		community_id = payload.get('communityId')
+		template_id = payload.get('templateId')
+		advanced_search = payload.get('advancedSearch')
+		search_query = payload.get('searchQuery').lower() if payload.get('searchQuery') else None
 
-		# Filter posts by community and order by createdAt (latest to oldest)
-		posts = Post.objects.filter(community=community_id).order_by('-createdAt')
+
+		if template_id:
+			posts = Post.objects.filter(community=community_id, template=template_id)
+		else:
+			posts = Post.objects.filter(community=community_id)
+
+
+		if advanced_search:
+			template = Template.objects.get(id=template_id)
+			template_rows = template.rows  # Directly access the rows list
+
+			def map_row_values(row_values_list, template_rows):
+				"""Map row values to dictionary based on titles in the template."""
+				try:
+					return {template_rows[i]['title'].lower(): row_values_list[i] for i in range(len(template_rows))}
+				except IndexError as e:
+					print(f"Error mapping row values: {e}")
+					return {}
+
+			def matches_advanced_search(post):
+				row_values = map_row_values(post.rowValues, template_rows)
+
+				for row in template_rows:
+					row_title = row['title'].lower()
+					row_type = row['type']
+
+					if row_type in ['string', 'normalizedString', 'token']:
+						value = advanced_search.get(row_title)
+						if value and value.lower() not in row_values.get(row_title, '').lower():
+							return False
+					elif row_type in ['integer', 'int', 'byte', 'short', 'long', 'positiveInteger', 'negativeInteger',
+									  'nonPositiveInteger', 'nonNegativeInteger', 'unsignedInt', 'unsignedByte',
+									  'unsignedShort', 'unsignedLong']:
+						min_value = advanced_search.get(f"{row_title}_min")
+						max_value = advanced_search.get(f"{row_title}_max")
+						actual_value = row_values.get(row_title)
+						if min_value is not None and (actual_value is None or int(actual_value) < int(min_value)):
+							return False
+						if max_value is not None and (actual_value is None or int(actual_value) > int(max_value)):
+							return False
+					elif row_type in ['float', 'double']:
+						min_value = advanced_search.get(f"{row_title}_min")
+						max_value = advanced_search.get(f"{row_title}_max")
+						actual_value = row_values.get(row_title)
+						if min_value is not None and (actual_value is None or float(actual_value) < float(min_value)):
+							return False
+						if max_value is not None and (actual_value is None or float(actual_value) > float(max_value)):
+							return False
+					elif row_type == 'Boolean':
+						value = advanced_search.get(row_title)
+						if value is not None and row_values.get(row_title) != str(value).lower() in ('true', '1'):
+							return False
+					elif row_type == 'date':
+						min_value = advanced_search.get(f"{row_title}_min")
+						max_value = advanced_search.get(f"{row_title}_max")
+						actual_value = row_values.get(row_title)
+						if actual_value:
+							actual_date = datetime.datetime.strptime(actual_value, "%Y-%m-%d").date()
+							if min_value and actual_date < datetime.datetime.strptime(min_value, "%Y-%m-%d").date():
+								return False
+							if max_value and actual_date > datetime.datetime.strptime(max_value, "%Y-%m-%d").date():
+								return False
+						else:
+							return False
+					elif row_type == 'dateTime':
+						min_value = advanced_search.get(f"{row_title}_min")
+						max_value = advanced_search.get(f"{row_title}_max")
+						actual_value = row_values.get(row_title)
+						if actual_value:
+							actual_datetime = datetime.datetime.strptime(actual_value, "%Y-%m-%dT%H:%M:%S")
+							if min_value and actual_datetime < datetime.datetime.strptime(min_value, "%Y-%m-%dT%H:%M:%S"):
+								return False
+							if max_value and actual_datetime > datetime.datetime.strptime(max_value, "%Y-%m-%dT%H:%M:%S"):
+								return False
+						else:
+							return False
+					elif row_type == 'gYear':
+						min_value = advanced_search.get(f"{row_title}_min")
+						max_value = advanced_search.get(f"{row_title}_max")
+						actual_value = row_values.get(row_title)
+						if actual_value:
+							actual_year = int(actual_value)
+							if min_value and actual_year < int(min_value):
+								return False
+							if max_value and actual_year > int(max_value):
+								return False
+						else:
+							return False
+
+				return True
+
+			posts = filter(matches_advanced_search, posts)
+
+		if search_query:
+			def matches_search_query(post):
+				# Check if search_query is in the template name
+				if search_query in post.template.templateName.lower():
+					return True
+				# Check if search_query is in any of the row values
+				for value in post.rowValues:
+					if search_query in str(value).lower():
+						return True
+				return False
+
+			posts = filter(matches_search_query, posts)
 
 		posts_data = []
 		for post in posts:
@@ -394,6 +504,7 @@ def get_community_posts(request):
 		return JsonResponse(response_data, status=200)
 
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 
 # Template related views
@@ -624,6 +735,22 @@ def like_comment(request):
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+@csrf_exempt
+def follow_user(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		followee = User.objects.get(username=payload['username'])
+		follow_connection_data = {
+			'follower': request.user.id,
+			'followee': followee.id
+		}
+		follow_connection_serializer = UserFollowConnectionSerializer(data=follow_connection_data)
+		if follow_connection_serializer.is_valid():
+			follow_connection_serializer.save()
+			return JsonResponse({'success': True, 'message': 'User followed successfully'}, status=201)
+		return JsonResponse(follow_connection_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 

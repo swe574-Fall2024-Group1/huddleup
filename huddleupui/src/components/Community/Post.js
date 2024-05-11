@@ -224,7 +224,7 @@ const Post = ({ postData }) => {
 				</Tooltip>
 				<span style={{ marginRight: 20 }}>	{postLikes}</span>
 				<Tooltip title="Downvote">
-					<DislikeOutlined onClick={() => handlePostLike(false)} style={{ marginRight: 5, fontSize: 20 }} />
+					<DislikeOutlined onClick={() => handlePostLike(false)} style={{ marginRight: 5, fontSize: 20 , color: disliked ? '#7952CC' : 'black'}} />
 				</Tooltip>
 				{postDislikes}
 			</div>
