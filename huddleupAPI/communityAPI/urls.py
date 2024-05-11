@@ -24,5 +24,6 @@ urlpatterns = [
 	url(r'get-post-comments', views.get_post_comments),
 	url(r'like-post', views.like_post),
 	url(r'like-comment', views.like_comment),
-    url(r'follow-user', views.follow_user)
+    url(r'follow-user', views.follow_user),
+    url(r'get-user-connections', views.get_user_connections),
 ]

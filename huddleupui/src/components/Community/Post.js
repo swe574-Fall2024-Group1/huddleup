@@ -197,8 +197,8 @@ const Post = ({ postData }) => {
 	];
 
 	const handleFollowUser = async (username) => {
-		await fetchApi('/api/communities/follow-user', { username });
 		setIsFollowing(!isFollowing);
+		await fetchApi('/api/communities/follow-user', { username });
 	};
 
 	return (
