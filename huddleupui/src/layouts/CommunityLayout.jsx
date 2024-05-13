@@ -11,9 +11,10 @@ import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
 
-export default function CommunityLayout({ children, allowedUserTypes }) {
+export default function CommunityLayout({ children, allowedUserTypes, canNotMembersSee }) {
 	const { communityInfo } = useCommunity();
 	const [members, setMembers] = useState([]);
+	const [bannedMembers, setBannedMembers] = useState([]);
 	const [membersLoading, setMembersLoading] = useState(true);
 	const [moderators, setModerators] = useState([]);
 	const [moderatorsLoading, setModeratorsLoading] = useState(true);
@@ -23,6 +24,8 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 	const [showMoreMembersModal, setShowMoreMembersModal] = useState(false);
 	const [showMoreModeratorsModal, setShowMoreModeratorsModal] = useState(false);
 	const [showMoreOwnersModal, setShowMoreOwnersModal] = useState(false);
+	const [showUserSettingsModal, setShowUserSettingsModal] = useState(false);
+	const [showModeratorSettingsModal, setShowModeratorSettingsModal] = useState(false);
 
 	const navigate = useNavigate();
 
@@ -69,6 +72,19 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 		}
 	});
 
+
+	const handleBanUser = async (username, status) => {
+		if (status === 'ban') {
+			setBannedMembers([...bannedMembers, { username }])
+			setMembers(members.filter(member => member.username !== username));
+		} else if (status === 'unban') {
+			setBannedMembers(bannedMembers.filter(member => member.username !== username));
+			setMembers([...members, { username }]);
+		}
+		await fetchApi('/api/communities/ban-user', { communityId, username });
+	};
+
+
 	const handleShowMoreMembers = () => {
 		setShowMoreMembersModal(true);
 	};
@@ -81,17 +97,44 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 		setShowMoreOwnersModal(true);
 	};
 
+	const handleShowUserSettings = async () => {
+		setShowUserSettingsModal(true);
+
+		const response = await fetchApi('/api/communities/get-community-banned', { communityId });
+		console.log(response)
+
+		if (response.success) {
+			setBannedMembers(response.data);
+		}
+
+	};
+
+	const handleShowModeratorSettings = async () => {
+		setShowModeratorSettingsModal(true);
+	};
+
 	const closeModal = () => {
 		setShowMoreMembersModal(false);
 		setShowMoreModeratorsModal(false);
 		setShowMoreOwnersModal(false);
+		setShowUserSettingsModal(false);
+		setShowModeratorSettingsModal(false);
 	};
 
-	if (communityInfo && !communityInfo.isPrivate) {
+	const handleMakeModerator = async (username, status) => {
+		if(status === 'remove') {
+			setModerators(moderators.filter(moderator => moderator.username !== username));
+			setMembers([...members, { username }]);
+		} else {
+			setModerators([...moderators, { username }]);
+			setMembers(members.filter(member => member.username !== username));
+		}
+		await fetchApi('/api/communities/assign-moderator', { communityId, username });
+	};
+
+	if (communityInfo && canNotMembersSee && !communityInfo.isPrivate) {
 		allowedUserTypes.push('notMember');
 	}
-
-
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Navbar />
@@ -131,11 +174,12 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 									{communityInfo && communityInfo.memberType && communityInfo.memberType !== 'notMember' && (
 										<p>{`You are ${communityInfo.memberType} of this community`}</p>
 									)}
-									{communityInfo && !communityInfo.isPrivate && (
+									{communityInfo && !communityInfo.isPrivate && communityInfo.memberType !== 'banned' && (
 										<Button
 											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
 											type="primary"
 											onClick={handleMembershipChange}
+											disabled={communityInfo.memberType === 'banned'}
 										>
 											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
 										</Button>
@@ -183,6 +227,9 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 				<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
 					{(!communityInfo.isPrivate || communityInfo.memberType !== 'notMember') ? (
 						<div>
+							<Card title="Description" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+								<span>{communityInfo ? communityInfo.description : ''}</span>
+							</Card>
 							<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 								{members.slice(0, 10).map(member => (
 									<Row key={member.username}>
@@ -201,6 +248,12 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 										<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
 									</Row>
 								)}
+								{communityInfo && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+									<Row justify="center" style={{ marginTop: 10 }}>
+										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={handleShowUserSettings} >User Settings</Button>
+									</Row>
+								)
+								}
 							</Card>
 							<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 								{moderators.slice(0, 10).map(moderator => (
@@ -218,6 +271,11 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 								{moderators.length > 10 && (
 									<Row justify="center">
 										<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreModerators}>Show More Moderators</span>
+									</Row>
+								)}
+								{communityInfo && (communityInfo.memberType === 'owner') && (
+									<Row justify="center" style={{ marginTop: 10 }}>
+										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={handleShowModeratorSettings} >Moderator Settings</Button>
 									</Row>
 								)}
 							</Card>
@@ -288,6 +346,51 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 				</div>
 			</Modal>
 			<Modal
+				title="User Settings"
+				visible={showUserSettingsModal}
+				onCancel={closeModal}
+				footer={null}
+			>
+				<div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+					{members.map(member => (
+						<Row key={member.username}>
+							<Col span={8}>
+								<Row justify="center">
+									<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
+								</Row>
+								<Row justify="center">
+									<span>{member.username}</span>
+								</Row>
+							</Col>
+							<Col span={6}>
+								<Button onClick={() => { handleBanUser(member.username, 'ban') }}> Ban </Button>
+								{communityInfo.isPrivate ? <Button> Kick </Button> : ''}
+							</Col>
+							<Col span={6}>
+								{communityInfo.memberType === 'owner' ? <Button onClick={() => { handleMakeModerator(member.username, 'assign') }}> Make Moderator </Button> : ''}
+							</Col>
+						</Row>
+					))}
+					<h4><b>Banned Users</b></h4>
+					{bannedMembers && bannedMembers.length > 0 && bannedMembers.map(member => (
+						<Row key={member.username}>
+							<Col span={12}>
+								<Row justify="center">
+									<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
+								</Row>
+								<Row justify="center">
+									<span>{member.username}</span>
+								</Row>
+							</Col>
+							<Col span={12}>
+								<Button onClick={() => { handleBanUser(member.username, 'unban') }}> Unban </Button>
+							</Col>
+
+						</Row>
+					))}
+				</div>
+			</Modal>
+			<Modal
 				title="All Moderators"
 				visible={showMoreModeratorsModal}
 				onCancel={closeModal}
@@ -303,6 +406,30 @@ export default function CommunityLayout({ children, allowedUserTypes }) {
 								<Row justify="center">
 									<span>{moderator.username}</span>
 								</Row>
+							</Col>
+						</Row>
+					))}
+				</div>
+			</Modal>
+			<Modal
+				title="Moderator Settings"
+				visible={showModeratorSettingsModal}
+				onCancel={closeModal}
+				footer={null}
+			>
+				<div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+					{moderators.map(moderator => (
+						<Row key={moderator.username}>
+							<Col span={12}>
+								<Row justify="center">
+									<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
+								</Row>
+								<Row justify="center">
+									<span>{moderator.username}</span>
+								</Row>
+							</Col>
+							<Col span={12}>
+								<Button onClick={() => { handleMakeModerator(moderator.username, 'remove') }}> Remove Moderator </Button>
 							</Col>
 						</Row>
 					))}

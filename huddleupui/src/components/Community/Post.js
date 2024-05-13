@@ -54,6 +54,9 @@ const Post = ({ postData }) => {
 
 	// Helper function to render rows based on their type
 	const renderRow = (row) => {
+		if (!getRowValue(row.title)) {
+			return null
+		}
 		switch (row.type) {
 			case 'string':
 			case 'normalizedString':
@@ -204,8 +207,8 @@ const Post = ({ postData }) => {
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			<Card.Meta
-				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }}  icon={<UserOutlined />} />}
-				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ?  <Button size='small' onClick={() => {handleFollowUser(postData.username)}}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null }</div>}
+				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
+				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null}</div>}
 				description={new Date(postData.createdAt).toLocaleString()}
 			/>
 			<div style={{ marginTop: 20 }}>
@@ -214,13 +217,14 @@ const Post = ({ postData }) => {
 			<Divider />
 			<div >
 				{templateRows && templateRows.map((row, index) => (
-					<div key={index} style={{ marginBottom: '8px' }}>
-						<Space direction="vertical" style={{ marginBottom: 5 }}>
-							<Text strong style={{ color: "#240763", marginTop: 5 }}>{row.title}</Text>
-							{renderRow(row)}
-						</Space>
-						{index !== templateRows.length - 1 && <Divider style={{ margin: '8px 0' }} />}
-					</div>
+					getRowValue(row.title) ? (
+						<div key={index} style={{ marginBottom: '8px' }}>
+							<Space direction="vertical" style={{ marginBottom: 5 }}>
+								<Text strong style={{ color: "#240763", marginTop: 5 }}>{row.title}</Text>
+								{renderRow(row)}
+							</Space>
+							{index !== templateRows.length - 1 && <Divider style={{ margin: '8px 0' }} />}
+						</div>) : null
 				))}
 			</div>
 			<Divider />
@@ -230,7 +234,7 @@ const Post = ({ postData }) => {
 				</Tooltip>
 				<span style={{ marginRight: 20 }}>	{postLikes}</span>
 				<Tooltip title="Downvote">
-					<DislikeOutlined onClick={() => handlePostLike(false)} style={{ marginRight: 5, fontSize: 20 , color: disliked ? '#7952CC' : 'black'}} />
+					<DislikeOutlined onClick={() => handlePostLike(false)} style={{ marginRight: 5, fontSize: 20, color: disliked ? '#7952CC' : 'black' }} />
 				</Tooltip>
 				{postDislikes}
 			</div>
@@ -260,7 +264,7 @@ const Post = ({ postData }) => {
 									hour: '2-digit',
 									minute: '2-digit',
 								})}
-								style={{borderTop: "1px solid #f0f0f0" }}
+								style={{ borderTop: "1px solid #f0f0f0" }}
 							/>
 						</div>
 					))

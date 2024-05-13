@@ -1,5 +1,5 @@
 /* global BigInt */
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
 import { useParams } from 'react-router-dom';

@@ -73,7 +73,7 @@ function App() {
 						<Route path="/communities/:communityId" element={
 							<ProtectedRoute>
 								<CommunityProvider>
-									<CommunityLayout allowedUserTypes={['owner', 'moderator', 'member']}>
+									<CommunityLayout allowedUserTypes={['owner', 'moderator', 'member']} canNotMembersSee={true}>
 										<CommunityFeed />
 									</CommunityLayout>
 								</CommunityProvider>

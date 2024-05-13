@@ -86,6 +86,26 @@ def get_community_members(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+#Get users that banned from community
+@csrf_exempt
+def get_community_banned(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		connections = CommunityUserConnection.objects.filter(community=community.id, type='banned')
+		banned_data = []
+		for connection in connections:
+			banned_data.append({
+				'username': connection.user.username,
+				'type': connection.type
+			})
+		response_data = {
+			'success': True,
+			'data': banned_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 # Get users that has connection with type 'moderator' of the comminty
 @csrf_exempt
 def get_community_moderators(request):
@@ -126,7 +146,7 @@ def get_community_owners(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-
+# Assign a moderator if current user is owner of the community, and unassign if user is already a moderator
 @csrf_exempt
 def assign_moderator(request):
 	if request.method == 'POST':
@@ -134,9 +154,17 @@ def assign_moderator(request):
 		community = Community.objects.get(id=payload['communityId'])
 		user = User.objects.get(username=payload['username'])
 		connection = CommunityUserConnection.objects.get(user=user.id, community=community.id)
-		connection.type = 'moderator'
+
+		if connection.type == 'owner':
+			return JsonResponse({'error': 'Owners cannot be assigned as moderators'}, status=403)
+
+		if connection.type == 'moderator':
+			connection.type = 'member'
+		else:
+			connection.type = 'moderator'
+
 		connection.save()
-		return JsonResponse({'success': True, 'message': 'Moderator assigned successfully'}, status=200)
+		return JsonResponse({'success': True, 'message': 'Moderator assigned/unassigned successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
@@ -793,6 +821,28 @@ def get_user_connections(request):
 		}
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Ban user from community if current user is owner or moderator of the community (moderators can not ban owners). If user banned already, unban user
+@csrf_exempt
+def ban_user(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		user = User.objects.get(username=payload['username'])
+		connection = CommunityUserConnection.objects.get(user=user.id, community=community.id)
+
+		if connection.type == 'owner':
+			return JsonResponse({'error': 'Owners cannot be banned from the community'}, status=403)
+
+		if connection.type == 'banned':
+			connection.type = 'member'
+		else:
+			connection.type = 'banned'
+
+		connection.save()
+		return JsonResponse({'success': True, 'message': 'User banned/unbanned successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 
 

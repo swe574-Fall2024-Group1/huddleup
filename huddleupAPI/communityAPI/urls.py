@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'leave-community', views.leave_community),
 	url(r'create-invitation', views.create_invitation),
 	url(r'get-community-members', views.get_community_members),
+    url(r'get-community-banned', views.get_community_banned),
     url(r'get-community-moderators', views.get_community_moderators),
     url(r'get-community-owners', views.get_community_owners),
     url(r'assign-moderator', views.assign_moderator),
@@ -26,4 +27,5 @@ urlpatterns = [
 	url(r'like-comment', views.like_comment),
     url(r'follow-user', views.follow_user),
     url(r'get-user-connections', views.get_user_connections),
+    url(r'ban-user', views.ban_user),
 ]

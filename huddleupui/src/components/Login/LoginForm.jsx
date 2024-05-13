@@ -11,7 +11,7 @@ const Login = () => {
 
 
 	const onFinishFailed = (errorInfo) => {
-		alert("Bir sorun oluştu sonra tekrar deneyiniz")
+		alert("An error occurred. Please check the form and try again.")
 	};
 
 

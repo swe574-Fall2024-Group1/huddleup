@@ -11,7 +11,17 @@ from authAPI.sessionManager import SessionManager
 @csrf_exempt
 def register(request):
 	if request.method == 'POST':
+
 		user_data = JSONParser().parse(request)
+		username = user_data.get('username', None)
+		password = user_data.get('password', None)
+
+		if not username or not password:
+			return JsonResponse({'error': 'Username and password are required'}, status=400)
+
+		if User.objects.filter(username=username).exists():
+			return JsonResponse({'error': 'Username already exists'}, status=400)
+
 		user_serializer = UserSerializer(data=user_data)
 		if user_serializer.is_valid():
 			user_serializer.save()
@@ -20,7 +30,8 @@ def register(request):
 				'data': user_serializer.data
 			}
 			return JsonResponse(response_data, status=201)
-		return JsonResponse(user_serializer.errors, status=400)
+
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
 @csrf_exempt
