@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Form, Input, Button, Select, Checkbox, Row, Col, message, Card } from 'antd';
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import fetchApi from '../../api/fetchApi';
@@ -71,9 +72,18 @@ export default function AddTemplate() {
 
 	return (
 		<div>
-			<h2 style={{ color: '#5c5b5b' }}>
-				Creating new template
-			</h2>
+
+
+			<div style={{ display: 'flex' }}>
+				<h2 style={{ color: '#5c5b5b' }}>
+					Creating new template
+				</h2>
+				<Link to={`/communities/${communityId}`} style={{ marginLeft: 'auto', marginTop: 10 }}>
+					<Button  >
+						Back to Community
+					</Button>
+				</Link>
+			</div>
 
 			<Card>
 				<Form form={form} name="dynamic_form_nest_item" onFinish={onFinish} autoComplete="off">

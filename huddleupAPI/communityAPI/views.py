@@ -492,6 +492,8 @@ def get_community_posts(request):
 
 			posts = filter(matches_search_query, posts)
 
+		posts = posts.order_by('-createdAt')
+
 		posts_data = []
 		for post in posts:
 			likes = PostLike.objects.filter(post=post.id)
@@ -841,6 +843,38 @@ def ban_user(request):
 
 		connection.save()
 		return JsonResponse({'success': True, 'message': 'User banned/unbanned successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+# Delete post if current user is owner of the post or owner or moderator of the community
+@csrf_exempt
+def delete_post(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		post = Post.objects.get(id=payload['postId'])
+		community = Community.objects.get(id=post.community.id)
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
+			post.delete()
+			return JsonResponse({'success': True, 'message': 'Post deleted successfully'}, status=200)
+		return JsonResponse({'error': 'User is not authorized to delete the post'}, status=403)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Delete comment if current user is owner of the post or owner or moderator of the community
+@csrf_exempt
+def delete_comment(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		comment = Comment.objects.get(id=payload['commentId'])
+		post = Post.objects.get(id=comment.post.id)
+		community = Community.objects.get(id=post.community.id)
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if user_connection.type == 'owner' or user_connection.type == 'moderator' or comment.createdBy == request.user:
+			comment.delete()
+			return JsonResponse({'success': True, 'message': 'Comment deleted successfully'}, status=200)
+		return JsonResponse({'error': 'User is not authorized to delete the comment'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 

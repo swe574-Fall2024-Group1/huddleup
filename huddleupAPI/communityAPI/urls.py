@@ -28,4 +28,6 @@ urlpatterns = [
     url(r'follow-user', views.follow_user),
     url(r'get-user-connections', views.get_user_connections),
     url(r'ban-user', views.ban_user),
+    url(r'delete-post', views.delete_post),
+    url(r'delete-comment', views.delete_comment),
 ]

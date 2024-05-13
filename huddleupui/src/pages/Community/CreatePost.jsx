@@ -1,7 +1,7 @@
 /* global BigInt */
 import React, { useState } from 'react';
 import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card } from 'antd';
-
+import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
 import useApi from '../../hooks/useApi';
@@ -1053,9 +1053,18 @@ export default function CreatePost() {
 
 	return (
 		<div>
-			<h2 style={{ color: '#5c5b5b', marginLeft: 5 }}>
-				Adding new post
-			</h2>
+
+			<div style={{ display: 'flex' }}>
+				<h2 style={{ color: '#5c5b5b', marginLeft: 5 }}>
+					Adding new post
+				</h2>
+				<Link to={`/communities/${communityId}`} style={{ marginLeft: 'auto', marginTop: 10 }}>
+					<Button  >
+						Back to Community
+					</Button>
+				</Link>
+			</div>
+
 			<Card>
 
 				<Steps current={currentStep} >
@@ -1089,7 +1098,7 @@ export default function CreatePost() {
 					{currentStep === 1 && selectedTemplate && (
 						<Form form={form} layout="vertical" onFinish={onFormSubmit} >
 							{renderFormrows(selectedTemplate.rows)}
-							<Form.Item style={{float:'right'}}>
+							<Form.Item style={{ float: 'right' }}>
 
 								<Button
 									type="primary"
@@ -1100,7 +1109,7 @@ export default function CreatePost() {
 									Previous
 								</Button>
 
-								<Button style={{ backgroundColor: '#7952CC', marginLeft:5, fontWeight: 700}} size="large"
+								<Button style={{ backgroundColor: '#7952CC', marginLeft: 5, fontWeight: 700 }} size="large"
 									type="primary" htmlType="submit" disabled={templates.length === 0}>
 									Submit
 								</Button>

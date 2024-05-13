@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex } from 'antd';
+import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import useApi from '../../hooks/useApi';
 import fetchApi from '../../api/fetchApi';
 import { Spin } from 'antd';
 import useAuth from '../Auth/useAuth';
+import useCommunity from '../../components/Community/useCommunity';
+
 
 const { Text } = Typography;
 
 const Post = ({ postData }) => {
+	const { communityInfo } = useCommunity();
+
 	const [templateRows, setTemplateRows] = useState([]);
 	const [templateName, setTemplateName] = useState([]);
 	const [comments, setComments] = useState([]);
@@ -24,6 +28,8 @@ const Post = ({ postData }) => {
 
 	const [liked, setLiked] = useState(postData.liked); // Track whether the user has liked the post or not
 	const [disliked, setDisliked] = useState(postData.disliked); // Track whether the user has disliked the post or not
+
+	const [showDeleteModal, setShowDeleteModal] = useState(false); // State to control delete confirmation modal
 
 
 	const template_result = useApi('/api/communities/templates/get-template', { templateId: postData.templateId });
@@ -197,6 +203,7 @@ const Post = ({ postData }) => {
 			/>
 		</Tooltip>,
 		comment.dislikeCount,
+		(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? <Button style={{marginLeft: 10}} size='small' onClick={() => {handleDeleteComment(comment.id)}}>Delete Comment</Button> : ''
 	];
 
 	const handleFollowUser = async (username) => {
@@ -204,8 +211,41 @@ const Post = ({ postData }) => {
 		await fetchApi('/api/communities/follow-user', { username });
 	};
 
+	const handleDeletePost = async () => {
+		setShowDeleteModal(false);
+		await fetchApi('/api/communities/delete-post', { postId: postData.id });
+		message.success('Post deleted successfully');
+		window.location.reload();
+	};
+
+	const handleDeleteComment = async (commentId) => {
+		setComments(comments.filter((comment) => comment.id !== commentId));
+		message.success('Comment deleted successfully');
+		await fetchApi('/api/communities/delete-comment', { commentId });
+	}
+
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
+
+			{(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
+				<Button
+					type="danger"
+					style={{ position: 'absolute', right: 10, top: 10, color: '#7952CC' }}
+					onClick={() => setShowDeleteModal(true)}
+				>
+					Delete Post
+				</Button>
+			) : null}
+			<Modal
+				title="Confirm Delete"
+				visible={showDeleteModal}
+				onOk={handleDeletePost}
+				onCancel={() => setShowDeleteModal(false)}
+				okText="Delete"
+				cancelText="Cancel"
+			>
+				<p>Are you sure you want to delete this post?</p>
+			</Modal>
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
 				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null}</div>}
