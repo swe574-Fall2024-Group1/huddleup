@@ -124,6 +124,10 @@ const Post = ({ postData }) => {
 	};
 
 	const handlePostLike = async (direction) => {
+		if (communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned') {
+			message.error('You must be a member of the community to like or dislike comments.');
+			return;
+		}
 		// If already liked, remove the like
 		if (direction) {
 			if (liked) {
@@ -155,6 +159,11 @@ const Post = ({ postData }) => {
 	};
 
 	const handleCommentLike = async (commentId, direction) => {
+
+		if (communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned') {
+			message.error('You must be a member of the community to like or dislike comments.');
+			return;
+		}
 		const comment = comments.find((comment) => comment.id === commentId);
 		if (direction) {
 			if (comment.liked) {
@@ -203,7 +212,7 @@ const Post = ({ postData }) => {
 			/>
 		</Tooltip>,
 		comment.dislikeCount,
-		(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? <Button style={{marginLeft: 10}} size='small' onClick={() => {handleDeleteComment(comment.id)}}>Delete Comment</Button> : ''
+		(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? <Button style={{ marginLeft: 10 }} size='small' onClick={() => { handleDeleteComment(comment.id) }}>Delete Comment</Button> : ''
 	];
 
 	const handleFollowUser = async (username) => {
@@ -236,6 +245,16 @@ const Post = ({ postData }) => {
 					Delete Post
 				</Button>
 			) : null}
+
+			{userInfo.username === postData.username ? (
+				<Button
+					style={{ position: 'absolute', right: 10, top: 10, color: '#7952CC' }}
+					onClick={() => window.location.href = `/communities/${communityInfo.id}/edit-post/${postData.id}`}
+				>
+					Edit Post
+				</Button>
+			) : null}
+
 			<Modal
 				title="Confirm Delete"
 				visible={showDeleteModal}
@@ -285,8 +304,9 @@ const Post = ({ postData }) => {
 						onChange={(e) => setNewComment(e.target.value)}
 						placeholder="Write a comment..."
 						allowClear
+						disabled={communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned'}
 					/>
-					<Button icon={<CommentOutlined />} onClick={handleAddComment}>Add Comment</Button>
+					<Button icon={<CommentOutlined />} onClick={handleAddComment} disabled={communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned'}>Add Comment</Button>
 				</Flex>
 
 				{!loadingComments ? (

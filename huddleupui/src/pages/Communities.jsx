@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, Button, Flex } from 'antd';
-import { EyeOutlined, LockOutlined, UserOutlined, CrownOutlined } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, CrownOutlined } from '@ant-design/icons';
 import useApi from '../hooks/useApi';
 
 const { Meta } = Card;
 
 const Communities = () => {
-    const { communityId } = useParams();
     const [communities, setCommunities] = useState([]);
     const [communitiesLoading, setCommunitiesLoading] = useState(true);
 
@@ -63,7 +62,7 @@ const Communities = () => {
                             {community.isPrivate ? <div> <LockOutlined style={{ marginRight: 5 }} />Private Community  </div> : <div> <UserOutlined style={{ marginRight: 5 }} />Public Community </div>}
                             {community.type === 'owner' && <CrownOutlined style={{ marginRight: 5 }} />}
                             {community.type === 'moderator' && <UserOutlined style={{ marginRight: 5 }} />}
-                            {community.type === 'member' && <span style={{ marginRight: 5 }}>Member</span>}
+                            {community.type === 'member' && <UserOutlined style={{ marginRight: 5 }} />}
                             <span>{community.type}</span>
                         </div>
                     </Card>

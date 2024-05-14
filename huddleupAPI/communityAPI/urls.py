@@ -30,4 +30,6 @@ urlpatterns = [
     url(r'ban-user', views.ban_user),
     url(r'delete-post', views.delete_post),
     url(r'delete-comment', views.delete_comment),
+    url(r'get-post-details', views.get_post_details),
+    url(r'edit-post', views.edit_post),
 ]

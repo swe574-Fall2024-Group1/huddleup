@@ -18,6 +18,7 @@ import { Navigate } from "react-router-dom";
 import Communities from "./pages/Communities";
 import Connections from "./pages/Connections";
 import CommunitySettings from "./pages/Community/CommunitySettings";
+import EditPost from "./pages/Community/EditPost";
 
 function App() {
 
@@ -105,6 +106,16 @@ function App() {
 								<CommunityProvider>
 									<CommunityLayout allowedUserTypes={['owner', 'moderator', 'member']}>
 										<CreatePost />
+									</CommunityLayout>
+								</CommunityProvider>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/communities/:communityId/edit-post/:postId" element={
+							<ProtectedRoute>
+								<CommunityProvider>
+									<CommunityLayout allowedUserTypes={['owner', 'moderator', 'member']}>
+										<EditPost />
 									</CommunityLayout>
 								</CommunityProvider>
 							</ProtectedRoute>

@@ -1,17 +1,14 @@
 import React from 'react';
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import fetchApi from '../../api/fetchApi';
-import { useNavigate } from 'react-router-dom';
 import useAuth from '../Auth/useAuth';
 
 
 const Login = () => {
-	const navigate = useNavigate()
 	const { onLogin } = useAuth()
 
-
 	const onFinishFailed = (errorInfo) => {
-		alert("An error occurred. Please check the form and try again.")
+		message.error("An error occurred. Please check the form and try again.")
 	};
 
 
@@ -21,8 +18,8 @@ const Login = () => {
 		if (response && response.success) {
 			onLogin(response.data)
 			// navigate('/feed');
-		}else {
-			alert('Bir hata oluştu')
+		} else {
+			message.error("An error occurred. Please check the form and try again.")
 		}
 	};
 
@@ -37,11 +34,12 @@ const Login = () => {
 			onFinishFailed={onFinishFailed}
 			autoComplete="off"
 		>
+			{/* Check no whitespace in username */}
 			<Form.Item
 				label="Username"
 				name="username"
 				rules={[
-					{ required: true, message: 'Please enter your username!' },
+					{ required: true, message: 'Please enter your username!' }
 				]}
 			>
 				<Input />
@@ -58,7 +56,7 @@ const Login = () => {
 			</Form.Item>
 
 
-			<Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{textAlign: 'center'}}>
+			<Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ textAlign: 'center' }}>
 				<Button size='large' style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} htmlType="submit">
 					Login
 				</Button>

@@ -16,6 +16,9 @@ def register(request):
 		username = user_data.get('username', None)
 		password = user_data.get('password', None)
 
+		# Make username lowercase
+		user_data['username'] = username.lower()
+
 		if not username or not password:
 			return JsonResponse({'error': 'Username and password are required'}, status=400)
 
@@ -41,6 +44,8 @@ def login(request):
 		user_data = JSONParser().parse(request)
 		username = user_data.get('username', None)
 		password = user_data.get('password', None)
+
+		user_data['username'] = username.lower()
 
 		try:
 			user = User.objects.get(username=username)

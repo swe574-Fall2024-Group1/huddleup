@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Form, Input} from 'antd';
+import { Button, Form, Input, message } from 'antd';
 import fetchApi from '../../api/fetchApi';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ const Register = () => {
 	const navigate = useNavigate()
 
 	const onFinishFailed = (errorInfo) => {
-		alert("An error occurred. Please check the form and try again.")
+		message.error("An error occurred. Please check the form and try again.")
 	};
 
 
@@ -34,7 +34,11 @@ const Register = () => {
 			<Form.Item
 				label="Username"
 				name="username"
-				rules={[{ required: true, message: 'Please eneter username!' }]}
+				rules={[{ required: true, message: 'Please enter username!' },
+				{ min: 3, message: 'Min 3 characters.' },
+				{ max: 20, message: 'Max 20 characters.' },
+				{ pattern: /^\S*$/, message: 'No whitespace allowed.' }
+				]}
 			>
 				<Input />
 			</Form.Item>
@@ -49,7 +53,7 @@ const Register = () => {
 				<Input.Password />
 			</Form.Item>
 
-			<Form.Item wrapperCol={{ offset: 8, span: 16 }}  style={{textAlign: 'center'}}>
+			<Form.Item wrapperCol={{ offset: 8, span: 16 }} style={{ textAlign: 'center' }}>
 				<Button size='large' style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} htmlType="submit">
 					Register
 				</Button>

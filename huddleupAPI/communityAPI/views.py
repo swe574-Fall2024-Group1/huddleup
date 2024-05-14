@@ -193,6 +193,7 @@ def get_community_info(request):
 				'description': community.description,
 				'isPrivate': community.isPrivate,
 				'mainImage': community.mainImage,
+				'id': community.id,
 				'memberType': member_type,
 			}
 		}
@@ -201,11 +202,12 @@ def get_community_info(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-# gets all communites that user is either member or moderator
+# gets all communites that user is either member or moderator (not banned)
 @csrf_exempt
 def get_user_communities(request):
 	if request.method == 'POST':
-		connections = CommunityUserConnection.objects.filter(user=request.user.id)
+		# Get connections if not banned
+		connections = CommunityUserConnection.objects.filter(Q(user=request.user.id) & ~Q(type='banned'))
 		communities_data = []
 
 		for connection in connections:
@@ -224,6 +226,7 @@ def get_user_communities(request):
 		}
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 # If community is not private and user is not member of the community, add user to the community
 @csrf_exempt
@@ -875,6 +878,57 @@ def delete_comment(request):
 			comment.delete()
 			return JsonResponse({'success': True, 'message': 'Comment deleted successfully'}, status=200)
 		return JsonResponse({'error': 'User is not authorized to delete the comment'}, status=403)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Get post details in format {post:{...}, template: {...}} if user owner of the post
+@csrf_exempt
+def get_post_details(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		post = Post.objects.get(id=payload['postId'])
+		community = Community.objects.get(id=post.community.id)
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
+			post_data = {
+				'id': post.id,
+				'createdBy': post.createdBy.username,
+				'createdAt': post.createdAt,
+				'rowValues': post.rowValues
+			}
+
+			template = Template.objects.get(id=post.template.id)
+			template_data = {
+				'id': template.id,
+				'templateName': template.templateName,
+				'rows': template.rows
+			}
+
+			response_data = {
+				'success': True,
+				'data': {
+					'post': post_data,
+					'template': template_data
+				}
+			}
+			return JsonResponse(response_data, status=200)
+		return JsonResponse({'error': 'User is not authorized to view the post details'}, status=403)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Edit post if current user is owner of the post
+@csrf_exempt
+def edit_post(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		post = Post.objects.get(id=payload['postId'])
+		community = Community.objects.get(id=post.community.id)
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
+			post.rowValues = payload['rowValues']
+			post.save()
+			return JsonResponse({'success': True, 'message': 'Post edited successfully'}, status=200)
+		return JsonResponse({'error': 'User is not authorized to edit the post'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
