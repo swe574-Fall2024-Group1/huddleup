@@ -46,12 +46,14 @@ class Post(models.Model):
 	template = models.ForeignKey('Template', on_delete=models.CASCADE)
 	rowValues = models.JSONField(default=list)
 	createdAt = models.DateTimeField(auto_now_add=True)
+	isEdited = models.BooleanField(default=False)
 
 class Comment(models.Model):
 	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
 	post = models.ForeignKey('Post', on_delete=models.CASCADE)
 	comment = models.CharField(max_length=500)
 	createdAt = models.DateTimeField(auto_now_add=True)
+	isEdited = models.BooleanField(default=False)
 
 class PostLike(models.Model):
 	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)

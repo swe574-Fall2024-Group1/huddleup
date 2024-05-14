@@ -915,7 +915,7 @@ def get_post_details(request):
 		return JsonResponse({'error': 'User is not authorized to view the post details'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-# Edit post if current user is owner of the post
+# Edit post if current user is owner of the post, and make post isEdited true
 @csrf_exempt
 def edit_post(request):
 	if request.method == 'POST':
@@ -926,12 +926,29 @@ def edit_post(request):
 
 		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
 			post.rowValues = payload['rowValues']
+			post.isEdited = True
 			post.save()
 			return JsonResponse({'success': True, 'message': 'Post edited successfully'}, status=200)
 		return JsonResponse({'error': 'User is not authorized to edit the post'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Edit comment if current user is owner of the comment, and make comment isEdited true
+@csrf_exempt
+def edit_comment(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		comment = Comment.objects.get(id=payload['commentId'])
+		post = Post.objects.get(id=comment.post.id)
+		community = Community.objects.get(id=post.community.id)
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
 
+		if user_connection.type == 'owner' or user_connection.type == 'moderator' or comment.createdBy == request.user:
+			comment.comment = payload['comment']
+			comment.isEdited = True
+			comment.save()
+			return JsonResponse({'success': True, 'message': 'Comment edited successfully'}, status=200)
+		return JsonResponse({'error': 'User is not authorized to edit the comment'}, status=403)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
 

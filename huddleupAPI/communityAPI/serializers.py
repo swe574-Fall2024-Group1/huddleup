@@ -30,13 +30,13 @@ class PostSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Post
-		fields = ['createdBy', 'community', 'template', 'rowValues', 'id', 'createdAt']
+		fields = ['createdBy', 'community', 'template', 'rowValues', 'id', 'createdAt', 'isEdited']
 
 class CommentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Comment
-		fields = ['createdBy', 'post', 'comment', 'id', 'createdAt']
+		fields = ['createdBy', 'post', 'comment', 'id', 'createdAt', 'isEdited']
 
 
 class PostLikeSerializer(serializers.ModelSerializer):
