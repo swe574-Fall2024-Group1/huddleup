@@ -15,6 +15,7 @@ const Register = () => {
 		const response = await fetchApi('/api/auth/register', values)
 
 		if (response && response.success) {
+			message.success("Account created successfully. Please login.")
 			navigate('/login');
 		}
 	};

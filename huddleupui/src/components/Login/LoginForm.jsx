@@ -16,6 +16,7 @@ const Login = () => {
 		const response = await fetchApi('/api/auth/login', values)
 
 		if (response && response.success) {
+			message.success("Login successful.")
 			onLogin(response.data)
 			// navigate('/feed');
 		} else {

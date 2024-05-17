@@ -1,4 +1,4 @@
-import { Layout, Card, Avatar, Row, Col, Modal, Button, Spin } from 'antd';
+import { Layout, Card, Avatar, Row, Col, Modal, Button, Spin, message } from 'antd';
 import { useNavigate } from "react-router-dom";
 import { useState } from 'react';
 import Navbar from "../components/MainLayout/Navbar";
@@ -12,6 +12,7 @@ import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 const { Header, Content, Footer, Sider } = Layout;
 
 export default function CommunityLayout({ children, allowedUserTypes, canNotMembersSee }) {
+	console.log(allowedUserTypes)
 	const { communityInfo } = useCommunity();
 	const [members, setMembers] = useState([]);
 	const [bannedMembers, setBannedMembers] = useState([]);
@@ -33,11 +34,13 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 
 	const handleMembershipChange = async () => {
 		if (communityInfo.memberType === 'notMember') {
+			message.loading('Joining the community...');
 			const response = await fetchApi('/api/communities/join-community', { communityId });
 			if (response.success) {
 				window.location.reload();
 			}
 		} else {
+			message.loading('Leaving the community...');
 			const response = await fetchApi('/api/communities/leave-community', { communityId });
 			if (response.success) {
 				window.location.reload();
@@ -101,7 +104,6 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 		setShowUserSettingsModal(true);
 
 		const response = await fetchApi('/api/communities/get-community-banned', { communityId });
-		console.log(response)
 
 		if (response.success) {
 			setBannedMembers(response.data);
@@ -132,9 +134,10 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 		await fetchApi('/api/communities/assign-moderator', { communityId, username });
 	};
 
-	if (communityInfo && canNotMembersSee && !communityInfo.isPrivate) {
+	if (communityInfo && communityInfo.name && canNotMembersSee && !communityInfo.isPrivate) {
 		allowedUserTypes.push('notMember');
 	}
+
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Navbar />
@@ -175,6 +178,16 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 										<p>{`You are ${communityInfo.memberType} of this community`}</p>
 									)}
 									{communityInfo && !communityInfo.isPrivate && communityInfo.memberType !== 'banned' && (
+										<Button
+											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
+											type="primary"
+											onClick={handleMembershipChange}
+											disabled={communityInfo.memberType === 'banned'}
+										>
+											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
+										</Button>
+									)}
+									{communityInfo && communityInfo.isPrivate && ['member', 'moderator', 'owner'].includes(communityInfo.memberType) && (
 										<Button
 											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
 											type="primary"
@@ -248,6 +261,12 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 										<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
 									</Row>
 								)}
+								{communityInfo && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+									<Row justify="center" style={{ marginTop: 10 }}>
+										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => {navigate('invitations')}} >User Invitations</Button>
+									</Row>
+								)
+								}
 								{communityInfo && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
 									<Row justify="center" style={{ marginTop: 10 }}>
 										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={handleShowUserSettings} >User Settings</Button>

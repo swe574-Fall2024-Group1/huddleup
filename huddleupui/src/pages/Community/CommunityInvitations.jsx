@@ -17,9 +17,11 @@ export default function CommunityInvitations() {
 
     const onFinish = async (values) => {
         try {
+            message.loading('Creating invitation...');
             const payload = { ...values, communityId };
             const response = await fetchApi('/api/communities/create-invitation', payload);
             if (response && response.success) {
+                console.log(response)
                 message.success('Invitation created successfully!');
                 // Add new invitation to the list
                 setInvitations([...invitations, response.data]);
@@ -36,6 +38,7 @@ export default function CommunityInvitations() {
 
     const handleCancelInvitation = async (invitationId) => {
         try {
+            message.loading('Canceling invitation...');
             const response = await fetchApi('/api/communities/cancel-invitation', { invitationId });
             if (response && response.success) {
                 message.success('Invitation canceled successfully!');

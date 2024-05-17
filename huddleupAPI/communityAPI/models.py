@@ -8,6 +8,7 @@ class Community(models.Model):
 	mainImage = models.CharField(max_length=5000000)
 	isPrivate = models.BooleanField()
 	archived = models.BooleanField('archived', default=False)
+	createdAt = models.DateTimeField(auto_now_add=True)
 
 class CommunityUserConnection(models.Model):
 	MEMBER = 'member'

@@ -13,12 +13,13 @@ import AddTemplate from "./pages/Community/AddTemplate";
 import CreatePost from "./pages/Community/CreatePost";
 import CommunityInvitations from "./pages/Community/CommunityInvitations";
 import UserInvitations from "./pages/UserInvitations";
-import UserFeed from "./pages/Feed";
+import UserFeed from "./pages/UserFeed";
 import { Navigate } from "react-router-dom";
 import Communities from "./pages/Communities";
 import Connections from "./pages/Connections";
 import CommunitySettings from "./pages/Community/CommunitySettings";
 import EditPost from "./pages/Community/EditPost";
+import Discover from "./pages/Discover";
 
 function App() {
 
@@ -59,6 +60,14 @@ function App() {
 							<ProtectedRoute>
 								<AppLayout>
 									<Communities />
+								</AppLayout>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/discover" element={
+							<ProtectedRoute>
+								<AppLayout>
+									<Discover />
 								</AppLayout>
 							</ProtectedRoute>
 						}

@@ -24,7 +24,6 @@ export default function CommunityFeed() {
 
 	posts_result.then((response) => {
 		if (response && !response.loading && postsLoading && posts.length === 0) {
-			console.log(response.data.data)
 			setPosts(response.data.data)
 			setPostsLoading(false)
 		}
@@ -350,7 +349,9 @@ export default function CommunityFeed() {
 
 		// Call API to create post
 		const response = await fetchApi('/api/communities/get-community-posts', payload)
-		setPosts(response.data)
+		if(response.data){
+			setPosts(response.data)
+		}
 	};
 
 
@@ -364,7 +365,9 @@ export default function CommunityFeed() {
 
 		// Call API to create post
 		const response = await fetchApi('/api/communities/get-community-posts', payload)
-		setPosts(response.data)
+		if(response.data){
+			setPosts(response.data)
+		}
 	};
 
 

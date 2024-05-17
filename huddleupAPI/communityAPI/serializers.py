@@ -5,7 +5,7 @@ class CommunitySerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Community
-		fields = ['name', 'description', 'mainImage', 'isPrivate', 'id']
+		fields = ['name', 'description', 'mainImage', 'isPrivate', 'id', 'createdAt']
 
 class CommunityUserConnectionSerializer(serializers.ModelSerializer):
 

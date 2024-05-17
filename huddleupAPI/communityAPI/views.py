@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
+from django.db.models import Q,Count
 
 
 from authAPI.models import User
@@ -202,6 +202,38 @@ def get_community_info(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=400)
 
+# gets all communites that user dont have connection with
+@csrf_exempt
+def get_communities(request):
+	if request.method == 'POST':
+		# Get connections
+		connections = CommunityUserConnection.objects.filter(user=request.user.id)
+		community_ids = [connection.community.id for connection in connections]
+		communities = Community.objects.exclude(id__in=community_ids)
+		communities_data = []
+
+		for community in communities:
+			communities_data.append({
+				'id': community.id,
+				'name': community.name,
+				'mainImage': community.mainImage,
+				'description': community.description,
+				'isPrivate': community.isPrivate
+			})
+
+		response_data = {
+			'success': True,
+			'data': communities_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+
+
+
+
+
 # gets all communites that user is either member or moderator (not banned)
 @csrf_exempt
 def get_user_communities(request):
@@ -300,8 +332,38 @@ def create_invitation(request):
 		invitation_serializer = CommunityInvitationSerializer(data=invitation_data)
 		if invitation_serializer.is_valid():
 			invitation_serializer.save()
-			return JsonResponse({'success': True, 'message': 'Invitation created successfully'}, status=201)
+
+			# Return details of invitaiton
+			response_data = {
+				'success': True,
+				'data': {
+					'id': invitation_serializer.data['id'],
+					'username': invitedUser.username,
+					'community': community.name,
+					'createdAt': invitation_serializer.data['createdAt']
+				}
+			}
+			return JsonResponse(response_data, status=201)
+
 		return JsonResponse(invitation_serializer.errors, status=400)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# If community is private and user is owner or moderator of the community or either user is the member that invited, delete the invitation
+@csrf_exempt
+def cancel_invitation(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		invitation = CommunityInvitation.objects.get(id=payload['invitationId'])
+		community = invitation.community
+		inviter = invitation.user
+		inviterConnection = CommunityUserConnection.objects.filter(user=inviter.id, community=community.id).first()
+		connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if connection.type == 'member' and inviter.id != request.user.id:
+			return JsonResponse({'error': 'User is not authorized to cancel the invitation'}, status=403)
+
+		invitation.delete()
+		return JsonResponse({'success': True, 'message': 'Invitation canceled successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
@@ -495,8 +557,6 @@ def get_community_posts(request):
 
 			posts = filter(matches_search_query, posts)
 
-		posts = posts.order_by('-createdAt')
-
 		posts_data = []
 		for post in posts:
 			likes = PostLike.objects.filter(post=post.id)
@@ -533,6 +593,9 @@ def get_community_posts(request):
 				'isFollowing': isFollowing
 			})
 
+		# Sort the posts by createdAt in descending order
+		posts_data.sort(key=lambda x: x['createdAt'], reverse=True)
+
 		response_data = {
 			'success': True,
 			'data': posts_data
@@ -540,6 +603,80 @@ def get_community_posts(request):
 		return JsonResponse(response_data, status=200)
 
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Get user feed posts. Posts of the communities that user is member,moderator,owner of and posts of the users that user is following (in the post object add as feedType either 'communityMembership' or 'userFollow' to distinguish). Dont include banned communities posts. Posts should be owned by other users and sorted by createdAt decreasing.
+@csrf_exempt
+def get_user_feed(request):
+	if request.method == 'POST':
+		# Get user connections
+		connections = CommunityUserConnection.objects.filter(Q(user=request.user.id) & ~Q(type='banned'))
+		community_ids = [connection.community.id for connection in connections]
+
+		# Get user follow connections
+		follows = UserFollowConnection.objects.filter(follower=request.user.id)
+		followed_user_ids = [follow.followee.id for follow in follows]
+
+		# Get posts of the communities that user is member, moderator or owner of and not owned by current user
+		community_posts = Post.objects.filter(community__in=community_ids).exclude(createdBy=request.user)
+
+		# Get posts of the users that user is following
+		user_posts = Post.objects.filter(createdBy__in=followed_user_ids)
+
+		# Combine the posts
+		posts = list(community_posts) + list(user_posts)
+
+		# Sort the posts by createdAt in descending order
+		posts.sort(key=lambda x: x.createdAt, reverse=True)
+
+		posts_data = []
+		for post in posts:
+			likes = PostLike.objects.filter(post=post.id)
+			like_count = 0
+			dislike_count = 0
+			for like in likes:
+				if like.direction:
+					like_count += 1
+				else:
+					dislike_count += 1
+
+			userLike = PostLike.objects.filter(post=post.id, createdBy=request.user).first()
+
+			likedByUser = False
+			dislikedByUser = False
+			if userLike is not None:
+				if userLike.direction:
+					likedByUser = True
+				else:
+					dislikedByUser = True
+
+			isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=post.createdBy).exists()
+
+			if post.community.id in community_ids:
+				feedType = 'communityMembership'
+			else:
+				feedType = 'userFollow'
+
+			posts_data.append({
+				'id': post.id,
+				'username': post.createdBy.username,
+				'createdAt': post.createdAt,
+				'rowValues': post.rowValues,
+				'templateId': post.template.id,
+				'likeCount': like_count,
+				'dislikeCount': dislike_count,
+				'liked': likedByUser,
+				'disliked': dislikedByUser,
+				'isFollowing': isFollowing,
+				'feedType': feedType
+			})
+
+		response_data = {
+			'success': True,
+			'data': posts_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 
 
@@ -951,6 +1088,73 @@ def edit_comment(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
+# Get top 3 active (sorted by post count) public communities and 3 promoted communities (newest 3 communities that is not included in active communities).
+@csrf_exempt
+def get_top_communities(request):
+	if request.method == 'POST':
+		# Get all communities and then post count of communities then sort them by post count and get the top 3
+		communities = Community.objects.all()
+		communities_data = []
+		for community in communities:
+			community.post_count = Post.objects.filter(community=community.id).count()
+			communities_data.append(community)
+
+		active_communities = sorted(communities_data, key=lambda x: x.post_count, reverse=True)[:3]
+
+		active_communities_data = []
+		for community in active_communities:
+			active_communities_data.append({
+				'id': community.id,
+				'name': community.name,
+				'mainImage': community.mainImage,
+				'description': community.description,
+				'isPrivate': community.isPrivate,
+				'postCount': community.post_count
+			})
+
+		# Get the newes 3 communities from communities
+		not_active_communities = [community for community in communities_data if community not in active_communities]
+		promoted_communities = sorted(not_active_communities, key=lambda x: x.createdAt, reverse=True)[3:6]
+
+		promoted_communities_data = []
+		for community in promoted_communities:
+			promoted_communities_data.append({
+				'id': community.id,
+				'name': community.name,
+				'mainImage': community.mainImage,
+				'description': community.description,
+				'isPrivate': community.isPrivate,
+				'postCount': community.post_count
+			})
+
+		response_data = {
+			'success': True,
+			'data': {
+				'activeCommunities': active_communities_data,
+				'promotedCommunities': promoted_communities_data
+			}
+		}
+		return JsonResponse(response_data, status=200)
 
 
+# Get all communities that user is owner of
+@csrf_exempt
+def get_owned_communities(request):
+	if request.method == 'POST':
+		connections = CommunityUserConnection.objects.filter(Q(user=request.user.id) & Q(type='owner'))
+		communities_data = []
+
+		for connection in connections:
+			communities_data.append({
+				'id': connection.community.id,
+				'name': connection.community.name,
+				'mainImage': connection.community.mainImage
+			})
+
+		response_data = {
+			'success': True,
+			'data': communities_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 

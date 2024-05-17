@@ -6,13 +6,10 @@ import useApi from '../../hooks/useApi';
 import fetchApi from '../../api/fetchApi';
 import { Spin } from 'antd';
 import useAuth from '../Auth/useAuth';
-import useCommunity from '../../components/Community/useCommunity';
 
 const { Text } = Typography;
 
-const Post = ({ postData }) => {
-	const { communityInfo } = useCommunity();
-
+const FeedPost = ({ postData }) => {
 	const [templateRows, setTemplateRows] = useState([]);
 	const [templateName, setTemplateName] = useState([]);
 	const [comments, setComments] = useState([]);
@@ -122,7 +119,7 @@ const Post = ({ postData }) => {
 	};
 
 	const handlePostLike = async (direction) => {
-		if (communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned') {
+		if (postData.feedType !== 'communityMembership') {
 			message.error('You must be a member of the community to like or dislike comments.');
 			return;
 		}
@@ -156,7 +153,7 @@ const Post = ({ postData }) => {
 	};
 
 	const handleCommentLike = async (commentId, direction) => {
-		if (communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned') {
+		if (postData.feedType !== 'communityMembership') {
 			message.error('You must be a member of the community to like or dislike comments.');
 			return;
 		}
@@ -230,7 +227,7 @@ const Post = ({ postData }) => {
 		(userInfo.username === comment.username) ? (
 			<Button style={{ marginLeft: 10 }} size='small' onClick={() => handleEditComment(comment)}>Edit Comment</Button>
 		) : '',
-		(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? <Button style={{ marginLeft: 10 }} size='small' onClick={() => { handleDeleteComment(comment.id) }}>Delete Comment</Button> : ''
+		(userInfo.username === postData.username)  ? <Button style={{ marginLeft: 10 }} size='small' onClick={() => { handleDeleteComment(comment.id) }}>Delete Comment</Button> : ''
 	];
 
 	const handleFollowUser = async (username) => {
@@ -253,22 +250,13 @@ const Post = ({ postData }) => {
 
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
-			{(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
+			{(userInfo.username === postData.username) ? (
 				<Button
 					type="danger"
 					style={{ position: 'absolute', right: 10, top: 10, color: '#7952CC' }}
 					onClick={() => setShowDeleteModal(true)}
 				>
 					Delete Post
-				</Button>
-			) : null}
-
-			{userInfo.username === postData.username ? (
-				<Button
-					style={{ position: 'absolute', right: 10, top: 10, color: '#7952CC' }}
-					onClick={() => window.location.href = `/communities/${communityInfo.id}/edit-post/${postData.id}`}
-				>
-					Edit Post
 				</Button>
 			) : null}
 
@@ -335,9 +323,9 @@ const Post = ({ postData }) => {
 						onChange={(e) => setNewComment(e.target.value)}
 						placeholder="Write a comment..."
 						allowClear
-						disabled={communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned'}
+						disabled={postData.feedType !== 'communityMembership'}
 					/>
-					<Button icon={<CommentOutlined />} onClick={handleAddComment} disabled={communityInfo.memberType === 'notMember' || communityInfo.memberType === 'banned'}>Add Comment</Button>
+					<Button icon={<CommentOutlined />} onClick={handleAddComment} disabled={postData.feedType !== 'communityMembership'}>Add Comment</Button>
 				</Flex>
 
 				{!loadingComments ? (
@@ -373,4 +361,4 @@ const Post = ({ postData }) => {
 	);
 };
 
-export default Post;
+export default FeedPost;

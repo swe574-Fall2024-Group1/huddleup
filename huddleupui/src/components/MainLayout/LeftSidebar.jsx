@@ -1,5 +1,5 @@
 import { Layout, Menu, Divider, Card } from 'antd';
-import { TeamOutlined, PlusOutlined, UsergroupAddOutlined, NotificationOutlined } from '@ant-design/icons';
+import { TeamOutlined, PlusOutlined,NotificationOutlined, MailOutlined, CompassOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import "../../assets/main-layout.css"
 import useAuth from '../Auth/useAuth';
@@ -27,6 +27,8 @@ const LeftSidebar = () => {
         defaultSelectedKey = '3';
     } else if (currentPath === '/invitations') {
         defaultSelectedKey = '5';
+    } else if (currentPath === '/discover') {
+        defaultSelectedKey = '6';
     }
 
 
@@ -47,14 +49,17 @@ const LeftSidebar = () => {
                     <Menu.Item className='leftsider-menuitem' key="1" icon={<NotificationOutlined />} onClick={() => handleMenuClick('/feed')}>
                         Feed
                     </Menu.Item>
-                    <Menu.Item className='leftsider-menuitem' key="2" icon={<UsergroupAddOutlined />} onClick={() => handleMenuClick('/connections')}>
+                    <Menu.Item className='leftsider-menuitem' key="2" icon={<UserSwitchOutlined />} onClick={() => handleMenuClick('/connections')}>
                         Connections
                     </Menu.Item>
                     <Menu.Item className='leftsider-menuitem' key="3" icon={<TeamOutlined />} onClick={() => handleMenuClick('/communities')}>
                         Communities
                     </Menu.Item>
-                    <Menu.Item className='leftsider-menuitem' key="5" icon={<UsergroupAddOutlined />} onClick={() => handleMenuClick('/invitations')}>
+                    <Menu.Item className='leftsider-menuitem' key="5" icon={<MailOutlined />} onClick={() => handleMenuClick('/invitations')}>
                         Invitations
+                    </Menu.Item>
+                    <Menu.Item className='leftsider-menuitem' key="6" icon={<CompassOutlined />} onClick={() => handleMenuClick('/discover')}>
+                        Discover
                     </Menu.Item>
                     <Divider />
                     <Menu.Item className='leftsider-menuitem' key="4" icon={<PlusOutlined />} onClick={() => handleMenuClick('/communities/new')}>

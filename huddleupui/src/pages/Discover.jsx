@@ -6,11 +6,11 @@ import useApi from '../hooks/useApi';
 
 const { Meta } = Card;
 
-const Communities = () => {
+const Discover = () => {
 	const [communities, setCommunities] = useState([]);
 	const [communitiesLoading, setCommunitiesLoading] = useState(true);
 
-	const communities_result = useApi('/api/communities/get-user-communities', {});
+	const communities_result = useApi('/api/communities/get-communities', {});
 
 	communities_result.then((response) => {
 		if (response && !response.loading && communitiesLoading) {
@@ -29,7 +29,7 @@ const Communities = () => {
 	return (
 		<div>
 			<h2 style={{ color: '#5c5b5b' }}>
-				All communities you've joined {communities && communities.length > 0 ? `(${communities.length})` : '(0)'}
+				All communities around {communities && communities.length > 0 ? `(${communities.length})` : '(0)'}
 			</h2>
 
 			<div style={{ display: 'flex', flexWrap: 'wrap' }}>
@@ -79,4 +79,4 @@ const Communities = () => {
 	);
 };
 
-export default Communities;
+export default Discover;
