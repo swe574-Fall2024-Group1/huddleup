@@ -227,7 +227,7 @@ const FeedPost = ({ postData }) => {
 		(userInfo.username === comment.username) ? (
 			<Button style={{ marginLeft: 10 }} size='small' onClick={() => handleEditComment(comment)}>Edit Comment</Button>
 		) : '',
-		(userInfo.username === postData.username)  ? <Button style={{ marginLeft: 10 }} size='small' onClick={() => { handleDeleteComment(comment.id) }}>Delete Comment</Button> : ''
+		(userInfo.username === postData.username) ? <Button style={{ marginLeft: 10 }} size='small' onClick={() => { handleDeleteComment(comment.id) }}>Delete Comment</Button> : ''
 	];
 
 	const handleFollowUser = async (username) => {
@@ -248,6 +248,7 @@ const FeedPost = ({ postData }) => {
 		await fetchApi('/api/communities/delete-comment', { commentId });
 	};
 
+	console.log(postData);
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			{(userInfo.username === postData.username) ? (
@@ -286,7 +287,25 @@ const FeedPost = ({ postData }) => {
 			</Modal>
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
-				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null}</div>}
+				title={<div>
+					<span style={{ position: 'absolute', top: 5, right: 5, color: '#bdbdbd', fontWeight: 300, fontSize: 12, marginLeft: 'auto' }}>
+						{postData.feedType === 'communityMembership' ? (
+							<>
+								Because you are a member of the{' '}
+								<a href={`/communities/${postData.communityId}`}>{postData.communityName}</a> community
+							</>
+						) : (
+							'You are seeing this post because you are following this user'
+						)}
+					</span>
+					<div style={{ color: "#7952CC" }}>
+						{postData.username} {postData.username !== userInfo.username ? (
+							<Button size='small' onClick={() => { handleFollowUser(postData.username) }}>
+								{isFollowing ? 'Unfollow' : 'Follow'}
+							</Button>
+						) : null}
+					</div>
+				</div>}
 				description={new Date(postData.createdAt).toLocaleString()}
 			/>
 			<div style={{ marginTop: 20 }}>

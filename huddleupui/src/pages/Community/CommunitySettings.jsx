@@ -1,13 +1,17 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Card, Button } from 'antd';
+import { Form, Card, Button, Divider } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
+import fetchApi from '../../api/fetchApi';
+import useCommunity from '../../components/Community/useCommunity';
 
 export default function CommunitySettings() {
 	const [templates, setTemplates] = useState([]);
 
 	const navigate = useNavigate()
+
+	const { communityInfo } = useCommunity();
 
 	const { communityId } = useParams();
 
@@ -18,6 +22,13 @@ export default function CommunitySettings() {
 			setTemplates(response.data.data)
 		}
 	})
+
+	const handleArchiveCommunity = async () => {
+		const response = await fetchApi(`/api/communities/archive-community`, { communityId });
+		if (response.success) {
+			navigate('/feed')
+		}
+	}
 
 	// Community Settings page, now there will be a button to add a template to navigate to add template page
 	// If no templates are added, a message will be displayed to add a template
@@ -56,6 +67,17 @@ export default function CommunitySettings() {
 				>
 					+ Add Template
 				</Button>
+				<Divider />
+				{communityInfo.memberType === 'owner' && (
+					<Button
+						type="primary"
+						size="large"
+						style={{ backgroundColor: '#f5222d', fontWeight: 700 }}
+						onClick={handleArchiveCommunity}
+					>
+						Archive Community
+					</Button>
+				)}
 			</Card>
 		</div>
 	);

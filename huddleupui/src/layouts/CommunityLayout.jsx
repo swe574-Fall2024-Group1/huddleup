@@ -1,5 +1,5 @@
 import { Layout, Card, Avatar, Row, Col, Modal, Button, Spin, message } from 'antd';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from 'react';
 import Navbar from "../components/MainLayout/Navbar";
 import fetchApi from '../api/fetchApi';
@@ -12,7 +12,6 @@ import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
 const { Header, Content, Footer, Sider } = Layout;
 
 export default function CommunityLayout({ children, allowedUserTypes, canNotMembersSee }) {
-	console.log(allowedUserTypes)
 	const { communityInfo } = useCommunity();
 	const [members, setMembers] = useState([]);
 	const [bannedMembers, setBannedMembers] = useState([]);
@@ -124,7 +123,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	};
 
 	const handleMakeModerator = async (username, status) => {
-		if(status === 'remove') {
+		if (status === 'remove') {
 			setModerators(moderators.filter(moderator => moderator.username !== username));
 			setMembers([...members, { username }]);
 		} else {
@@ -134,15 +133,24 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 		await fetchApi('/api/communities/assign-moderator', { communityId, username });
 	};
 
+	const handleMakeOwner = async (username) => {
+		await fetchApi('/api/communities/change-ownership', { communityId, username });
+
+		navigate(`/communities/${communityId}`);
+		window.location.reload();
+	};
+
+
 	if (communityInfo && communityInfo.name && canNotMembersSee && !communityInfo.isPrivate) {
 		allowedUserTypes.push('notMember');
 	}
-
+	console.log(communityInfo)
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Navbar />
 			<Layout>
 				<LeftSidebar />
+				{communityInfo && !communityInfo.archived ? (
 				<Layout style={{ padding: '0 24px 24px' }}>
 					<div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 10, backgroundColor: 'white', padding: 10, borderRadius: 10, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 						{Object.keys(communityInfo).length > 0 ? (
@@ -182,7 +190,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
 											type="primary"
 											onClick={handleMembershipChange}
-											disabled={communityInfo.memberType === 'banned'}
+											disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
 										>
 											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
 										</Button>
@@ -192,7 +200,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
 											type="primary"
 											onClick={handleMembershipChange}
-											disabled={communityInfo.memberType === 'banned'}
+											disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
 										>
 											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
 										</Button>
@@ -223,10 +231,12 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								children // Render children if allowed
 							) : (
 								communityInfo && communityInfo.memberType ? (
-									<Card>
-										<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You have to be a member to see posts of private communities.</p>
-										<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You don't have an invitation yet? Check your <a href='/invitations' style={{ color: "#7952CC", textDecoration: "none" }}>invitations</a>.</p>
-									</Card>
+									<div>
+										<Card>
+											<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You have to be a member to see posts of private communities.</p>
+											<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You don't have an invitation yet? Check your <a href='/invitations' style={{ color: "#7952CC", textDecoration: "none" }}>invitations</a>.</p>
+										</Card>
+									</div>
 								) : (
 									<div style={{ textAlign: 'center' }}>
 										<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
@@ -237,6 +247,11 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					</Layout>
 					<Footer className='logo' style={{ textAlign: 'center', fontWeight: 700, color: '#a1a1a1' }}>huddleup ©{new Date().getFullYear()}</Footer>
 				</Layout>
+				): (
+					<div style={{ textAlign: 'center', margin: 'auto' }}>
+						<h1 style={{ color: '#626263', fontSize: 30, fontWeight: 500 }}>This community is archived.</h1>
+					</div>
+				)}
 				<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
 					{(!communityInfo.isPrivate || communityInfo.memberType !== 'notMember') ? (
 						<div>
@@ -261,9 +276,9 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 										<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
 									</Row>
 								)}
-								{communityInfo && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+								{communityInfo && communityInfo.isPrivate && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
 									<Row justify="center" style={{ marginTop: 10 }}>
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => {navigate('invitations')}} >User Invitations</Button>
+										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => { navigate(`/communities/${communityId}/invitations`) }} >User Invitations</Button>
 									</Row>
 								)
 								}
@@ -381,13 +396,15 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 									<span>{member.username}</span>
 								</Row>
 							</Col>
-							<Col span={6}>
-								<Button onClick={() => { handleBanUser(member.username, 'ban') }}> Ban </Button>
-								{communityInfo.isPrivate ? <Button> Kick </Button> : ''}
+							<Col span={2}>
+								<Button size='small' onClick={() => { handleBanUser(member.username, 'ban') }}> Ban </Button>
 							</Col>
 							<Col span={6}>
-								{communityInfo.memberType === 'owner' ? <Button onClick={() => { handleMakeModerator(member.username, 'assign') }}> Make Moderator </Button> : ''}
+								{communityInfo.memberType === 'owner' ? <Button size='small' onClick={() => { handleMakeModerator(member.username, 'assign') }}> Make Moderator </Button> : ''}
 							</Col>
+							{communityInfo.memberType === 'owner' ? <Col span={6}>
+								<Button size='small' onClick={() => { handleMakeOwner(member.username) }}> Make Owner </Button>
+							</Col> : ''}
 						</Row>
 					))}
 					<h4><b>Banned Users</b></h4>

@@ -15,6 +15,7 @@ urlpatterns = [
 	url(r'get-community-moderators', views.get_community_moderators, name='get_community_moderators'),
 	url(r'get-community-owners', views.get_community_owners, name='get_community_owners'),
 	url(r'assign-moderator', views.assign_moderator, name='assign_moderator'),
+    url(r'change-ownership', views.change_ownership, name='change_ownership'),
 	url(r'get-invitations-community', views.get_invitations_by_community, name='get_invitations_by_community'),
 	url(r'get-invitations-user', views.get_invitations_by_user, name='get_invitations_by_user'),
 	url(r'response-invitation', views.response_invitation, name='response_invitation'),
@@ -38,4 +39,5 @@ urlpatterns = [
 	url(r'edit-comment', views.edit_comment, name='edit_comment'),
     url(r'get-top-communities', views.get_top_communities, name='get_top_communities'),
     url(r'get-owned-communities', views.get_owned_communities, name='get_owned_communities'),
+    url(r'archive-community', views.archive_community, name='archive_community'),
 ]

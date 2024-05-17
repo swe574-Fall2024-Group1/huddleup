@@ -167,6 +167,25 @@ def assign_moderator(request):
 		return JsonResponse({'success': True, 'message': 'Moderator assigned/unassigned successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Change ownership of the community if current user is owner of the community
+@csrf_exempt
+def change_ownership(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		new_owner = User.objects.get(username=payload['username'])
+		current_owner = CommunityUserConnection.objects.get(community=community.id, type='owner')
+
+		current_owner.type = 'member'
+		current_owner.save()
+
+		new_owner_connection = CommunityUserConnection.objects.get(user=new_owner.id, community=community.id)
+		new_owner_connection.type = 'owner'
+		new_owner_connection.save()
+
+		return JsonResponse({'success': True, 'message': 'Ownership changed successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 @csrf_exempt
 def get_community_info(request):
@@ -193,6 +212,7 @@ def get_community_info(request):
 				'description': community.description,
 				'isPrivate': community.isPrivate,
 				'mainImage': community.mainImage,
+				'archived': community.archived,
 				'id': community.id,
 				'memberType': member_type,
 			}
@@ -209,7 +229,10 @@ def get_communities(request):
 		# Get connections
 		connections = CommunityUserConnection.objects.filter(user=request.user.id)
 		community_ids = [connection.community.id for connection in connections]
-		communities = Community.objects.exclude(id__in=community_ids)
+
+		# Get communities that user is not member of and not archived
+		communities = Community.objects.exclude(id__in=community_ids).exclude(archived=True)
+
 		communities_data = []
 
 		for community in communities:
@@ -249,8 +272,12 @@ def get_user_communities(request):
 				'mainImage': connection.community.mainImage,
 				'description': connection.community.description,
 				'isPrivate': connection.community.isPrivate,
+				'archived': connection.community.archived,
 				'type': connection.type
 			})
+
+		# Filter archived communities
+		communities_data = [community for community in communities_data if not community['archived']]
 
 		response_data = {
 			'success': True,
@@ -586,11 +613,12 @@ def get_community_posts(request):
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
+				'isEdited': post.isEdited,
 				'likeCount': like_count,
 				'dislikeCount': dislike_count,
 				'liked': likedByUser,
 				'disliked': dislikedByUser,
-				'isFollowing': isFollowing
+				'isFollowing': isFollowing,
 			})
 
 		# Sort the posts by createdAt in descending order
@@ -662,12 +690,15 @@ def get_user_feed(request):
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
+				'isEdited': post.isEdited,
 				'likeCount': like_count,
 				'dislikeCount': dislike_count,
 				'liked': likedByUser,
 				'disliked': dislikedByUser,
 				'isFollowing': isFollowing,
-				'feedType': feedType
+				'feedType': feedType,
+				'communityName': post.community.name,
+				'communityId': post.community.id
 			})
 
 		response_data = {
@@ -827,6 +858,7 @@ def get_post_comments(request):
 				'username': comment.createdBy.username,
 				'createdAt': comment.createdAt,
 				'comment': comment.comment,
+				'isEdited': comment.isEdited,
 				'likeCount': like_count,
 				'dislikeCount': dislike_count,
 				'liked': likedByUser,
@@ -1093,7 +1125,7 @@ def edit_comment(request):
 def get_top_communities(request):
 	if request.method == 'POST':
 		# Get all communities and then post count of communities then sort them by post count and get the top 3
-		communities = Community.objects.all()
+		communities = Community.objects.exclude(archived=True)
 		communities_data = []
 		for community in communities:
 			community.post_count = Post.objects.filter(community=community.id).count()
@@ -1148,13 +1180,32 @@ def get_owned_communities(request):
 			communities_data.append({
 				'id': connection.community.id,
 				'name': connection.community.name,
-				'mainImage': connection.community.mainImage
+				'mainImage': connection.community.mainImage,
+				'archived': connection.community.archived
 			})
+
+		# Filter out the archived communities
+		communities_data = [community for community in communities_data if not community['archived']]
 
 		response_data = {
 			'success': True,
 			'data': communities_data
 		}
 		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Archive community if current user is owner of the community
+@csrf_exempt
+def archive_community(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		community = Community.objects.get(id=payload['communityId'])
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if user_connection.type == 'owner':
+			community.archived = True
+			community.save()
+			return JsonResponse({'success': True, 'message': 'Community archived successfully'}, status=200)
+		return JsonResponse({'error': 'User is not authorized to archive the community'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
