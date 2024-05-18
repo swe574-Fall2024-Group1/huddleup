@@ -142,18 +142,15 @@ export default function CommunityFeed() {
 								label={`${row.title} (${labelValue})`}
 							>
 								<Input.Group compact>
-									<InputNumber
-										style={{ width: '45%' }}
-										placeholder={`Min ${row.title.toLowerCase()}`}
-									/>
-									<InputNumber
-										style={{ width: '45%' }}
-										placeholder={`Max ${row.title.toLowerCase()}`}
-									/>
+									<Form.Item name={`${row.title.toLowerCase()}_min`} style={{ width: '45%' }}>
+										<Input placeholder={`Start ${row.type.toLowerCase()}`} />
+									</Form.Item>
+									<Form.Item name={`${row.title.toLowerCase()}_max`} style={{ width: '45%' }}>
+										<Input placeholder={`End ${row.type.toLowerCase()}`} />
+									</Form.Item>
 								</Input.Group>
 							</Form.Item>
 						);
-
 					case 'float':
 					case 'double':
 						return (
@@ -162,16 +159,12 @@ export default function CommunityFeed() {
 								label={`${row.title} (${labelValue})`}
 							>
 								<Input.Group compact>
-									<InputNumber
-										style={{ width: '45%' }}
-										step="any"
-										placeholder={`Min ${row.title.toLowerCase()}`}
-									/>
-									<InputNumber
-										style={{ width: '45%' }}
-										step="any"
-										placeholder={`Max ${row.title.toLowerCase()}`}
-									/>
+									<Form.Item name={`${row.title.toLowerCase()}_min`} style={{ width: '45%' }}>
+										<Input placeholder={`Start ${row.type.toLowerCase()}`} />
+									</Form.Item>
+									<Form.Item name={`${row.title.toLowerCase()}_max`} style={{ width: '45%' }}>
+										<Input placeholder={`End ${row.type.toLowerCase()}`} />
+									</Form.Item>
 								</Input.Group>
 							</Form.Item>
 						);
@@ -196,14 +189,12 @@ export default function CommunityFeed() {
 								label={`${row.title} (${labelValue})`}
 							>
 								<Input.Group compact>
-									<Input
-										style={{ width: '45%' }}
-										placeholder="Start Time (HH:MM:SS)"
-									/>
-									<Input
-										style={{ width: '45%' }}
-										placeholder="End Time (HH:MM:SS)"
-									/>
+									<Form.Item name={`${row.title.toLowerCase()}_min`} style={{ width: '45%' }}>
+										<Input placeholder={`Start ${row.type.toLowerCase()}`} />
+									</Form.Item>
+									<Form.Item name={`${row.title.toLowerCase()}_max`} style={{ width: '45%' }}>
+										<Input placeholder={`End ${row.type.toLowerCase()}`} />
+									</Form.Item>
 								</Input.Group>
 							</Form.Item>
 						);
@@ -216,10 +207,12 @@ export default function CommunityFeed() {
 							>
 								<Input.Group compact>
 									<DatePicker
+										name={`${row.title.toLowerCase()}_min`}
 										style={{ width: '45%' }}
 										placeholder="Start Date"
 									/>
 									<DatePicker
+										name={`${row.title.toLowerCase()}_max`}
 										style={{ width: '45%' }}
 										placeholder="End Date"
 									/>
@@ -239,8 +232,10 @@ export default function CommunityFeed() {
 										style={{ width: '45%' }}
 										format="YYYY-MM-DD HH:mm:ss"
 										placeholder="Start Date Time"
+										name={`${row.title.toLowerCase()}_min`}
 									/>
 									<DatePicker
+										name={`${row.title.toLowerCase()}_max`}
 										showTime
 										style={{ width: '45%' }}
 										format="YYYY-MM-DD HH:mm:ss"
@@ -307,33 +302,6 @@ export default function CommunityFeed() {
 							</Form.Item>
 						);
 
-					case 'geolocation':
-						return (
-							<Form.Item
-								key={index}
-								label={`${row.title} (${labelValue})`}
-							>
-								<Input.Group compact>
-									<InputNumber
-										style={{ width: '45%' }}
-										placeholder="Min Longitude"
-									/>
-									<InputNumber
-										style={{ width: '45%' }}
-										placeholder="Max Longitude"
-									/>
-									<InputNumber
-										style={{ width: '45%' }}
-										placeholder="Min Latitude"
-									/>
-									<InputNumber
-										style={{ width: '45%' }}
-										placeholder="Max Latitude"
-									/>
-								</Input.Group>
-							</Form.Item>
-						);
-
 					default:
 						return null;
 				}
@@ -349,7 +317,7 @@ export default function CommunityFeed() {
 
 		// Call API to create post
 		const response = await fetchApi('/api/communities/get-community-posts', payload)
-		if(response.data){
+		if (response.data) {
 			setPosts(response.data)
 		}
 	};
@@ -365,7 +333,7 @@ export default function CommunityFeed() {
 
 		// Call API to create post
 		const response = await fetchApi('/api/communities/get-community-posts', payload)
-		if(response.data){
+		if (response.data) {
 			setPosts(response.data)
 		}
 	};

@@ -231,7 +231,10 @@ def get_communities(request):
 		community_ids = [connection.community.id for connection in connections]
 
 		# Get communities that user is not member of and not archived
-		communities = Community.objects.exclude(id__in=community_ids).exclude(archived=True)
+		communities = Community.objects.all()
+
+		# Filter out the communities that user is already a member of
+		communities = [community for community in communities if community.id not in community_ids and not community.archived]
 
 		communities_data = []
 
@@ -644,8 +647,8 @@ def get_user_feed(request):
 		follows = UserFollowConnection.objects.filter(follower=request.user.id)
 		followed_user_ids = [follow.followee.id for follow in follows]
 
-		# Get posts of the communities that user is member, moderator or owner of and not owned by current user
-		community_posts = Post.objects.filter(community__in=community_ids).exclude(createdBy=request.user)
+		# Get posts of the communities
+		community_posts = Post.objects.filter(community__in=community_ids)
 
 		# Get posts of the users that user is following
 		user_posts = Post.objects.filter(createdBy__in=followed_user_ids)
@@ -700,6 +703,9 @@ def get_user_feed(request):
 				'communityName': post.community.name,
 				'communityId': post.community.id
 			})
+
+		# Filter that user is member, moderator or owner of and not owned by current user
+		posts_data = [post for post in posts_data if post['username'] != request.user.username]
 
 		response_data = {
 			'success': True,
@@ -1130,12 +1136,15 @@ def edit_comment(request):
 def get_top_communities(request):
 	if request.method == 'POST':
 		# Get all communities and then post count of communities then sort them by post count and get the top 3
-		communities = Community.objects.exclude(archived=True)
+		communities = Community.objects.all()
 		communities_data = []
 		if communities is None:
 			for community in communities:
 				community.post_count = Post.objects.filter(community=community.id).count()
 				communities_data.append(community)
+
+		# Filter archived communities
+		communities_data = [community for community in communities_data if not community.archived]
 
 		active_communities = sorted(communities_data, key=lambda x: x.post_count, reverse=True)[:3]
 
