@@ -41,4 +41,5 @@ urlpatterns = [
     url(r'get-top-communities', views.get_top_communities, name='get_top_communities'),
     url(r'get-owned-communities', views.get_owned_communities, name='get_owned_communities'),
     url(r'archive-community', views.archive_community, name='archive_community'),
+    url(r'get-main-search', views.get_main_search, name='get_main_search'),
 ]

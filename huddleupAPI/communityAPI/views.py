@@ -1230,3 +1230,38 @@ def delete_template(request):
 			return JsonResponse({'success': True, 'message': 'Template deleted successfully'}, status=200)
 		return JsonResponse({'error': 'User is not authorized to delete the template'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+# Get all not archived communities and all users
+@csrf_exempt
+def get_main_search(request):
+	if request.method == 'POST':
+		communities = Community.objects.all()
+		users = User.objects.all()
+
+		communities_data = []
+		for community in communities:
+			communities_data.append({
+				'id': community.id,
+				'name': community.name,
+				'archived': community.archived,
+			})
+
+		# Filter out the archived communities
+		communities_data = [community for community in communities_data if not community['archived']]
+
+		users_data = []
+		for user in users:
+			users_data.append({
+				'id': user.id,
+				'username': user.username
+			})
+
+		response_data = {
+			'success': True,
+			'data': {
+				'communities': communities_data,
+				'users': users_data
+			}
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
