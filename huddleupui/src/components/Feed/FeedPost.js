@@ -112,7 +112,7 @@ const FeedPost = ({ postData }) => {
 
 	const handleAddComment = async () => {
 		if (newComment.trim() !== '') {
-			setComments([...comments, { comment: newComment, username: userInfo.username, createdAt: new Date(), likeCount: 0, dislikeCount: 0 }]);
+			setComments([...comments, { comment: newComment, username: userInfo?.username, createdAt: new Date(), likeCount: 0, dislikeCount: 0 }]);
 			await fetchApi('/api/communities/posts/add-comment', { postId: postData.id, comment: newComment });
 			setNewComment('');
 		}
@@ -224,10 +224,10 @@ const FeedPost = ({ postData }) => {
 			/>
 		</Tooltip>,
 		comment.dislikeCount,
-		(userInfo.username === comment.username) ? (
+		(userInfo?.username === comment?.username) ? (
 			<Button style={{ marginLeft: 10 }} size='small' onClick={() => handleEditComment(comment)}>Edit Comment</Button>
 		) : '',
-		(userInfo.username === postData.username) ? <Button style={{ marginLeft: 10 }} size='small' onClick={() => { handleDeleteComment(comment.id) }}>Delete Comment</Button> : ''
+		(userInfo?.username === postData?.username) ? <Button style={{ marginLeft: 10 }} size='small' onClick={() => { handleDeleteComment(comment.id) }}>Delete Comment</Button> : ''
 	];
 
 	const handleFollowUser = async (username) => {
@@ -298,8 +298,8 @@ const FeedPost = ({ postData }) => {
 						)}
 					</span>
 					<div style={{ color: "#7952CC" }}>
-						{postData.username} {postData.username !== userInfo.username ? (
-							<Button size='small' onClick={() => { handleFollowUser(postData.username) }}>
+						{postData?.username} {postData?.username !== userInfo?.username ? (
+							<Button size='small' onClick={() => { handleFollowUser(postData?.username) }}>
 								{isFollowing ? 'Unfollow' : 'Follow'}
 							</Button>
 						) : null}
