@@ -1127,9 +1127,10 @@ def get_top_communities(request):
 		# Get all communities and then post count of communities then sort them by post count and get the top 3
 		communities = Community.objects.exclude(archived=True)
 		communities_data = []
-		for community in communities:
-			community.post_count = Post.objects.filter(community=community.id).count()
-			communities_data.append(community)
+		if communities is None:
+			for community in communities:
+				community.post_count = Post.objects.filter(community=community.id).count()
+				communities_data.append(community)
 
 		active_communities = sorted(communities_data, key=lambda x: x.post_count, reverse=True)[:3]
 

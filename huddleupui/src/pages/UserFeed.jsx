@@ -32,7 +32,6 @@ export default function UserFeed() {
 
 	posts_result.then((response) => {
 		if (response && !response.loading && postsLoading) {
-			console.log(response.data.data)
 			setPosts(response.data.data)
 			setPostsLoading(false)
 		}
@@ -75,7 +74,7 @@ export default function UserFeed() {
 
 	return (
 		<div style={{ marginTop: 10 }}>
-			{posts.length > 0 && posts.map((post) => (
+			{posts && posts.length > 0 && posts.map((post) => (
 				<FeedPost postData={post} key={post.id}></FeedPost>
 			))}
 			{postsLoading ? (

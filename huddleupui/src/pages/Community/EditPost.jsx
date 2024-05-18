@@ -6,45 +6,45 @@ import fetchApi from '../../api/fetchApi';
 import '../../assets/community.css';
 
 export default function EditPost() {
-    const [form] = Form.useForm();
-    const [post, setPost] = useState(null);
-    const [selectedTemplate, setSelectedTemplate] = useState(null);
+	const [form] = Form.useForm();
+	const [post, setPost] = useState(null);
+	const [selectedTemplate, setSelectedTemplate] = useState(null);
 
-    const navigate = useNavigate();
-    const { communityId, postId } = useParams();
+	const navigate = useNavigate();
+	const { communityId, postId } = useParams();
 
-    useEffect(() => {
-        async function fetchPostAndTemplate() {
-            const response = await fetchApi(`/api/communities/get-post-details`, { postId });
-            if (response && response.data) {
-                setPost(response.data.post);
-                setSelectedTemplate(response.data.template);
-                form.setFieldsValue({
-                    ...response.data.post.rowValues.reduce((acc, curr, index) => ({ ...acc, [index]: curr }), {}),
-                });
-            }
-        }
+	useEffect(() => {
+		async function fetchPostAndTemplate() {
+			const response = await fetchApi(`/api/communities/get-post-details`, { postId });
+			if (response && response.data) {
+				setPost(response.data.post);
+				setSelectedTemplate(response.data.template);
+				form.setFieldsValue({
+					...response.data.post.rowValues.reduce((acc, curr, index) => ({ ...acc, [index]: curr }), {}),
+				});
+			}
+		}
 
-        fetchPostAndTemplate();
-    }, [postId, form]);
+		fetchPostAndTemplate();
+	}, [postId, form]);
 
-    const onFormSubmit = async values => {
-        const rowValues = Object.values(values);
-        const payload = {
-            postId,
-            templateId: selectedTemplate.id, // Assuming the templateId is necessary for backend processing
-            rowValues
-        };
-		console.log(payload)
-        const response = await fetchApi('/api/communities/edit-post', payload);
-		console.log(response)
-        if (response && response.success) {
-            message.success('Post updated successfully!');
-            navigate(`/communities/${communityId}`);
-        } else {
-            message.error('Failed to update post. Please try again.');
-        }
-    };
+	const onFormSubmit = async values => {
+		const rowValues = Object.values(values);
+		const payload = {
+			postId,
+			templateId: selectedTemplate.id, // Assuming the templateId is necessary for backend processing
+			rowValues
+		};
+
+		const response = await fetchApi('/api/communities/edit-post', payload);
+
+		if (response && response.success) {
+			message.success('Post updated successfully!');
+			navigate(`/communities/${communityId}`);
+		} else {
+			message.error('Failed to update post. Please try again.');
+		}
+	};
 
 	const typeOptions = [
 		{ key: "string", value: "Text" },
@@ -87,7 +87,7 @@ export default function EditPost() {
 		{ key: "geolocation", value: "Geographic Location" },
 	];
 
-    const renderFormrows = (rows) => {
+	const renderFormrows = (rows) => {
 		if (rows.length > 0) {
 			return rows.map((row, index) => {
 				const commonRules = [];
@@ -1026,36 +1026,36 @@ export default function EditPost() {
 		}
 	};
 
-    const normFile = e => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e && e.fileList;
-    };
+	const normFile = e => {
+		if (Array.isArray(e)) {
+			return e;
+		}
+		return e && e.fileList;
+	};
 
-    return (
-        <div>
-            <div style={{ display: 'flex' }}>
-                <h2 style={{ color: '#5c5b5b', marginLeft: 5 }}>
-                    Edit Post
-                </h2>
-                <Link to={`/communities/${communityId}`} style={{ marginLeft: 'auto', marginTop: 10 }}>
-                    <Button>Back to Community</Button>
-                </Link>
-            </div>
+	return (
+		<div>
+			<div style={{ display: 'flex' }}>
+				<h2 style={{ color: '#5c5b5b', marginLeft: 5 }}>
+					Edit Post
+				</h2>
+				<Link to={`/communities/${communityId}`} style={{ marginLeft: 'auto', marginTop: 10 }}>
+					<Button>Back to Community</Button>
+				</Link>
+			</div>
 
-            <Card>
-                {selectedTemplate && (
-                    <Form form={form} layout="vertical" onFinish={onFormSubmit}>
-                        {renderFormrows(selectedTemplate.rows)}
-                        <Form.Item style={{ marginTop: 20 }}>
-                            <Button type="primary" size="large" htmlType="submit">
-                                Update Post
-                            </Button>
-                        </Form.Item>
-                    </Form>
-                )}
-            </Card>
-        </div>
-    );
+			<Card>
+				{selectedTemplate && (
+					<Form form={form} layout="vertical" onFinish={onFormSubmit}>
+						{renderFormrows(selectedTemplate.rows)}
+						<Form.Item style={{ marginTop: 20 }}>
+							<Button type="primary" size="large" htmlType="submit">
+								Update Post
+							</Button>
+						</Form.Item>
+					</Form>
+				)}
+			</Card>
+		</div>
+	);
 }

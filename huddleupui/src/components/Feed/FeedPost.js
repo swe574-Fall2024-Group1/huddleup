@@ -248,10 +248,9 @@ const FeedPost = ({ postData }) => {
 		await fetchApi('/api/communities/delete-comment', { commentId });
 	};
 
-	console.log(postData);
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
-			{(userInfo.username === postData.username) ? (
+			{(userInfo?.username === postData?.username) ? (
 				<Button
 					type="danger"
 					style={{ position: 'absolute', right: 10, top: 10, color: '#7952CC' }}

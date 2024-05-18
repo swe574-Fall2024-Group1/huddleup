@@ -30,9 +30,6 @@ export default function CommunitySettings() {
 		}
 	}
 
-	// Community Settings page, now there will be a button to add a template to navigate to add template page
-	// If no templates are added, a message will be displayed to add a template
-	// If templates are added, they will be displayed in a list
 	return (
 		<div>
 			<div style={{ display: 'flex' }}>

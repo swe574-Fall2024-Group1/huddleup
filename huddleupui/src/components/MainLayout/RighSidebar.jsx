@@ -51,7 +51,6 @@ const RightSidebar = () => {
 		setConnectionsModalVisible(!connectionsModalVisible);
 	};
 
-	console.log(ownedCommunities)
 	return (
 		<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
 			<Card title="Owned Communities" bordered={false}>

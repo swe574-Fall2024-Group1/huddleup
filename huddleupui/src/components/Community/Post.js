@@ -199,7 +199,7 @@ const Post = ({ postData }) => {
 	const handleSaveEditedComment = async () => {
 		if (editedCommentText.trim() !== '') {
 			const updatedComments = comments.map((comment) =>
-				comment.id === editingComment.id ? { ...comment, comment: editedCommentText } : comment
+				comment.id === editingComment.id ? { ...comment, comment: (editedCommentText + `(edited)` ) } : comment
 			);
 			setComments(updatedComments);
 			setEditingComment(null);
@@ -299,7 +299,7 @@ const Post = ({ postData }) => {
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
 				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null}</div>}
-				description={new Date(postData.createdAt).toLocaleString()}
+				description={<div><div>{new Date(postData.createdAt).toLocaleString()}</div> {postData.isEdited ? <div>Edited</div> : null } </div>}
 			/>
 			<div style={{ marginTop: 20 }}>
 				<span style={{ color: "#240763", fontWeight: 600 }}>Template:</span> {templateName || ''}
@@ -346,7 +346,7 @@ const Post = ({ postData }) => {
 							<Comment
 								actions={renderCommentActions(comment)} // Pass the comment object to renderCommentActions function
 								author={comment.username}
-								content={comment.comment}
+								content={comment.comment + (comment.isEdited  ? ' (edited)' : '')}
 								datetime={new Date(comment.createdAt).toLocaleString('tr-TR', {
 									day: '2-digit',
 									month: '2-digit',

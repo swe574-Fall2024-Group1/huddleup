@@ -144,7 +144,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	if (communityInfo && communityInfo.name && canNotMembersSee && !communityInfo.isPrivate) {
 		allowedUserTypes.push('notMember');
 	}
-	console.log(communityInfo)
+
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
 			<Navbar />

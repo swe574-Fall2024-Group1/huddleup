@@ -21,7 +21,6 @@ export default function CommunityInvitations() {
             const payload = { ...values, communityId };
             const response = await fetchApi('/api/communities/create-invitation', payload);
             if (response && response.success) {
-                console.log(response)
                 message.success('Invitation created successfully!');
                 // Add new invitation to the list
                 setInvitations([...invitations, response.data]);

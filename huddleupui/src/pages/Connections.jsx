@@ -12,7 +12,6 @@ const Connections = () => {
 	connections_result.then((response) => {
 		if (response && !response.loading && connectionsLoading) {
 			setConnections(response.data.data);
-			console.log(response.data.data)
 			setConnectionsLoading(false);
 		}
 	});
