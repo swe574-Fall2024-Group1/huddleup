@@ -40,6 +40,7 @@ class Template(models.Model):
 	templateName = models.CharField(max_length=50)
 	rows = models.JSONField(default=list)
 	createdAt = models.DateTimeField(auto_now_add=True)
+	isDeleted = models.BooleanField(default=False)
 
 class Post(models.Model):
 	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)

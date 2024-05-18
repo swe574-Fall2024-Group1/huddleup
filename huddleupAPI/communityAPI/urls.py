@@ -24,6 +24,7 @@ urlpatterns = [
 	url(r'templates/create-template', views.create_template, name='create_template'),
 	url(r'templates/get-templates', views.get_templates, name='get_templates'),
 	url(r'templates/get-template', views.get_template, name='get_template'),
+    url(r'templates/delete-template', views.delete_template, name='delete_template'),
 	url(r'create-post', views.create_post, name='create_post'),
 	url(r'add-comment', views.add_comment, name='add_comment'),
 	url(r'get-post-comments', views.get_post_comments, name='get_post_comments'),

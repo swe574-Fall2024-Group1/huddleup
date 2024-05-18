@@ -30,6 +30,12 @@ export default function CommunitySettings() {
 		}
 	}
 
+	const handleDeleteTemplate = async (templateId) => {
+		const newTemplates = templates.filter((template) => template.id !== templateId);
+		setTemplates(newTemplates);
+		await fetchApi(`/api/communities/templates/delete-template`, { templateId });
+	};
+
 	return (
 		<div>
 			<div style={{ display: 'flex' }}>
@@ -43,15 +49,25 @@ export default function CommunitySettings() {
 				</Link>
 			</div>
 
-			<Card style={{ textAlign: 'center', padding: 20, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
+			<Card style={{  padding: 20, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 				{templates && templates.length === 0 ? (
 					<h3>No templates added yet</h3>
 				) : (
 					<div>
 						<h3>Templates</h3>
 						{templates.map((template) => (
-							<div key={template.id}>
-								<h4>{template.templateName}</h4>
+							<div>
+								<div style={{ display: 'flex' }} key={template.id}>
+									<h4>{template.templateName}</h4>
+									<Button
+										type="primary"
+										size="small"
+										style={{ backgroundColor: '#f5222d', fontWeight: 700, marginLeft: 20, marginTop: 15 }}
+										onClick={() => handleDeleteTemplate(template.id)}
+									>
+										Delete
+									</Button>
+								</div>
 							</div>
 						))}
 					</div>
@@ -59,7 +75,7 @@ export default function CommunitySettings() {
 				<Button
 					type="primary"
 					size="large"
-					style={{ backgroundColor: '#7952CC', fontWeight: 700 }}
+					style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
 					onClick={() => navigate(`/communities/${communityId}/create-template`)}
 				>
 					+ Add Template

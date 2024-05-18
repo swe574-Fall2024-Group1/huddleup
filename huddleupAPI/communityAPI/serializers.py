@@ -23,7 +23,7 @@ class TemplateSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Template
-		fields = ['createdBy', 'community', 'templateName', 'rows', 'id', 'createdAt']
+		fields = ['createdBy', 'community', 'templateName', 'rows', 'id', 'createdAt', 'isDeleted']
 
 
 class PostSerializer(serializers.ModelSerializer):

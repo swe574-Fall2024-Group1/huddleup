@@ -747,8 +747,13 @@ def get_templates(request):
 			templates_data.append({
 				'id': template.id,
 				'templateName': template.templateName,
-				'rows': template.rows
+				'rows': template.rows,
+				'isDeleted': template.isDeleted
 			})
+
+		# Filter deleted templates
+		templates_data = [template for template in templates_data if not template['isDeleted']]
+
 		response_data = {
 			'success': True,
 			'data': templates_data
@@ -1210,3 +1215,18 @@ def archive_community(request):
 		return JsonResponse({'error': 'User is not authorized to archive the community'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Add isDeleted true to the template if current user is owner or moderator of the template
+@csrf_exempt
+def delete_template(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		template = Template.objects.get(id=payload['templateId'])
+		community = Community.objects.get(id=template.community.id)
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+
+		if user_connection.type == 'owner' or user_connection.type == 'moderator':
+			template.isDeleted = True
+			template.save()
+			return JsonResponse({'success': True, 'message': 'Template deleted successfully'}, status=200)
+		return JsonResponse({'error': 'User is not authorized to delete the template'}, status=403)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
