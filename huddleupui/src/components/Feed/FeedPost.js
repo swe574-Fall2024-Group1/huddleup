@@ -113,7 +113,7 @@ const FeedPost = ({ postData }) => {
 	const handleAddComment = async () => {
 		if (newComment.trim() !== '') {
 			setComments([...comments, { comment: newComment, username: userInfo?.username, createdAt: new Date(), likeCount: 0, dislikeCount: 0 }]);
-			await fetchApi('/api/communities/posts/add-comment', { postId: postData.id, comment: newComment });
+			await fetchApi('/api/communities/add-comment', { postId: postData.id, comment: newComment });
 			setNewComment('');
 		}
 	};
