@@ -97,13 +97,17 @@ export default function CreatePost() {
 		};
 
 		// Call API to create post
-		const response = await fetchApi('/api/communities/create-post', payload)
+		await fetchApi('/api/communities/create-post', payload)
 
 		message.success('Post created successfully!');
 		navigate(`/communities/${communityId}`);
 		setCurrentStep(0);
 		setSelectedTemplate(null);
 	};
+
+	const onFinishFailed = (errorInfo) => {
+		message.error(errorInfo)
+	  };
 
 	const renderFormrows = (rows) => {
 		if (rows.length > 0) {
@@ -389,6 +393,8 @@ export default function CreatePost() {
 
 													if (!Number.isInteger(value) || value < 0) {
 														reject(`Please input a valid ${row.title.toLowerCase()}!`);
+													}else{
+														resolve()
 													}
 												}
 											});
@@ -1096,7 +1102,7 @@ export default function CreatePost() {
 					)}
 
 					{currentStep === 1 && selectedTemplate && (
-						<Form form={form} layout="vertical" onFinish={onFormSubmit} >
+						<Form form={form} layout="vertical"  onFinish={onFormSubmit} onFinishFailed={onFinishFailed}>
 							{renderFormrows(selectedTemplate.rows)}
 							<Form.Item style={{ float: 'right' }}>
 
@@ -1110,7 +1116,7 @@ export default function CreatePost() {
 								</Button>
 
 								<Button style={{ backgroundColor: '#7952CC', marginLeft: 5, fontWeight: 700 }} size="large"
-									type="primary" htmlType="submit" disabled={templates.length === 0}>
+									type="primary" htmlType="submit" disabled={(templates && templates.length === 0)}>
 									Submit
 								</Button>
 							</Form.Item>
