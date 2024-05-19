@@ -7,7 +7,7 @@ from authAPI.models import User
 from authAPI.serializers import UserSerializer
 from authAPI.sessionManager import SessionManager
 
-# Create your views here.
+
 @csrf_exempt
 def register(request):
 	if request.method == 'POST':

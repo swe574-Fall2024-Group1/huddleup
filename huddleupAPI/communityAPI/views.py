@@ -14,7 +14,7 @@ import json
 import datetime
 
 
-# Create your views here.
+# Create a community with current user as owner
 @csrf_exempt
 def create_community(request):
 	if request.method == 'POST':
@@ -66,7 +66,7 @@ def create_community(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
-# Get users that has connection with type 'member' of the comminty
+# Get users that has connection with type 'member' of the community
 @csrf_exempt
 def get_community_members(request):
 	if request.method == 'POST':
@@ -86,7 +86,7 @@ def get_community_members(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-#Get users that banned from community
+# Get users that banned from community
 @csrf_exempt
 def get_community_banned(request):
 	if request.method == 'POST':
@@ -106,7 +106,7 @@ def get_community_banned(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-# Get users that has connection with type 'moderator' of the comminty
+# Get users that has connection with type 'moderator' of the community
 @csrf_exempt
 def get_community_moderators(request):
 	if request.method == 'POST':
@@ -126,7 +126,7 @@ def get_community_moderators(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-# Get users that has connection with type 'owner' of the comminty
+# Get users that has connection with type 'owner' of the community
 @csrf_exempt
 def get_community_owners(request):
 	if request.method == 'POST':
@@ -186,7 +186,7 @@ def change_ownership(request):
 		return JsonResponse({'success': True, 'message': 'Ownership changed successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-
+# Ban a user from the community if current user is owner of the community
 @csrf_exempt
 def get_community_info(request):
 	if request.method == 'POST':
@@ -222,7 +222,7 @@ def get_community_info(request):
 	else:
 		return JsonResponse({'error': 'Invalid request method'}, status=400)
 
-# gets all communites that user dont have connection with
+# Gets all communities that user is not member of and not archived
 @csrf_exempt
 def get_communities(request):
 	if request.method == 'POST':
@@ -254,13 +254,7 @@ def get_communities(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-
-
-
-
-
-
-# gets all communites that user is either member or moderator (not banned)
+# Get all communities that user is member of and not archived
 @csrf_exempt
 def get_user_communities(request):
 	if request.method == 'POST':
@@ -334,7 +328,6 @@ def leave_community(request):
 
 
 # Create a invitation for a user to join a community if community is private and inviter user is owner or moderator of the community and invited user is not member of the community 
-# username and communityId in request
 @csrf_exempt
 def create_invitation(request):
 	if request.method == 'POST':
@@ -424,6 +417,7 @@ def get_invitations_by_community(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Get all invitations of the user
 @csrf_exempt
 def get_invitations_by_user(request):
 	if request.method == 'POST':
@@ -472,6 +466,7 @@ def response_invitation(request):
 		return JsonResponse({'success': True, 'message': 'Invitation response processed successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Get all posts of the community
 @csrf_exempt
 def get_community_posts(request):
 	if request.method == 'POST':
@@ -722,10 +717,7 @@ def get_user_feed(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-
-
-
-# Template related views
+# Create a post with the template of the community
 @csrf_exempt
 def create_template(request):
 	if request.method == 'POST':
@@ -751,6 +743,7 @@ def create_template(request):
 		return JsonResponse(template_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Get all templates of the community
 @csrf_exempt
 def get_templates(request):
 	if request.method == 'POST':
@@ -775,6 +768,7 @@ def get_templates(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Get template by id
 @csrf_exempt
 def get_template(request):
 	if request.method == 'POST':
@@ -792,7 +786,7 @@ def get_template(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-# Post related views
+# Create a post with the template of the community
 @csrf_exempt
 def create_post(request):
 	if request.method == 'POST':
@@ -819,7 +813,7 @@ def create_post(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
-# Comment related views
+# Create a comment for a post
 @csrf_exempt
 def add_comment(request):
 	if request.method == 'POST':
@@ -844,7 +838,7 @@ def add_comment(request):
 		return JsonResponse(comment_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-#Get comments of a post with like and unlike counts
+# Get comments of a post with like and unlike counts
 @csrf_exempt
 def get_post_comments(request):
 	if request.method == 'POST':
@@ -890,7 +884,7 @@ def get_post_comments(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-
+# Like or unlike a post
 @csrf_exempt
 def like_post(request):
 	if request.method == 'POST':
@@ -926,6 +920,7 @@ def like_post(request):
 				return JsonResponse(like_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+# Like or unlike a comment
 @csrf_exempt
 def like_comment(request):
 	if request.method == 'POST':
@@ -962,7 +957,7 @@ def like_comment(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
-# Follor if user is not followed yet, unfollow if user is already followed
+# Follow if user is not followed yet, unfollow if user is already followed
 @csrf_exempt
 def follow_user(request):
 	if request.method == 'POST':
