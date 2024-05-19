@@ -1145,11 +1145,13 @@ def get_top_communities(request):
 	if request.method == 'POST':
 		# Get all communities and then post count of communities then sort them by post count and get the top 3
 		communities = Community.objects.all()
+
 		communities_data = []
-		if communities is None:
+		if communities is not None:
 			for community in communities:
 				community.post_count = Post.objects.filter(community=community.id).count()
 				communities_data.append(community)
+
 
 		# Filter archived communities
 		communities_data = [community for community in communities_data if not community.archived]
