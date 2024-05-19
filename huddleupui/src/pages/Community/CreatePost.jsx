@@ -321,6 +321,8 @@ export default function CreatePost() {
 													const isValidNCName = /^[^:]+:.+$/.test(value);
 													if (!isValidNCName) {
 														reject(`Please input a valid ${row.type.toLowerCase()}!`);
+													}else {
+														resolve()
 													}
 												}
 											});
