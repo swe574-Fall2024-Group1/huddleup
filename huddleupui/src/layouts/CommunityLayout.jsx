@@ -253,7 +253,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					</div>
 				)}
 				<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
-					{(communityInfo.memberType && (!communityInfo.isPrivate || communityInfo.memberType !== 'notMember')) ? (
+					{(communityInfo.memberType && (!communityInfo.isPrivate || communityInfo.memberType !== 'notMember' || communityInfo.memberType === 'banned')) ? (
 						<div>
 							<Card title="Description" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 								<span>{communityInfo ? communityInfo.description : ''}</span>

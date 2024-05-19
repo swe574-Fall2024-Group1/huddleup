@@ -4,11 +4,14 @@ import { UserOutlined, SearchOutlined, LogoutOutlined } from '@ant-design/icons'
 import { Link } from 'react-router-dom';
 import useAuth from "../Auth/useAuth";
 import useApi from '../../hooks/useApi';
+import { useNavigate } from "react-router-dom";
+
 
 const { Header } = Layout;
 
 const Navbar = () => {
 	const { onLogout, userInfo } = useAuth();
+	const navigate = useNavigate();
 
 	const [mainSearchAllItems, setMainSearchAllItems] = useState([]);
 	const [mainSearchAllItemsLoading, setMainSearchAllItemsLoading] = useState(true);
@@ -51,12 +54,18 @@ const Navbar = () => {
 		);
 
 		const results = [
-			...communities.map(item => ({ value: `Community: ${item.name}`, label: `Community: ${item.name}` })),
-			...users.map(item => ({ value: `User: ${item.username}`, label: `User: ${item.username}` }))
+			...communities.map(item => ({ value: `Community: ${item.name}`, label: `Community: ${item.name}`, id: item.id, type: 'community'})),
+			...users.map(item => ({ value: `User: ${item.username}`, label: `User: ${item.username}`, id: item.id, type: 'user'}))
 		];
 
 		setSearchResults(results);
 		setSearchLoading(false);
+	};
+
+	const handleSelect = (value, option) => {
+		if (option.type === 'community') {
+			navigate(`/communities/${option.id}`);
+		}
 	};
 
 	return (
@@ -78,6 +87,7 @@ const Navbar = () => {
 						style={{ width: 300 }}
 						options={searchResults}
 						onSearch={handleSearch}
+						onSelect={handleSelect}
 						notFoundContent={searchLoading ? <Spin size="small" /> : null}
 					>
 						<Input addonBefore={<SearchOutlined />} placeholder="Search for communities and users" />
