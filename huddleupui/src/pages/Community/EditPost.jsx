@@ -299,6 +299,8 @@ export default function EditPost() {
 													const isValidNCName = /^[^:]+:.+$/.test(value);
 													if (!isValidNCName) {
 														reject(`Please input a valid ${row.type.toLowerCase()}!`);
+													}else {
+														resolve();
 													}
 												}
 											});
@@ -371,6 +373,8 @@ export default function EditPost() {
 
 													if (!Number.isInteger(value) || value < 0) {
 														reject(`Please input a valid ${row.title.toLowerCase()}!`);
+													}else {
+														resolve();
 													}
 												}
 											});

@@ -74,7 +74,13 @@ const Post = ({ postData }) => {
 			case 'long':
 			case 'unsignedLong':
 			case 'decimal':
+			case 'integer':
+			case 'positiveInteger':
+			case 'negativeInteger':
+			case 'nonNegativeInteger':
+			case 'nonPositiveInteger':
 			case 'float':
+			case 'NCName':
 			case 'double':
 				return <Text>{getRowValue(row.title)}</Text>;
 
