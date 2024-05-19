@@ -1171,7 +1171,8 @@ def get_top_communities(request):
 
 		# Get the newes 3 communities from communities
 		not_active_communities = [community for community in communities_data if community not in active_communities]
-		promoted_communities = sorted(not_active_communities, key=lambda x: x.createdAt, reverse=True)[3:6]
+
+		promoted_communities = sorted(not_active_communities, key=lambda x: x.createdAt, reverse=True)[:3]
 
 		promoted_communities_data = []
 		for community in promoted_communities:
