@@ -707,6 +707,14 @@ def get_user_feed(request):
 		# Filter that user is member, moderator or owner of and not owned by current user
 		posts_data = [post for post in posts_data if post['username'] != request.user.username]
 
+		# Filter duplicates in posts_data
+		unique_posts = {}
+		for post in posts_data:
+			unique_posts[post['id']] = post
+
+		posts_data = list(unique_posts.values())
+
+
 		response_data = {
 			'success': True,
 			'data': posts_data
