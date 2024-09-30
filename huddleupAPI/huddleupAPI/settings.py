@@ -98,7 +98,7 @@ DATABASES = {
 		'ENGINE': 'djongo',
 		'NAME': 'huddleup',
 		'CLIENT':	{
-			'host': 'mongodb+srv://manifektteam:Deneme.123@huddleup.zjtzmrg.mongodb.net/?retryWrites=true&w=majority&appName=huddleup',
+			'host': 'somesecret',
 			'authMechanism': 'SCRAM-SHA-1'
 		}
 	}
