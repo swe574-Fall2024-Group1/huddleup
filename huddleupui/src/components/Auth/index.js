@@ -1,1 +1,0 @@
-export * as AuthProvider from "./AuthProvider"
