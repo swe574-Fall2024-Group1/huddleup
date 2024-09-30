@@ -1,0 +1,28 @@
+/* Import Baloo Bhaijaan 2 font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400..800&display=swap');
+
+/* Apply Baloo Bhaijaan 2 font to the entire document */
+body {
+  margin: 0;
+  font-family: 'Baloo Bhaijaan 2', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important; /* Use !important to override other styles */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Specify fallback fonts for code elements */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+:where(.css-dev-only-do-not-override-1kuana8).ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-1kuana8).ant-menu-light>.ant-menu .ant-menu-item-selected {
+  background-color: transparent ;
+}
+
+:where(.css-dev-only-do-not-override-1kuana8).ant-menu-light .ant-menu-item-selected, :where(.css-dev-only-do-not-override-1kuana8).ant-menu-light>.ant-menu .ant-menu-item-selected {
+  color: #7952CC;
+  font-weight: 600;
+}
+
