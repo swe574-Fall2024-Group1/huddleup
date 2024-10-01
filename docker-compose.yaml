@@ -10,3 +10,13 @@ services:
       - "8000:8000"
     volumes:
       - ./huddleupAPI:/code
+  frontend:
+    build:
+      context: ./huddleupui
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./huddleupui:/app
+      - ./huddleupui/node_modules:/app/node_modules
+    depends_on:
+      - backend
