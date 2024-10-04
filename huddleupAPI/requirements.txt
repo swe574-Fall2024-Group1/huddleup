@@ -2,7 +2,11 @@ asgiref==3.8.1
 cffi==1.17.1
 cryptography==42.0.5
 Django==4.2
+django-cors-headers
 djangorestframework==3.15.2
+gunicorn
+Pillow
+psycopg[binary]
 pycparser==2.22
 pytz==2024.2
 sqlparse==0.5.1

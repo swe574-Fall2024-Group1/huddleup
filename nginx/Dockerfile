@@ -7,5 +7,5 @@ RUN addgroup --system --gid 500 $APP_GROUP && adduser --system --uid 500 $APP_US
 
 RUN rm /etc/nginx/conf.d/default.conf
 RUN rm /etc/nginx/nginx.conf
-COPY cbis.conf /etc/nginx/conf.d
+COPY huddleup.conf /etc/nginx/conf.d
 COPY nginx.conf /etc/nginx
