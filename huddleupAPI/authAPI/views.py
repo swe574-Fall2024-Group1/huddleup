@@ -27,7 +27,7 @@ def register(request):
 
 		user_serializer = UserSerializer(data=user_data)
 		if user_serializer.is_valid():
-			user_serializer.save()
+			User.objects.create_user(username=username, password=password)
 			response_data = {
 				'success': True,
 				'data': user_serializer.data

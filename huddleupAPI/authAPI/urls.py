@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import path
 from authAPI import views
 
 urlpatterns = [
-	url(r'register', views.register),
-	url(r'login', views.login),
-	url(r'get-user-info', views.get_user_info)
+	path('register', views.register),
+	path('login', views.login),
+	path('get-user-info', views.get_user_info)
 ]
