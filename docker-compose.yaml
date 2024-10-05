@@ -40,7 +40,7 @@ services:
       - ./huddleupAPI/staticfiles:/app/staticfiles
       - ./huddleupAPI/mediafiles:/app/mediafiles
     ports:
-      - "127.0.0.1:8080:80"
+      - "127.0.0.1:8000:80"
     depends_on:
       - backend
     restart: unless-stopped
