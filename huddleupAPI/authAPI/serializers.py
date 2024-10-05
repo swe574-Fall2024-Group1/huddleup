@@ -3,6 +3,12 @@ from rest_framework import exceptions
 from .models import User, Session
 
 
+class UserSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = User
+		fields = ['email', 'id', 'username', 'about_me']
+
+
 class UserRegisterSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(write_only=True)
 	email = serializers.EmailField(write_only=True)

@@ -50,7 +50,7 @@ class SessionManager:
 
 			sessionId = int(cipher.decrypt(base64.urlsafe_b64decode(token)).decode())
 			session = Session.objects.get(id=sessionId)
-		except InvalidToken:
+		except:
 		# Handle invalid token error here
 			return None
 		return session
