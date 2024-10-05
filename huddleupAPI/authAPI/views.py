@@ -4,37 +4,16 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 
 from authAPI.models import User
-from authAPI.serializers import UserSerializer
+from authAPI.serializers import UserRegisterSerializer
 from authAPI.sessionManager import SessionManager
+from rest_framework.generics import CreateAPIView
+from rest_framework import permissions
 
 
-@csrf_exempt
-def register(request):
-	if request.method == 'POST':
+class CreateUserView(CreateAPIView):
 
-		user_data = JSONParser().parse(request)
-		username = user_data.get('username', None)
-		password = user_data.get('password', None)
-
-		# Make username lowercase
-		user_data['username'] = username.lower()
-
-		if not username or not password:
-			return JsonResponse({'error': 'Username and password are required'}, status=400)
-
-		if User.objects.filter(username=username).exists():
-			return JsonResponse({'error': 'Username already exists'}, status=400)
-
-		user_serializer = UserSerializer(data=user_data)
-		if user_serializer.is_valid():
-			User.objects.create_user(username=username, password=password)
-			response_data = {
-				'success': True,
-				'data': user_serializer.data
-			}
-			return JsonResponse(response_data, status=201)
-
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+    permission_classes = [permissions.AllowAny]
+    serializer_class = UserRegisterSerializer
 
 
 @csrf_exempt
