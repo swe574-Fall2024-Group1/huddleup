@@ -4,6 +4,9 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q,Count
+from rest_framework.generics import CreateAPIView
+from rest_framework.response import Response
+from rest_framework import status
 
 
 from authAPI.models import User
@@ -14,56 +17,52 @@ import json
 import datetime
 
 
-# Create a community with current user as owner
-@csrf_exempt
-def create_community(request):
-	if request.method == 'POST':
-		community_data = JSONParser().parse(request)
-		community_serializer = CommunitySerializer(data=community_data)
-		if community_serializer.is_valid():
-			community_serializer.save()
+class CreateCommunity(CreateAPIView):
 
-			communityUserConnection_data = {
-				'user': request.user.id,
-				'community': community_serializer.data['id'],
-				'type': 'owner'
-			}
+	serializer_class = CommunitySerializer
 
-			communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
-			if communityUserConnection_serializer.is_valid():
-				communityUserConnection_serializer.save()
+	def create(self, request, *args, **kwargs):
+		serializer = self.get_serializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		instance = serializer.save()
 
-			# Create default template for the community
-			template_data = {
-				'createdBy': request.user.id,
-				'community': community_serializer.data['id'],
-				'templateName': 'Default Template',
-				'rows': [
-					{
-						'title': 'Title',
-						'type': 'string',
-						'required': True
-					},
-					{
-						'title': 'Text',
-						'type': 'string',
-						'required': True
-					},
-				]
-			}
-			template_serializer = TemplateSerializer(data=template_data)
-			if template_serializer.is_valid():
-				template_serializer.save()
+		communityUserConnection_data = {
+			'user': request.user.id,
+			'community': instance.id,
+			'type': 'owner'
+		}
+		communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
+		if communityUserConnection_serializer.is_valid():
+			communityUserConnection_serializer.save()
 
-			response_data = {
-				'success': True,
-				'data': {
-					'id': community_serializer.data['id']
-				}
-			}
-			return JsonResponse(response_data, status=201)
-		return JsonResponse(community_serializer.errors, status=400)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+		# Create default template for the community
+		template_data = {
+			'createdBy': request.user.id,
+			'community': instance.id,
+			'templateName': 'Default Template',
+			'rows': [
+				{
+					'title': 'Title',
+					'type': 'string',
+					'required': True
+				},
+				{
+					'title': 'Text',
+					'type': 'string',
+					'required': True
+				},
+			]
+		}
+		template_serializer = TemplateSerializer(data=template_data)
+		if template_serializer.is_valid():
+			template_serializer.save()
+		response_data = {
+			'success': True,
+			'data': {
+				'id': instance.id
+			}}
+		headers = self.get_success_headers(serializer.data)
+		return Response(response_data, status=status.HTTP_201_CREATED, headers=headers)
 
 
 # Get users that has connection with type 'member' of the community

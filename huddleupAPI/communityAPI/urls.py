@@ -2,7 +2,7 @@ from django.urls import path
 from communityAPI import views
 
 urlpatterns = [
-	path('create-community', views.create_community, name='create_community'),
+	path('create-community/', views.CreateCommunity.as_view(), name='create_community'),
 	path('get-community-info', views.get_community_info, name='get_community_info'),
 	path('get-user-communities', views.get_user_communities, name='get_user_communities'),
     path('get-communities', views.get_communities, name='get_communities'),
