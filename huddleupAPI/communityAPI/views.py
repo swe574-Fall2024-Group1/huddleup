@@ -4,12 +4,13 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q,Count
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import status
 
 
 from authAPI.models import User
+from authAPI.serializers import UserSerializer
 from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer
 
@@ -66,84 +67,56 @@ class CreateCommunity(CreateAPIView):
 
 
 # Get users that has connection with type 'member' of the community
-@csrf_exempt
-def get_community_members(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		connections = CommunityUserConnection.objects.filter(community=community.id, type='member')
-		members_data = []
-		for connection in connections:
-			members_data.append({
-				'username': connection.user.username,
-				'type': connection.type
-			})
-		response_data = {
-			'success': True,
-			'data': members_data
-		}
-		return JsonResponse(response_data, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+class CommunityMembers(RetrieveAPIView):
+
+	def get_queryset(self):
+		return Community.objects.all()
+
+	def retrieve(self, request, *args, **kwargs):
+		instance = self.get_object()
+		users = [connection.user for connection in CommunityUserConnection.objects.filter(community=instance.id, type='member')]
+		serializer = UserSerializer(users, many=True)
+		return Response({"success": True, "data": serializer.data})
+
 
 # Get users that banned from community
-@csrf_exempt
-def get_community_banned(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		connections = CommunityUserConnection.objects.filter(community=community.id, type='banned')
-		banned_data = []
-		for connection in connections:
-			banned_data.append({
-				'username': connection.user.username,
-				'type': connection.type
-			})
-		response_data = {
-			'success': True,
-			'data': banned_data
-		}
-		return JsonResponse(response_data, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+class CommunityBannedMembers(RetrieveAPIView):
+
+	def get_queryset(self):
+		return Community.objects.all()
+
+	def retrieve(self, request, *args, **kwargs):
+		instance = self.get_object()
+		users = [connection.user for connection in CommunityUserConnection.objects.filter(community=instance.id, type='banned')]
+		serializer = UserSerializer(users, many=True)
+		return Response({"success": True, "data": serializer.data})
+
 
 # Get users that has connection with type 'moderator' of the community
-@csrf_exempt
-def get_community_moderators(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		connections = CommunityUserConnection.objects.filter(community=community.id, type='moderator')
-		moderators_data = []
-		for connection in connections:
-			moderators_data.append({
-				'username': connection.user.username,
-				'type': connection.type
-			})
-		response_data = {
-			'success': True,
-			'data': moderators_data
-		}
-		return JsonResponse(response_data, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+class CommunityModerators(RetrieveAPIView):
+
+	def get_queryset(self):
+		return Community.objects.all()
+
+	def retrieve(self, request, *args, **kwargs):
+		instance = self.get_object()
+		users = [connection.user for connection in CommunityUserConnection.objects.filter(community=instance.id, type='moderator')]
+		serializer = UserSerializer(users, many=True)
+		return Response({"success": True, "data": serializer.data})
+
 
 # Get users that has connection with type 'owner' of the community
-@csrf_exempt
-def get_community_owners(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		connections = CommunityUserConnection.objects.filter(community=community.id, type='owner')
-		owners_data = []
-		for connection in connections:
-			owners_data.append({
-				'username': connection.user.username,
-				'type': connection.type
-			})
-		response_data = {
-			'success': True,
-			'data': owners_data
-		}
-		return JsonResponse(response_data, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+class CommunityOwners(RetrieveAPIView):
+
+	def get_queryset(self):
+		return Community.objects.all()
+
+	def retrieve(self, request, *args, **kwargs):
+		instance = self.get_object()
+		users = [connection.user for connection in CommunityUserConnection.objects.filter(community=instance.id, type='owner')]
+		serializer = UserSerializer(users, many=True)
+		return Response({"success": True, "data": serializer.data})
+
 
 # Assign a moderator if current user is owner of the community, and unassign if user is already a moderator
 @csrf_exempt

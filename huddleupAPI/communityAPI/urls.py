@@ -3,6 +3,10 @@ from communityAPI import views
 
 urlpatterns = [
 	path('create-community/', views.CreateCommunity.as_view(), name='create_community'),
+	path('get-community-members/<int:pk>/', views.CommunityMembers.as_view(), name='get_community_members'),
+	path('get-community-banned/<int:pk>/', views.CommunityBannedMembers.as_view(), name='get_community_banned'),
+	path('get-community-moderators/<int:pk>/', views.CommunityModerators.as_view(), name='get_community_moderators'),
+	path('get-community-owners/<int:pk>/', views.CommunityOwners.as_view(), name='get_community_owners'),
 	path('get-community-info', views.get_community_info, name='get_community_info'),
 	path('get-user-communities', views.get_user_communities, name='get_user_communities'),
     path('get-communities', views.get_communities, name='get_communities'),
@@ -10,10 +14,6 @@ urlpatterns = [
 	path('leave-community', views.leave_community, name='leave_community'),
 	path('create-invitation', views.create_invitation, name='create_invitation'),
     path('cancel-invitation', views.cancel_invitation, name='cancel_invitation'),
-	path('get-community-members', views.get_community_members, name='get_community_members'),
-	path('get-community-banned', views.get_community_banned, name='get_community_banned'),
-	path('get-community-moderators', views.get_community_moderators, name='get_community_moderators'),
-	path('get-community-owners', views.get_community_owners, name='get_community_owners'),
 	path('assign-moderator', views.assign_moderator, name='assign_moderator'),
     path('change-ownership', views.change_ownership, name='change_ownership'),
 	path('get-invitations-community', views.get_invitations_by_community, name='get_invitations_by_community'),
