@@ -4,7 +4,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q,Count
-from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import views
@@ -183,36 +183,25 @@ class CommunityInfo(RetrieveAPIView):
 
 
 # Gets all communities that user is not member of and not archived
-@csrf_exempt
-def get_communities(request):
-	if request.method == 'POST':
-		# Get connections
-		connections = CommunityUserConnection.objects.filter(user=request.user.id)
-		community_ids = [connection.community.id for connection in connections]
+class GetCommunities(ListAPIView):
+	serializer_class = CommunitySerializer
 
-		# Get communities that user is not member of and not archived
-		communities = Community.objects.all()
+	def get_queryset(self):
+		connections = CommunityUserConnection.objects.filter(user=self.request.user)
+		community_ids = list(set([x.community.id for x in connections]))
+		return Community.objects.exclude(id__in=community_ids).exclude(archived=True)
 
-		# Filter out the communities that user is already a member of
-		communities = [community for community in communities if community.id not in community_ids and not community.archived]
+	def list(self, request, *args, **kwargs):
+		queryset = self.filter_queryset(self.get_queryset())
 
-		communities_data = []
+		page = self.paginate_queryset(queryset)
+		if page is not None:
+			serializer = self.get_serializer(page, many=True)
+			return self.get_paginated_response(serializer.data)
 
-		for community in communities:
-			communities_data.append({
-				'id': community.id,
-				'name': community.name,
-				'mainImage': community.mainImage,
-				'description': community.description,
-				'isPrivate': community.isPrivate
-			})
+		serializer = self.get_serializer(queryset, many=True)
+		return Response({"success": True, "data": serializer.data})
 
-		response_data = {
-			'success': True,
-			'data': communities_data
-		}
-		return JsonResponse(response_data, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get all communities that user is member of and not archived
 @csrf_exempt
