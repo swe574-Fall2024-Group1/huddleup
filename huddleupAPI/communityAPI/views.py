@@ -7,6 +7,8 @@ from django.db.models import Q,Count
 from rest_framework.generics import CreateAPIView, GenericAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import views
+from django.shortcuts import render, get_object_or_404
 
 
 from authAPI.models import User
@@ -119,13 +121,14 @@ class CommunityOwners(RetrieveAPIView):
 
 
 # Assign a moderator if current user is owner of the community, and unassign if user is already a moderator
-@csrf_exempt
-def assign_moderator(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		user = User.objects.get(username=payload['username'])
-		connection = CommunityUserConnection.objects.get(user=user.id, community=community.id)
+class AssignModerator(views.APIView):
+	http_method_names = ['put']
+
+	def put(self, request):
+		data = request.data
+		community = get_object_or_404(Community, id=data['communityId'])
+		user = get_object_or_404(User, email=data['email'])
+		connection = get_object_or_404(CommunityUserConnection, user=user.id, community=community.id)
 
 		if connection.type == 'owner':
 			return JsonResponse({'error': 'Owners cannot be assigned as moderators'}, status=403)
@@ -137,16 +140,17 @@ def assign_moderator(request):
 
 		connection.save()
 		return JsonResponse({'success': True, 'message': 'Moderator assigned/unassigned successfully'}, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 # Change ownership of the community if current user is owner of the community
-@csrf_exempt
-def change_ownership(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		new_owner = User.objects.get(username=payload['username'])
-		current_owner = CommunityUserConnection.objects.get(community=community.id, type='owner')
+class ChangeOwnership(views.APIView):
+	http_method_names = ['put']
+
+	def put(self, request):
+		data = request.data
+		community = get_object_or_404(Community, id=data['communityId'])
+		new_owner = get_object_or_404(User, email=data['email'])
+		current_owner = get_object_or_404(CommunityUserConnection, community=community.id, type='owner')
 
 		current_owner.type = 'member'
 		current_owner.save()
@@ -156,43 +160,27 @@ def change_ownership(request):
 		new_owner_connection.save()
 
 		return JsonResponse({'success': True, 'message': 'Ownership changed successfully'}, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
-# Ban a user from the community if current user is owner of the community
-@csrf_exempt
-def get_community_info(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community_id = payload.get('communityId')
 
+class CommunityInfo(RetrieveAPIView):
+	serializer_class = CommunitySerializer
+
+	def get_queryset(self):
+		return Community.objects.all()
+
+	def retrieve(self, request, *args, **kwargs):
+		instance = self.get_object()
+		serializer = self.get_serializer(instance)
 		try:
-			community = Community.objects.get(id=community_id)
-		except Community.DoesNotExist:
-			return JsonResponse({'success': False, 'error': 'Community not found'}, status=404)
-
-		try:
-			connection = CommunityUserConnection.objects.get(user=request.user.id, community=community_id)
+			connection = CommunityUserConnection.objects.get(user=request.user.id, community=instance.id)
 			member_type = connection.type
 		except ObjectDoesNotExist:
 			connection = None
 			member_type = 'notMember'
+		data = serializer.data
+		data["memberType"] = member_type
+		return Response({"success": True, "data": data})
 
-		response_data = {
-			'success': True,
-			'data': {
-				'name': community.name,
-				'description': community.description,
-				'isPrivate': community.isPrivate,
-				'mainImage': community.mainImage,
-				'archived': community.archived,
-				'id': community.id,
-				'memberType': member_type,
-			}
-		}
-
-		return JsonResponse(response_data, status=200)
-	else:
-		return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 # Gets all communities that user is not member of and not archived
 @csrf_exempt
