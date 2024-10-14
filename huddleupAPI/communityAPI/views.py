@@ -204,47 +204,39 @@ class GetCommunities(ListAPIView):
 
 
 # Get all communities that user is member of and not archived
-@csrf_exempt
-def get_user_communities(request):
-	if request.method == 'POST':
-		# Get connections if not banned
-		connections = CommunityUserConnection.objects.filter(Q(user=request.user.id) & ~Q(type='banned'))
-		communities_data = []
+class GetUserCommunities(ListAPIView):
+	serializer_class = CommunitySerializer
 
-		for connection in connections:
-			communities_data.append({
-				'id': connection.community.id,
-				'name': connection.community.name,
-				'mainImage': connection.community.mainImage,
-				'description': connection.community.description,
-				'isPrivate': connection.community.isPrivate,
-				'archived': connection.community.archived,
-				'type': connection.type
-			})
+	def get_queryset(self):
+		connections = CommunityUserConnection.objects.filter(user=self.request.user).exclude(type='banned')
+		community_ids = list(set([x.community.id for x in connections]))
+		return Community.objects.filter(id__in=community_ids).exclude(archived=True)
 
-		# Filter archived communities
-		communities_data = [community for community in communities_data if not community['archived']]
+	def list(self, request, *args, **kwargs):
+		queryset = self.filter_queryset(self.get_queryset())
 
-		response_data = {
-			'success': True,
-			'data': communities_data
-		}
-		return JsonResponse(response_data, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+		page = self.paginate_queryset(queryset)
+		if page is not None:
+			serializer = self.get_serializer(page, many=True)
+			return self.get_paginated_response(serializer.data)
+
+		serializer = self.get_serializer(queryset, many=True)
+		return Response({"success": True, "data": serializer.data})
 
 
 # If community is not private and user is not member of the community, add user to the community
-@csrf_exempt
-def join_community(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		# Check if the community is private
-		if community.isPrivate:
+class JoinCommunity(views.APIView):
+	http_method_names = ['post']
+
+	def post(self, request, *args, **kwargs):
+		data = request.data
+		community = get_object_or_404(Community, id=data['communityId'])
+		if community.is_private:
 			return JsonResponse({'error': 'Community is private'}, status=400)
 
 		# Check if the user is already a member of the community
-		communityUserConnection = CommunityUserConnection.objects.filter(user=request.user.id, community=community.id).first()
+		communityUserConnection = CommunityUserConnection.objects.filter(user=request.user.id,
+																		 community=community.id).first()
 		if communityUserConnection is not None:
 			return JsonResponse({'error': 'User is already a member of the community'}, status=400)
 
@@ -256,24 +248,25 @@ def join_community(request):
 		communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
 		if communityUserConnection_serializer.is_valid():
 			communityUserConnection_serializer.save()
-			return JsonResponse({'success': True, 'message': 'User added to the community successfully'}, status=201)
-		return JsonResponse(communityUserConnection_serializer.errors, status=400)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+			return JsonResponse({'success': True, 'message': 'User added to the community successfully'},
+								status=201)
+		else:
+			return JsonResponse(communityUserConnection_serializer.errors, status=400)
+
 
 # If community is private and user is member or moderator of the community, remove user from the community (owners cant leave the community)
-@csrf_exempt
-def leave_community(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		community = Community.objects.get(id=payload['communityId'])
-		connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+class LeaveCommunity(views.APIView):
+	http_method_names = ['post']
+
+	def post(self, request, *args, **kwargs):
+		data = request.data
+		community = get_object_or_404(Community, id=data['communityId'])
+		connection = get_object_or_404(CommunityUserConnection, user=request.user.id, community=community.id)
 
 		if connection.type == 'owner':
 			return JsonResponse({'error': 'Owners cannot leave the community'}, status=403)
-
 		connection.delete()
 		return JsonResponse({'success': True, 'message': 'User removed from the community successfully'}, status=200)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
 # Create a invitation for a user to join a community if community is private and inviter user is owner or moderator of the community and invited user is not member of the community 
