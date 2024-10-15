@@ -1,5 +1,4 @@
 from django.db import models
-from djongo.models.fields import ObjectIdField
 
 # Create your models here.
 class Community(models.Model):
