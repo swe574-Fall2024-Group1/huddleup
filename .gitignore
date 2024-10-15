@@ -66,6 +66,7 @@ huddleupui/node_modules/
 
 # misc
 .DS_Store
+.db.env
 .env
 .env.local
 .env.development.local
