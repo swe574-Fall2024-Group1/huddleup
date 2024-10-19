@@ -18,11 +18,13 @@ services:
     build:
       context: ./huddleupui
     ports:
-      - "3000:3000"
+      - "127.0.0.1:8080:80"
     container_name: frontend_huddleup
-    volumes:
-      - ./huddleupui:/app
-      - ./huddleupui/node_modules:/app/node_modules
+#    volumes:
+#      - ./huddleupui:/app
+#      - ./huddleupui/node_modules:/app/node_modules
+#      - ./huddleupAPI/staticfiles:/app/staticfiles
+#      - ./huddleupAPI/mediafiles:/app/mediafiles
     depends_on:
       - backend
   db:
@@ -32,16 +34,4 @@ services:
       - ./postgres_data:/var/lib/postgresql/data/
     env_file:
       - .db.env
-    restart: unless-stopped
-  nginx:
-    build: ./nginx
-    container_name: nginx_huddleup
-    volumes:
-      - ./huddleupAPI/staticfiles:/app/staticfiles
-      - ./huddleupAPI/mediafiles:/app/mediafiles
-    ports:
-      - "127.0.0.1:8000:80"
-      - "127.0.0.1:3000:3000"
-    depends_on:
-      - backend
     restart: unless-stopped
