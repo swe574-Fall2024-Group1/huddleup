@@ -1,23 +1,19 @@
-FROM python:3.9.19
-ENV PYTHONBUFFERED 1
+# Use the official Python image as base
+FROM python:3.9
 
-ENV APP_USER=app
-ENV APP_GROUP=app
+# Set the working directory in the container
+WORKDIR /code
 
-RUN addgroup --system --gid 500 $APP_GROUP && adduser --system --uid 500 $APP_USER --ingroup $APP_GROUP
-
-ENV APP_HOME=/app
-RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/staticfiles
-RUN mkdir $APP_HOME/mediafiles
-WORKDIR $APP_HOME
-COPY . $APP_HOME
-
+# Copy the requirements file and install dependencies
+COPY requirements.txt /code/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-RUN chown -R $APP_USER:$APP_GROUP $APP_HOME
-RUN chmod -R 770 $APP_HOME
-USER $APP_USER
+# Copy the Django project into the container
+COPY . /code/
 
-CMD python manage.py collectstatic --no-input;python manage.py migrate;gunicorn huddleupAPI.wsgi --workers 4 -b 0.0.0.0:8000 --threads=2 --worker-class=gthread --timeout 90 --worker-tmp-dir /dev/shm --capture-output --log-level debug --access-logfile - --error-logfile -
+# Expose the Django service port
+EXPOSE 8000
+
+# Command to run the Django development server
+CMD ["gunicorn", "huddleupAPI.wsgi:application", "--bind", "0.0.0.0:8000"]

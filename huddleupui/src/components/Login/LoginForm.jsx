@@ -37,8 +37,8 @@ const Login = () => {
 		>
 			{/* Check no whitespace in username */}
 			<Form.Item
-				label="Email"
-				name="email"
+				label="Username"
+				name="username"
 				rules={[
 					{ required: true, message: 'Please enter your username!' }
 				]}

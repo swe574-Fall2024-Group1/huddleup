@@ -33,8 +33,8 @@ const Register = () => {
 			autoComplete="off"
 		>
 			<Form.Item
-				label="Email"
-				name="email"
+				label="Username"
+				name="username"
 				rules={[{ required: true, message: 'Please enter username!' },
 				{ min: 3, message: 'Min 3 characters.' },
 				{ max: 20, message: 'Max 20 characters.' },

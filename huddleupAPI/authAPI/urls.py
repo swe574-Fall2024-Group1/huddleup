@@ -1,8 +1,8 @@
-from django.urls import path
+from django.conf.urls import url
 from authAPI import views
 
 urlpatterns = [
-	path('register/', views.CreateUserView.as_view(), name='register'),
-	path('login/', views.LoginView.as_view(), name='login'),
-	path('get-user-info/', views.UserInfoView.as_view(), name='get-user-info')
+	url(r'register', views.register),
+	url(r'login', views.login),
+	url(r'get-user-info', views.get_user_info)
 ]

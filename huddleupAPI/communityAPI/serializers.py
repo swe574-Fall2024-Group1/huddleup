@@ -1,65 +1,59 @@
 from rest_framework import serializers
 from .models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection
 
-
 class CommunitySerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Community
-		fields = ['name', 'description', 'main_image', 'is_private', 'id', 'created_at', 'archived']
-
+		fields = ['name', 'description', 'mainImage', 'isPrivate', 'id', 'createdAt']
 
 class CommunityUserConnectionSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = CommunityUserConnection
-		fields = ['user', 'community', 'type', 'id', 'created_at']
-
+		fields = ['user', 'community', 'type', 'id', 'createdAt']
 
 class CommunityInvitationSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = CommunityInvitation
-		fields = ['user', 'community', 'id', 'created_at']
-
+		fields = ['user', 'community', 'id', 'createdAt']
 
 class TemplateSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Template
-		fields = ['created_by', 'community', 'template_name', 'rows', 'id', 'created_at', 'is_deleted']
+		fields = ['createdBy', 'community', 'templateName', 'rows', 'id', 'createdAt', 'isDeleted']
 
 
 class PostSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Post
-		fields = ['created_by', 'community', 'template', 'row_values', 'id', 'created_at', 'is_edited']
-
+		fields = ['createdBy', 'community', 'template', 'rowValues', 'id', 'createdAt', 'isEdited']
 
 class CommentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Comment
-		fields = ['created_by', 'post', 'comment', 'id', 'created_at', 'is_edited']
+		fields = ['createdBy', 'post', 'comment', 'id', 'createdAt', 'isEdited']
 
 
 class PostLikeSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = PostLike
-		fields = ['created_by', 'post', 'direction', 'id', 'created_at']
-
+		fields = ['createdBy', 'post', 'direction', 'id', 'createdAt']
 
 class CommentLikeSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = CommentLike
-		fields = ['created_by', 'comment', 'direction', 'id', 'created_at']
-
+		fields = ['createdBy', 'comment', 'direction', 'id', 'createdAt']
 
 class UserFollowConnectionSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = UserFollowConnection
-		fields = ['follower', 'followee', 'id', 'created_at']
+		fields = ['follower', 'followee', 'id', 'createdAt']
+
