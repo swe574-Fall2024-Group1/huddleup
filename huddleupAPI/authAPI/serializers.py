@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from .models import User, Session
-from djongo.models.fields import ObjectIdField
 
 
 class UserSerializer(serializers.ModelSerializer):

@@ -4,19 +4,34 @@ services:
   backend:
     build:
       context: ./huddleupAPI
-    environment:
-      - NODE_OPTIONS=--max-old-space-size=4096
-    ports:
-      - "8000:8000"
+    container_name: backend_huddleup
     volumes:
-      - ./huddleupAPI:/code
+      - ./huddleupAPI:/app
+    expose:
+      - 8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: unless-stopped
   frontend:
     build:
       context: ./huddleupui
     ports:
-      - "3000:3000"
-    volumes:
-      - ./huddleupui:/app
-      - ./huddleupui/node_modules:/app/node_modules
+      - "127.0.0.1:8080:80"
+    container_name: frontend_huddleup
+#    volumes:
+#      - ./huddleupui:/app
+#      - ./huddleupui/node_modules:/app/node_modules
+#      - ./huddleupAPI/staticfiles:/app/staticfiles
+#      - ./huddleupAPI/mediafiles:/app/mediafiles
     depends_on:
       - backend
+  db:
+    image: postgres:13.0-alpine
+    container_name: db_huddleup
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .db.env
+    restart: unless-stopped
