@@ -53,6 +53,22 @@ Manual badges by owner – Erkin
 Badges: Predefined criteria by owner – Muharrem
 Automatic Badges: Predefined criteria by system – Övünç
 
+Week 5: Preparation for Milestone 1 and Task Assignments
+
+In the fifth week, we discussed the upcoming first milestone and the deliverables due, including the project report and pre-release. With the deadline approaching, we emphasized the importance of starting the coding process alongside preparing the report. Tasks were assigned for both the report and coding work to ensure we meet the requirements for the submission on time.
+
+Action Items:
+
+Aibek: Arrange the backend and write instructions for how to run the project locally, enabling all members to contribute.
+Övünç: Finalize the requirements by adding missing elements from the previous term and new requirements, and list all potentially needed new endpoints. Add this to the project report.
+Muharrem: Write the Scenarios and Mockups section for the project report.
+Mustafa: Write the Communication Plan section for the project report.
+Ömer: Write the Weekly Reports, Meeting Notes, and Milestone Review sections for the project report.
+Doruk: Prepare the Software Design section for the project report.
+Everyone: Share UML diagrams with Doruk for inclusion in the report.
+Erkin: Make existing pages mobile-friendly and write the Responsibility Assignment Matrix section.
+Everyone: Complete the Individual Contributions section for the report.
+
 
 Milestone Review: # Write a reflective section on your work up to this point.
 Pre-release Version of Software: # Release version needs to be indicated
