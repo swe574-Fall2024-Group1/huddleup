@@ -20,11 +20,9 @@ services:
     ports:
       - "127.0.0.1:8080:80"
     container_name: frontend_huddleup
-#    volumes:
-#      - ./huddleupui:/app
-#      - ./huddleupui/node_modules:/app/node_modules
-#      - ./huddleupAPI/staticfiles:/app/staticfiles
-#      - ./huddleupAPI/mediafiles:/app/mediafiles
+    volumes:
+      - ./huddleupAPI/staticfiles:/staticfiles
+      - ./huddleupAPI/mediafiles:/mediafiles
     depends_on:
       - backend
   db:
@@ -35,3 +33,15 @@ services:
     env_file:
       - .db.env
     restart: unless-stopped
+  frontend-dev:
+    build:
+      context: ./huddleupui
+      dockerfile: Dockerfile-dev
+    container_name: frontend_dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./huddleupui:/app
+      - ./huddleupui/node_modules:/app/node_modules
+    depends_on:
+      - backend

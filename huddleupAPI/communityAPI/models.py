@@ -9,6 +9,10 @@ class Community(models.Model):
 	archived = models.BooleanField('archived', default=False)
 	createdAt = models.DateTimeField(auto_now_add=True)
 
+	def __str__(self):
+		return self.name
+
+
 class CommunityUserConnection(models.Model):
 	MEMBER = 'member'
 	MODERATOR = 'moderator'
