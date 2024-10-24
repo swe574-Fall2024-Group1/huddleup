@@ -10,6 +10,25 @@
 
 ### Responsibility Assignment Matrix: 
 
+| **Task**                              | **Aibek**   | **Doruk**   | **Erkin**   | **Muharrem**   | **Mustafa**   | **Ömer**   | **Övünç**   |
+|---------------------------------------|----------|----------|----------|----------|----------|----------|----------|
+| **Requirements Gathering**            | R        | R        | R        | R        | R        | R        | R        |
+| **Project Planning**                  | C        | R        | C        | C        | C        | R        | R        |
+| **System Design**                     | A        | A        | A        | A        | A        | A        | A        |
+| **Frontend Development**              | C        | A        | R        | A        | C        | C        | A        |
+| **Backend Development**               | R        | A        | A        | R        | R        | C        | C        |
+| **Database Design**                   | R        | A        | C        | R        | R        | R        | C        |
+| **Testing and QA**                    | I        | I        | I        | I        | I        | A        | I        |
+| **Code Review**                       | R        | R        | R        | R        | R        | R        | R        |
+| **Deployment**                        | A        | R        | C        | C        | C        | A        | A        |
+| **Documentation**                     | A        | R        | A        | A        | A        | R        | R        |
+| **Progress Reporting**                | C        | C        | C        | C        | C        | R        | R        |
+
+Legend \
+R: Responsible (the person who does the work) \
+A: Accountable (the person ultimately answerable for the task) \
+C: Consulted (provides input and expertise) \
+
 ### Weekly Reports and Meeting Notes:
 
 #### Week 1: Project Initialization and Repository Setup
