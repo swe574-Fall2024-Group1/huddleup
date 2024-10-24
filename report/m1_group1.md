@@ -116,3 +116,10 @@ Provided support on non-code-related queries regarding project structure and wor
 
 --
 
+#### Member: Erkin Gönültaş
+**Responsibilities:** Overall frontend and mobile development of the project.  \
+**Main Contributions:** Addressing frontend-related questions. Providing consultation for both frontend and mobile development process plans. Creating scenarios and mockups for the new features.   \
+**Code-related significant issues:** - \
+**Non-code-related significant issues:** Decision making process about creating a mobile version of the project. \
+**Pull requests:** - \
+**Additional Information:** -
