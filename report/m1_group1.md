@@ -1,14 +1,19 @@
-Software Requirements Specification: #Link needed
-Software Design: #Link needed
-Scenarios and Mockups: #[Scenarios and Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)
-Project Plan: # Outline your project plan including key milestones and deadlines.
-Communication Plan: # Summarize how your team communicates (tools, frequency).
-Responsibility Assignment Matrix: # Outline who is responsible for what.
+### Software Requirements Specification: [SRS](https://docs.google.com/document/d/1hnuMbitSzb_vdQ4_ygvQ9weSAMKnsHUE1DyNN3DpwTY/edit?usp=sharing)
 
-**Weekly Reports and Meeting Notes:
+### Software Design:
+
+### Scenarios and Mockups: [Scenarios and Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)
+
+### Project Plan:
+
+### Communication Plan: 
+
+### Responsibility Assignment Matrix: 
+
+### Weekly Reports and Meeting Notes:
 **
 
-Week 1: Project Initialization and Repository Setup
+#### Week 1: Project Initialization and Repository Setup
 
 During the first week, we created a new GitHub repository to serve as the foundation for our project. We established repository rules to maintain a structured workflow, focusing on how to handle pull requests and merges. After thoroughly reviewing the project proposals from each team member, we unanimously agreed to move forward with Ömer's project, Huddleup, a community-building platform. This project will be the basis for our development moving forward.
 
@@ -18,7 +23,7 @@ Open new GitHub repository for the project.
 Define repository rules for pull request (PR) merging.
 Review all project proposals and finalize project selection (Huddleup).
 
-Week 2: Requirements Merging and Task Assignments
+#### Week 2: Requirements Merging and Task Assignments
 In the second week, the team discussed how to handle project requirements. We decided to combine requirements from all team members, removing any duplicates to create a consolidated set. Additionally, we focused on the upcoming assignment, which involves creating mockups for the new requirements. The team discussed the requirements and organized tasks into action groups for efficiency.
 
 Action Items:
@@ -28,7 +33,7 @@ Group 2 (Erkin & Doruk): Create mockups based on the merged requirements.
 Group 3 (Ovunc & Aibek): Formulate new requirements and draft elicitation questions after Group 1 completes the merging.
 
 
-Week 3: Discussion on Recommendations and Badges, Task Assignments
+#### Week 3: Discussion on Recommendations and Badges, Task Assignments
 
 In the third week, we had an in-depth discussion about how to approach the recommendations and badges features. Each team member shared their thoughts and contributed ideas for these functionalities. We created issues for the new requirements identified during the meeting. Aibek and Doruk were assigned to focus on the deployment and containerization of the project, ensuring the software can be easily deployed in future iterations. The remaining team members were assigned tasks related to developing the new requirements and brainstorming additional ideas.
 
@@ -38,7 +43,7 @@ Open issues for new requirements.
 Aibek and Doruk: Focus on deployment and containerization of the project.
 Other members: Work on new requirements and contribute ideas for future development.
 
-Week 4: Demo Preparation and Mockup Development
+#### Week 4: Demo Preparation and Mockup Development
 
 This week, the focus shifted to preparing for the upcoming demo. The team emphasized creating detailed and genuine mockups that effectively showcase our ideas and help gather valuable feedback from the customer. Since the recommendations feature had not yet been finalized, we prioritized the badges and other new requirements. Tasks were divided among members to create mockups and ensure they were included in the customer presentation. Aibek and Doruk ensured that the deployment was fully functional for the demo.
 
@@ -53,7 +58,7 @@ Manual badges by owner – Erkin
 Badges: Predefined criteria by owner – Muharrem
 Automatic Badges: Predefined criteria by system – Övünç
 
-Week 5: Preparation for Milestone 1 and Task Assignments
+#### Week 5: Preparation for Milestone 1 and Task Assignments
 
 In the fifth week, we discussed the upcoming first milestone and the deliverables due, including the project report and pre-release. With the deadline approaching, we emphasized the importance of starting the coding process alongside preparing the report. Tasks were assigned for both the report and coding work to ensure we meet the requirements for the submission on time.
 
@@ -70,7 +75,7 @@ Erkin: Make existing pages mobile-friendly and write the Responsibility Assignme
 Everyone: Complete the Individual Contributions section for the report.
 
 
-Milestone Review: 
+### Milestone Review: 
 
 At this point, we believe we are in a strong position, having successfully covered most of the requirements from the previous term. Although we started coding the new features a bit later than anticipated, we are confident that we will be able to deliver them on time. A significant portion of our efforts this week was dedicated to preparing for the next stage of development, including migrating our database from MongoDB to PostgreSQL and ensuring the existing frontend is mobile-friendly.
 
@@ -78,14 +83,17 @@ For this milestone, our focus has primarily been on the badges system and user a
 
 Pre-release Version of Software: # Release version needs to be indicated
 
-Individual Contributions:
+### Individual Contributions:
+
 Member: Övünç Ertunç
 Responsibilities: Reviewing the contributions and project maintanence. Supporting devops practices and backend feature implementations.
 Main Contributions: Creating scenarios and mockups for badges. Adding new requirements about new functionalities (Recommendation, tags, badges, community statistics).
-Code-related Significant Issues: Not applicable
+Code-related Significant Issues: -
 Non-code-related Significant Issues: I created requirement elicitation questions and we asked them to the instructor and then finalized our thoughts. 
-Pull Requests: Not applicable
+Pull Requests: -
 Additional Information: I configured PR rules to prevent merging to main branch without any approval.
+
+--
 
 Member: Muharrem Ustaoğlu
 Responsibilities: Designing database entity relationship and backend feature implementations.
@@ -94,6 +102,8 @@ Code-related Significant Issues:
 Non-code-related Significant Issues: Designing Entity relationships to develop newly added features such as badges, recommendations and tags.
 Pull Requests: 
 Additional Information:
+
+--
 
 Member: Ömer Aslan
 Responsibilities: As the primary contributor to the Huddleup project, onboarding team members and ensuring they understand the existing project structure. Main duties involve writing and refactoring backend APIs.
