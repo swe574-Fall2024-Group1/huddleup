@@ -70,7 +70,12 @@ Erkin: Make existing pages mobile-friendly and write the Responsibility Assignme
 Everyone: Complete the Individual Contributions section for the report.
 
 
-Milestone Review: # Write a reflective section on your work up to this point.
+Milestone Review: 
+
+At this point, we believe we are in a strong position, having successfully covered most of the requirements from the previous term. Although we started coding the new features a bit later than anticipated, we are confident that we will be able to deliver them on time. A significant portion of our efforts this week was dedicated to preparing for the next stage of development, including migrating our database from MongoDB to PostgreSQL and ensuring the existing frontend is mobile-friendly.
+
+For this milestone, our focus has primarily been on the badges system and user activity features. However, we have yet to fully address the recommendation requirements, which remain unclear. We acknowledge that this aspect needs further consideration and refinement in the upcoming development phase to better meet the project's needs and expectations.
+
 Pre-release Version of Software: # Release version needs to be indicated
 
 Individual Contributions:
