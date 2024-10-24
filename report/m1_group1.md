@@ -8,6 +8,83 @@
 
 ### Communication Plan: 
 
+
+#### Version Control Standards
+##### Branching Strategy
+###### Main Branch (main):
+
+The main branch is always in a deployable state. Only stable and tested code should be merged into this branch.
+
+###### Development Branch (dev):
+
+Use a develop branch for integrating features. This branch is where development occurs and is used to prepare for the next release.
+
+###### Feature Branches:
+
+Create a separate branch for each feature or bug fix. Use the following naming convention:
+```
+feature/<feature-name> 
+bugfix/<bug-name>
+```
+Example: 
+```
+feature/user-authentication
+bugfix/fix-login-error
+```
+
+##### Commit Message Standards
+
+Commit messages should be clear and concise, following the format:
+```
+<type>: <description>
+```
+Example: 
+```
+feat: add user authentication
+```
+For reference, the following types can be used:
+- feat: a new feature
+- fix: a bug fix
+- docs: changes to documentation
+- style: formatting, missing semi-colons, etc; no code change
+- refactor: refactoring production code
+- test: adding tests, refactoring test; no production code change
+- chore: updating build tasks, package manager configs, etc; no production code change
+- ci: changes to CI configuration files and scripts
+- perf: a code change that improves performance
+- build: changes that affect the build system or external dependencies
+- revert: reverts a previous commit
+- security: changes that address security issues
+
+##### Pull Request Standards
+
+When creating a pull request, follow these guidelines:
+- Assign at least one reviewer to the PR.
+- Provide a clear and concise title and description.
+- Include a reference to the issue the PR addresses.
+
+#### Communication Tools
+
+- Discord: #group-1 channel for customer communication and team discussions.
+- GitHub: For code reviews, issue tracking, and project management.
+
+#### Meeting Schedule
+- Weekly team meetings: Every Tuesday at 19:00 (GMT+3) to discuss progress, issues, and upcoming tasks.
+
+#### Conflict Resolution
+- In case of conflicts, the team will discuss the issue and reach a consensus.
+- If a resolution cannot be reached, the team will vote on the resolution.
+
+#### Coding Standards
+
+##### Backend:
+
+- Follow the PEP 8 style guide for Python code. Reference: https://pep8.org/
+- Use descriptive variable and function names.
+
+##### Frontend:
+- Follow the Airbnb JavaScript style guide. Reference: https://github.com/airbnb/javascript 
+
 ### Responsibility Assignment Matrix: 
 
 | **Task**                              | **Aibek**   | **Doruk**   | **Erkin**   | **Muharrem**   | **Mustafa**   | **Ömer**   | **Övünç**   |
@@ -142,3 +219,10 @@ Provided support on non-code-related queries regarding project structure and wor
 **Non-code-related significant issues:** Decision making process about creating a mobile version of the project. \
 **Pull requests:** - \
 **Additional Information:** -
+
+#### Member: Mustafa Tuna
+**Responsibilities:** Developing backend features and supporting the frontend development. \
+**Main Contributions:** Writing the Communication Plan section for the project report. Creating mockups for the activity feed. Converting the existing pages to be mobile-friendly. \
+**Code-related significant issues:** - \
+**Non-code-related significant issues:** - Decision-making process about refactoring the existing pages to be mobile-friendly. \
+**Pull requests:** - \
