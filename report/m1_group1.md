@@ -11,7 +11,6 @@
 ### Responsibility Assignment Matrix: 
 
 ### Weekly Reports and Meeting Notes:
-**
 
 #### Week 1: Project Initialization and Repository Setup
 
@@ -85,32 +84,35 @@ Pre-release Version of Software: # Release version needs to be indicated
 
 ### Individual Contributions:
 
-Member: Övünç Ertunç
-Responsibilities: Reviewing the contributions and project maintanence. Supporting devops practices and backend feature implementations.
-Main Contributions: Creating scenarios and mockups for badges. Adding new requirements about new functionalities (Recommendation, tags, badges, community statistics).
-Code-related Significant Issues: -
-Non-code-related Significant Issues: I created requirement elicitation questions and we asked them to the instructor and then finalized our thoughts. 
-Pull Requests: -
-Additional Information: I configured PR rules to prevent merging to main branch without any approval.
+#### Member: Övünç Ertunç
+**Responsibilities:** Reviewing the contributions and project maintanence. Supporting devops practices and backend feature implementations. \
+**Main Contributions:** Creating scenarios and mockups for badges. Adding new requirements about new functionalities (Recommendation, tags, badges, community statistics). \
+**Code-related Significant Issues:** - \
+**Non-code-related Significant Issues:** I created requirement elicitation questions and we asked them to the instructor and then finalized our thoughts. \
+**Pull Requests:** - \
+**Additional Information:** I configured PR rules to prevent merging to main branch without any approval.
 
 --
 
-Member: Muharrem Ustaoğlu
-Responsibilities: Designing database entity relationship and backend feature implementations.
-Main Contributions: Creating scenarios and mockups for badges, recommendations and tags(Wiki page Scenarios & Mockups). Reviewing old requirements to merge news requirements. 
-Code-related Significant Issues: 
-Non-code-related Significant Issues: Designing Entity relationships to develop newly added features such as badges, recommendations and tags.
-Pull Requests: 
-Additional Information:
+#### Member: Muharrem Ustaoğlu
+**Responsibilities:** Designing database entity relationship and backend feature implementations. \
+**Main Contributions:** Creating scenarios and mockups for badges, recommendations and tags(Wiki page Scenarios & Mockups). Reviewing old requirements to merge news requirements. \
+**Code-related Significant Issues:** - \
+**Non-code-related Significant Issues:** Designing Entity relationships to develop newly added features such as badges, recommendations and tags. \
+**Pull Requests:** - \
+**Additional Information:** -
 
 --
 
-Member: Ömer Aslan
-Responsibilities: As the primary contributor to the Huddleup project, onboarding team members and ensuring they understand the existing project structure. Main duties involve writing and refactoring backend APIs.
-Main Contributions: Onboarding team members and addressing backend-related questions. Writing and refactoring backend APIs to support new features.
-Merging requirements from all members and ensuring consistency. Assigning action items to team members during meetings.
-Code-related significant issues: Contributed to backend development and API refactoring.
-Non-code-related significant issues: Led the effort to merge requirements from different team members. Find and list the incomplete requirements. Designing of user profile page and badges section.
-Provided support on non-code-related queries regarding project structure and workflow.
-Pull requests: Created and merged PR #11, restructuring APIs and database queries.
-Additional Information:
+#### Member: Ömer Aslan
+**Responsibilities:** As the primary contributor to the Huddleup project, onboarding team members and ensuring they understand the existing project structure. Main duties involve writing and refactoring backend APIs. \
+**Main Contributions:** Onboarding team members and addressing backend-related questions. Writing and refactoring backend APIs to support new features. \
+Merging requirements from all members and ensuring consistency. Assigning action items to team members during meetings. \
+**Code-related significant issues:** Contributed to backend development and API refactoring. \
+**Non-code-related significant issues:** Led the effort to merge requirements from different team members. Find and list the incomplete requirements. Designing of user profile page and badges section. \
+Provided support on non-code-related queries regarding project structure and workflow. \
+**Pull requests:** Created and merged PR #11, restructuring APIs and database queries. \
+**Additional Information:** -
+
+--
+
