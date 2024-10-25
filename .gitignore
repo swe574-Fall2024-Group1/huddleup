@@ -79,3 +79,6 @@ yarn-error.log*
 postgres_data/
 staticfiles/
 mediafiles/
+
+# Ignore sqliite database
+*.sqlite3
