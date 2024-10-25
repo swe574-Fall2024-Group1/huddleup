@@ -1,3 +1,9 @@
+### Deployment Links
+#### Production Environment:
+[https://huddleup.space](https://huddleup.space) (Redirected to https://group1.swe574.com)
+#### Development Environment:
+[https://dev.group1.swe574.com](https://dev.group1.swe574.com)
+
 ### Software Requirements Specification: [SRS](https://docs.google.com/document/d/1hnuMbitSzb_vdQ4_ygvQ9weSAMKnsHUE1DyNN3DpwTY/edit?usp=sharing)
 
 ### Software Design: [Software Design](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Software-Design)
