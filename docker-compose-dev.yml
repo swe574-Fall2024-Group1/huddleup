@@ -1,0 +1,42 @@
+# docker-compose-dev.yaml
+version: '3'
+
+services:
+
+  backend:
+    build:
+      context: ./huddleupAPI
+    container_name: backend_huddleup
+    volumes:
+      - ./huddleupAPI:/app
+    expose:
+      - 8000
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  frontend_dev:
+    build:
+      context: ./huddleupui
+      dockerfile: Dockerfile-dev
+    ports:
+      - "8080:3000"  # Expose the React app on port 3000 internally and 8080 externally
+    container_name: frontend_huddleup_dev
+    volumes:
+      - ./huddleupui/src:/dev-app/src  # Mount the frontend code
+    environment:
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  db:
+    image: postgres:13.0-alpine
+    container_name: db_huddleup
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - .db.env
+    restart: unless-stopped
