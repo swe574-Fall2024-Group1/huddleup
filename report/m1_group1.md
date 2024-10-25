@@ -226,3 +226,15 @@ Provided support on non-code-related queries regarding project structure and wor
 **Code-related significant issues:** - \
 **Non-code-related significant issues:** - Decision-making process about refactoring the existing pages to be mobile-friendly. \
 **Pull requests:** - \
+
+--
+
+#### Member: Aibek Aldabergenov
+**Responsibilities:** Developing backend features, assisting devops team with deployment. \
+**Main Contributions:** Switched the database system from mongo to postgres, made changes to django rest authorization logic, and enabled the django admin site, prepared the app for deployment and local development.\
+**Code-related significant issues:** Changes to User model and token authorization. \
+**Non-code-related significant issues:** Decision-making process about backend architecture. \
+**Pull requests:** Created PR #49, switching from mongo db to postgres. \
+**Additional Information:** -
+
+--
