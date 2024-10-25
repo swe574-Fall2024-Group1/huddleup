@@ -1,6 +1,6 @@
 ### Software Requirements Specification: [SRS](https://docs.google.com/document/d/1hnuMbitSzb_vdQ4_ygvQ9weSAMKnsHUE1DyNN3DpwTY/edit?usp=sharing)
 
-### Software Design:
+### Software Design: [Software Design](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Software-Design)
 
 ### Scenarios and Mockups: [Scenarios and Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)
 
@@ -220,6 +220,8 @@ Provided support on non-code-related queries regarding project structure and wor
 **Pull requests:** - \
 **Additional Information:** -
 
+--
+
 #### Member: Mustafa Tuna
 **Responsibilities:** Developing backend features and supporting the frontend development. \
 **Main Contributions:** Writing the Communication Plan section for the project report. Creating mockups for the activity feed. Converting the existing pages to be mobile-friendly. \
@@ -238,3 +240,11 @@ Provided support on non-code-related queries regarding project structure and wor
 **Additional Information:** -
 
 --
+
+#### Member: Doruk Büyükyıldırım
+**Responsibilities:** Deployment, infrastructure management \
+**Main Contributions:** Created development and production environments on a public cloud provider (Azure) with DNS records and TLS encryption.\
+**Code-related significant issues:** Evaluating and approving changes related to containerization and the local development environment. \
+**Non-code-related significant issues:** Decision-making process about infrastructure, deployment and automation \
+**Pull requests:** Approved PR #49, switching from mongo db to postgres. \
+**Additional Information:** -
