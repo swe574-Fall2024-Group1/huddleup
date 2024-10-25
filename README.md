@@ -8,9 +8,9 @@ Here is [wiki page](https://github.com/qouv/swe573-omeraslan/wiki)
 
 ## Deployment Links
 ### Production Environment:
-[https://huddleup.space](https:huddleup.space)
+[https://huddleup.space](https://huddleup.space)
 ### Development Environment:
-[https://dev.group1.swe574.com]
+[https://dev.group1.swe574.com](https://dev.group1.swe574.com)
 
 
 ## Setup
