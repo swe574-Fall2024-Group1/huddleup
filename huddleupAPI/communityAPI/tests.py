@@ -1,5 +1,5 @@
 from django.urls import reverse
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from authAPI.models import User
 from communityAPI.views import (create_community, get_community_members, get_community_banned,
 								get_community_moderators, get_community_owners, assign_moderator)
@@ -8,18 +8,22 @@ from authAPI.serializers import UserSerializer
 from rest_framework import status
 import base64
 import json
+from rest_framework.test import APIRequestFactory
+from rest_framework.test import force_authenticate
+
 
 class CommunityTests(TestCase):
 
 	def setUp(self):
-		self.request_factory = RequestFactory()
+		self.request_factory = APIRequestFactory()
 		user_data = {
 			'username': 'testuser',
 			'password': 'testpass'
 		}
 		user_serializer = UserSerializer(data=user_data)
 		if user_serializer.is_valid():
-			user_serializer.save()
+			User.objects.create_user(username=user_serializer.validated_data["username"],
+									 password=user_serializer.validated_data["password"])
 		self.user = User.objects.get(username='testuser')
 
 	def test_create_community(self):
@@ -32,8 +36,8 @@ class CommunityTests(TestCase):
 			'isPrivate': False
 		}
 
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		# Call the view directly
 		response = create_community(request)
@@ -95,8 +99,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_members(request)
 
@@ -124,8 +128,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_banned(request)
 
@@ -153,8 +157,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_moderators(request)
 
@@ -172,8 +176,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_owners(request)
 
@@ -202,8 +206,8 @@ class CommunityTests(TestCase):
 			'communityId': self.community_id,
 			'username': member_user.username
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = assign_moderator(request)
 

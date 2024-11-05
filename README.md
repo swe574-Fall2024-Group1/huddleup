@@ -72,3 +72,8 @@ and then running:
 
 Fill out the username and password, and with this credentials you can go to `http://localhost:8080/admin` and login to the admin site.
 
+STEP 8:
+
+For running the tests in this repository, you will need to run:
+
+`python manage.py test`
