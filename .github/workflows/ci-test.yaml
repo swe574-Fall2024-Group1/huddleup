@@ -1,0 +1,24 @@
+name: CI Test
+
+on:
+  push:
+    branches:
+      - feature/ci-pipeline-unit-tests
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Load .env.sample for testing
+      run: |
+        set -a
+        source ./.env.sample
+        set +a
+
+    - name: Run tests
+      run: |
+        python ./huddleupAPI/manage.py test
