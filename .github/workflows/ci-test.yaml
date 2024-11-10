@@ -1,9 +1,12 @@
 name: CI Test
 
 on:
-  push:
-    branches:
-      - feature/ci-pipeline-unit-tests
+  pull_request:
+    branches: [ "dev" ]
+    paths:
+      - 'huddleupAPI/**'
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   ci-test:
@@ -13,26 +16,14 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # - name: Load .env.sample for testing
-    #   run: |
-    #     set -a
-    #     source ./.env.sample
-    #     set +a
-    #     echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"  # Test to verify variables are set
-
     - name: Load .env file
       uses: xom9ikk/dotenv@v2.3.0
       with:
         mode: sample
-
-    - name: Verify environment variables
-      run: |
-        echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"
 
     - name: Install dependencies
       run: pip install -r ./huddleupAPI/requirements.txt
 
     - name: Run tests
       run: |
-        echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"
         python ./huddleupAPI/manage.py test
