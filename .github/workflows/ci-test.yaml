@@ -18,6 +18,7 @@ jobs:
         set -a
         source ./.env.sample
         set +a
+        echo "Loaded SECRET_KEY: $ALLOWED_HOSTS"  # Test to verify variables are set
 
     - name: Install dependencies
       run: pip install -r ./huddleupAPI/requirements.txt
