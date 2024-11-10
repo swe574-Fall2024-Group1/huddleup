@@ -617,6 +617,7 @@ def get_community_posts(request):
 				'liked': likedByUser,
 				'disliked': dislikedByUser,
 				'isFollowing': isFollowing,
+				'tags': [x.name for x in post.tags.all()]
 			})
 
 		# Sort the posts by createdAt in descending order
@@ -791,12 +792,17 @@ def get_template(request):
 def create_post(request):
 	if request.method == 'POST':
 		request_data = JSONParser().parse(request)
+		if request_data.get("tags"):
+			the_tags = [x.lower() for x in request_data.get("tags") if type(x) is str]
+		else:
+			the_tags = []
 
 		post_data = {
 				'createdBy': request.user.id,
 				'community': request_data['communityId'],
 				'template': request_data['templateId'],
-				'rowValues': request_data['rowValues']
+				'rowValues': request_data['rowValues'],
+				'tags': the_tags
 		}
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():

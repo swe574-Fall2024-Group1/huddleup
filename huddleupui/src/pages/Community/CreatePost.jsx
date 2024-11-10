@@ -1,12 +1,14 @@
 /* global BigInt */
-import React, { useState } from 'react';
-import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card } from 'antd';
+import React, { useState, useCallback, useEffect } from 'react';
+import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete } from 'antd';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
 import useApi from '../../hooks/useApi';
 import '../../assets/community.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import debounce from 'lodash/debounce';
 
 const { Step } = Steps;
 
@@ -60,6 +62,9 @@ export default function CreatePost() {
 		{ key: "image", value: "Image File" },
 		{ key: "geolocation", value: "Geographic Location" },
 	];
+	const [tags, setTags] = useState([]);
+  	const [suggestedTags, setSuggestedTags] = useState([]); // For tags from backend
+  	const [tagInput, setTagInput] = useState("");
 
 
 	const templates_result = useApi('/api/communities/templates/get-templates', { communityId });
@@ -93,7 +98,8 @@ export default function CreatePost() {
 		const payload = {
 			communityId,
 			templateId: selectedTemplate.id,
-			rowValues
+			rowValues,
+			tags: tags
 		};
 
 		// Call API to create post
@@ -108,6 +114,41 @@ export default function CreatePost() {
 	const onFinishFailed = (errorInfo) => {
 		message.error(errorInfo)
 	  };
+
+	const fetchTags = async (query) => {
+    if (query.length >= 3) { // Only fetch if input is at least 3 characters
+      try {
+        const response = await axios.get(`/api/communities/tags?search=${query}`);
+        setSuggestedTags(response.data); // Assumes the API returns an array of tag strings
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    } else {
+      setSuggestedTags([]);
+    }
+  };
+
+	const handleTagRemove = (removedTag) => {
+    setTags(tags.filter(tag => tag !== removedTag));
+  };
+	 const handleAddTag = (tag) => {
+    if (tag.length >= 3 && !tags.includes(tag)) { // Only add tag if it’s 3+ characters
+      setTags([...tags, tag]);
+    }
+    setTagInput("");
+    setSuggestedTags([]);
+  };
+
+	const debouncedFetchTags = useCallback(debounce(fetchTags, 300), []);
+
+	// Trigger API call whenever tagInput changes
+  useEffect(() => {
+    if (tagInput) {
+      debouncedFetchTags(tagInput);
+    } else {
+      setSuggestedTags([]);
+    }
+  }, [tagInput, debouncedFetchTags]);
 
 	const renderFormrows = (rows) => {
 		if (rows.length > 0) {
@@ -1104,21 +1145,45 @@ export default function CreatePost() {
 					)}
 
 					{currentStep === 1 && selectedTemplate && (
-						<Form form={form} layout="vertical"  onFinish={onFormSubmit} onFinishFailed={onFinishFailed}>
+						<Form form={form} layout="vertical" onFinish={onFormSubmit} onFinishFailed={onFinishFailed}>
 							{renderFormrows(selectedTemplate.rows)}
-							<Form.Item style={{ float: 'right' }}>
+							<AutoComplete
+								style={{width: 200, marginBottom: "10px"}}
+								options={suggestedTags
+									.filter(tag => !tags.includes(tag))
+									.map(tag => ({value: tag}))}
+								value={tagInput}
+								onChange={setTagInput}
+								onSelect={handleAddTag}
+								placeholder="Add a tag"
+								onBlur={() => handleAddTag(tagInput)} // Create new tag if it doesn't exist
+							/>
+							<div>
+								{tags.map(tag => (
+									<Tag
+										key={tag}
+										closable
+										onClose={() => handleTagRemove(tag)}
+									>
+										{tag}
+									</Tag>
+								))}
+							</div>
+							<Form.Item style={{float: 'right'}}>
 
 								<Button
 									type="primary"
 									size="large"
-									style={{ backgroundColor: '#7952CC', fontWeight: 700 }}
+									style={{backgroundColor: '#7952CC', fontWeight: 700}}
 									onClick={prev}
 								>
 									Previous
 								</Button>
 
-								<Button style={{ backgroundColor: '#7952CC', marginLeft: 5, fontWeight: 700 }} size="large"
-									type="primary" htmlType="submit" disabled={(templates && templates.length === 0)}>
+								<Button style={{backgroundColor: '#7952CC', marginLeft: 5, fontWeight: 700}}
+										size="large"
+										type="primary" htmlType="submit"
+										disabled={(templates && templates.length === 0)}>
 									Submit
 								</Button>
 							</Form.Item>

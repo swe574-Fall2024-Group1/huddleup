@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 	'corsheaders',
 	'authAPI.apps.AuthConfig',
 	'communityAPI.apps.CommunityapiConfig',
+	'taggit'
 ]
 
 
