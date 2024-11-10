@@ -13,16 +13,25 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
+    # - name: Load .env.sample for testing
+    #   run: |
+    #     set -a
+    #     source ./.env.sample
+    #     set +a
+    #     echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"  # Test to verify variables are set
+
     - name: Load .env.sample for testing
-      run: |
-        set -a
-        source ./.env.sample
-        set +a
-        echo "Loaded SECRET_KEY: $ALLOWED_HOSTS"  # Test to verify variables are set
+      uses: falti/dotenv-action@v1
+      with:
+        path: './.env.sample'
+
+    - name: Verify environment variables
+      run: echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"
 
     - name: Install dependencies
       run: pip install -r ./huddleupAPI/requirements.txt
 
     - name: Run tests
       run: |
+        echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"
         python ./huddleupAPI/manage.py test
