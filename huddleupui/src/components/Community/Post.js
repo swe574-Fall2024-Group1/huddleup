@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal } from 'antd';
+import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Form, Select } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import useApi from '../../hooks/useApi';
@@ -9,6 +9,8 @@ import useAuth from '../Auth/useAuth';
 import useCommunity from '../../components/Community/useCommunity';
 
 const { Text } = Typography;
+const { TextArea } = Input;
+const { Option } = Select;
 
 const Post = ({ postData }) => {
 	const { communityInfo } = useCommunity();
@@ -28,6 +30,7 @@ const Post = ({ postData }) => {
 	const [liked, setLiked] = useState(postData.liked); // Track whether the user has liked the post or not
 	const [disliked, setDisliked] = useState(postData.disliked); // Track whether the user has disliked the post or not
 
+	const [showBadgeModal, setShowBadgeModal] = useState(false); // State to control delete confirmation modal
 	const [showDeleteModal, setShowDeleteModal] = useState(false); // State to control delete confirmation modal
 	const [editingComment, setEditingComment] = useState(null); // State to manage the comment being edited
 	const [editedCommentText, setEditedCommentText] = useState(''); // State to store the edited comment text
@@ -257,6 +260,14 @@ const Post = ({ postData }) => {
 		await fetchApi('/api/communities/delete-comment', { commentId });
 	};
 
+	const [selectedBadge, setSelectedBadge] = useState('')
+	const [badgeMessage, setBadgeMessage] = useState('')
+	const handleBadgeSubmit = () => {
+		// Handle form submission logic here
+		console.log({ selectedBadge, badgeMessage })
+		setShowBadgeModal(false) // Close modal on submit
+	  }
+
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			{(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
@@ -278,6 +289,50 @@ const Post = ({ postData }) => {
 				</Button>
 			) : null}
 
+			{communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
+				<Button
+					style={{ position: 'absolute', right: 10, top: 60, color: '#7952CC' }}
+					onClick={() => setShowBadgeModal(true)}
+				>
+					Assign Badge
+				</Button>
+			) : null}
+			
+			<Modal
+				title="Assign Badge"
+				visible={showBadgeModal}
+				onOk={handleBadgeSubmit}
+				onCancel={() => setShowBadgeModal(false)}
+				okText="Assign"
+				cancelText="Cancel"
+			>
+				<Form layout="vertical" onFinish={handleBadgeSubmit}>
+					<Form.Item
+					label="Select Badge"
+					name="badge"
+					rules={[{ required: true, message: 'Please select a badge' }]}
+					>
+					<Select
+						placeholder="Choose a badge"
+						value={selectedBadge}
+						onChange={(value) => setSelectedBadge(value)}
+					>
+						<Option value="community-contributor">Creative Genius</Option>
+						<Option value="helpful-mentor">Helpful Mentor</Option>
+						<Option value="innovative-thinker">Innovative Thinker</Option>
+					</Select>
+					</Form.Item>
+					
+					<Form.Item label="Message (Optional)" name="message">
+					<TextArea
+						placeholder="Add a personal message for the badge recipient"
+						value={badgeMessage}
+						rows={4}
+						onChange={(e) => setBadgeMessage(e.target.value)}
+					/>
+					</Form.Item>
+				</Form>
+			</Modal>
 			<Modal
 				title="Confirm Delete"
 				visible={showDeleteModal}

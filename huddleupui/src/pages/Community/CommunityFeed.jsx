@@ -6,9 +6,12 @@ import { useParams } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
 import { LoadingOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons';
 import Post from '../../components/Community/Post';
+import CreateBadge from '../../pages/Community/CreateBadge.jsx';
+import useCommunity from '../../components/Community/useCommunity';
 import { Button, Card, Spin, Input, InputNumber, DatePicker, Select, Form, Checkbox } from 'antd';
 
 export default function CommunityFeed() {
+	const { communityInfo } = useCommunity();
 	const navigate = useNavigate()
 	const [posts, setPosts] = useState([]);
 	const [templates, setTemplates] = useState([]);
@@ -342,6 +345,7 @@ export default function CommunityFeed() {
 		<div>
 
 			<div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+				
 				<Button
 					type="primary"
 					size="large"
@@ -353,11 +357,12 @@ export default function CommunityFeed() {
 				<Button
 					type="primary"
 					size="large"
-					style={{ backgroundColor: '#7952CC', fontWeight: 700 }}
+					style={{ backgroundColor: '#7952CC', fontWeight: 700, marginRight: 20 }}
 					onClick={() => navigate('create-post')}
 				>
 					+ Add Post
 				</Button>
+				{communityInfo.memberType === 'owner' && <CreateBadge />}
 			</div>
 
 			{searchOpen && (
