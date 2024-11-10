@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TeamOutlined, PlusOutlined, UsergroupAddOutlined, NotificationOutlined } from '@ant-design/icons';
+import { TeamOutlined, PlusOutlined, UsergroupAddOutlined, NotificationOutlined, ContactsFilled } from '@ant-design/icons';
 import { Layout, Avatar, Card, Button, Modal, Row, Col, Drawer, Grid } from 'antd';
 import { Link, useNavigate } from "react-router-dom";
 import useApi from '../../hooks/useApi';
@@ -136,7 +136,7 @@ const RightSidebar = () => {
 			) : (
 				<>
 				<Button onClick={toggleDrawer} style={{ position: 'absolute', right: 10, top: 80, zIndex: 1000 }}>
-					Open Sidebar
+					<ContactsFilled style={{ fontSize: 18 }} />
 				</Button>
 				<Drawer
 					title="Right Sidebar"
