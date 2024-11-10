@@ -1083,7 +1083,8 @@ def get_post_details(request):
 				'id': post.id,
 				'createdBy': post.createdBy.username,
 				'createdAt': post.createdAt,
-				'rowValues': post.rowValues
+				'rowValues': post.rowValues,
+				'tags': list(post.tags.values_list("name", flat=True))
 			}
 
 			template = Template.objects.get(id=post.template.id)
@@ -1116,6 +1117,7 @@ def edit_post(request):
 		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
 			post.rowValues = payload['rowValues']
 			post.isEdited = True
+			post.tags.set(payload.get("tags", []), clear=True)
 			post.save()
 			return JsonResponse({'success': True, 'message': 'Post edited successfully'}, status=200)
 		return JsonResponse({'error': 'User is not authorized to edit the post'}, status=403)
