@@ -131,9 +131,10 @@ export default function CreatePost() {
 	const handleTagRemove = (removedTag) => {
     setTags(tags.filter(tag => tag !== removedTag));
   };
-	 const handleAddTag = (tag) => {
-    if (tag.length >= 3 && !tags.includes(tag)) { // Only add tag if it’s 3+ characters
-      setTags([...tags, tag]);
+	  const handleAddTag = (tag) => {
+    const lowerCaseTag = tag.toLowerCase();
+    if (lowerCaseTag.length >= 3 && !tags.includes(lowerCaseTag)) {
+      setTags([...tags, lowerCaseTag]);
     }
     setTagInput("");
     setSuggestedTags([]);
@@ -1153,7 +1154,7 @@ export default function CreatePost() {
 									.filter(tag => !tags.includes(tag))
 									.map(tag => ({value: tag}))}
 								value={tagInput}
-								onChange={setTagInput}
+								onChange={(value) => setTagInput(value.toLowerCase())} // Convert to lowercase on input
 								onSelect={handleAddTag}
 								placeholder="Add a tag"
 								onBlur={() => handleAddTag(tagInput)} // Create new tag if it doesn't exist
