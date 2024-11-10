@@ -23,7 +23,7 @@ jobs:
     - name: Load .env file
       uses: xom9ikk/dotenv@v2.3.0
       with:
-        path: ./.env.sample
+        mode: sample
 
     - name: Verify environment variables
       run: |
