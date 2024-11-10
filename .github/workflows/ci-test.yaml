@@ -26,7 +26,8 @@ jobs:
         path: './.env.sample'
 
     - name: Verify environment variables
-      run: echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"
+      run: |
+        echo "Loaded ALLOWED_HOSTS: $ALLOWED_HOSTS"
 
     - name: Install dependencies
       run: pip install -r ./huddleupAPI/requirements.txt
