@@ -10,7 +10,7 @@ services:
     expose:
       - 8000
     env_file:
-      - .env
+      - huddleupAPI/.env
     depends_on:
       - db
     restart: unless-stopped

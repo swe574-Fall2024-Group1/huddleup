@@ -37,6 +37,7 @@ const Post = ({ postData }) => {
 
 	const template_result = useApi('/api/communities/templates/get-template', { templateId: postData.templateId });
 	const comments_result = useApi('/api/communities/get-post-comments', { postId: postData.id });
+	const badge_result = useApi('/api/communities/get-badges', { communityId: communityInfo.id });
 
 	const { userInfo } = useAuth();
 
@@ -260,10 +261,12 @@ const Post = ({ postData }) => {
 		await fetchApi('/api/communities/delete-comment', { commentId });
 	};
 
+	const [badges, setBadges] = useState([])
 	const [selectedBadge, setSelectedBadge] = useState('')
 	const [badgeMessage, setBadgeMessage] = useState('')
 	const handleBadgeSubmit = () => {
 		// Handle form submission logic here
+
 		console.log({ selectedBadge, badgeMessage })
 		setShowBadgeModal(false) // Close modal on submit
 	  }
