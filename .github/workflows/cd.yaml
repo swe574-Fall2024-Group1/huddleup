@@ -15,6 +15,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Modify frontend ports in docker-compose.yml for dev branch
+        if: github.ref_name == 'feature/cd-pipeline'
+        run: |
+          sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml
+
       - name: Setup SSH Key
         uses: webfactory/ssh-agent@v0.9.0
         with:
@@ -29,7 +34,6 @@ jobs:
           MAIN_PATH: /var/www/huddleup
           BRANCH_NAME: dev # ${{ github.ref_name }}
         run: |
-
           # Determine deployment path based on branch
           if [ "$BRANCH_NAME" == "dev" ]; then
             DEPLOY_PATH=$DEV_PATH
