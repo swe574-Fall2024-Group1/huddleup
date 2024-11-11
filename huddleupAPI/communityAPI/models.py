@@ -81,11 +81,12 @@ class Badge(models.Model):
 	name = models.CharField(max_length=50)
 	type = models.CharField(
 		max_length=50,
-		choices=[('manual', 'Manual'), ('automatic', 'Automatic')]
+		choices=[('manual', 'Manual'), ('automatic', 'Automatic')],
+		default='manual'
 	)
 	community = models.ForeignKey('Community', on_delete=models.CASCADE, null=True)
 	description = models.CharField(max_length=500)
-	image = models.CharField(max_length=5000000)
+	criteria = models.JSONField(default=dict, null=True)
 	createdAt = models.DateTimeField(auto_now_add=True)
 
 class UserBadge(models.Model):
