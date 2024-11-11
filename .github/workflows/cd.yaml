@@ -5,6 +5,7 @@ on:
     branches:
       # - main
       - dev
+      - feature/cd-pipeline
 
 jobs:
   deploy:
@@ -26,7 +27,7 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
           DEV_PATH: /var/www/huddleup-dev/huddleup
           MAIN_PATH: /var/www/huddleup
-          BRANCH_NAME: ${{ github.ref_name }}
+          BRANCH_NAME: dev # ${{ github.ref_name }}
         run: |
 
           # Determine deployment path based on branch
