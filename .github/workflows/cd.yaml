@@ -44,9 +44,12 @@ jobs:
             exit 1
           fi
 
-          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
-            cd $PROJECT_PATH
-            docker-compose -f docker-compose.yaml -p $BRANCH_NAME down
-            git pull origin $BRANCH_NAME
+          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "
+            cd $PROJECT_PATH &&
+            docker-compose -f docker-compose.yaml -p $BRANCH_NAME down &&
+            git pull origin $BRANCH_NAME &&
+            if [ "$BRANCH_NAME" == "dev" ]; then \
+              sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml \
+            fi &&
             docker-compose -f docker-compose.yaml -p $BRANCH_NAME up --build -d
-          EOF
+          "
