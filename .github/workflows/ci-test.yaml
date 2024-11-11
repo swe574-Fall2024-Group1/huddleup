@@ -24,4 +24,5 @@ jobs:
 
     - name: Run tests
       run: |
-        python ./huddleupAPI/manage.py test
+        cd huddleupAPI
+        python manage.py test
