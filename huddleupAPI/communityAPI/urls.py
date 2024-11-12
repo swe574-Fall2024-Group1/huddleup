@@ -46,9 +46,9 @@ urlpatterns = [
 	url('badges/create-badge', views.badges, name='create_badge'),
 	url(r'badges/update-badge', views.badges, name='edit_badge'),
 	url(r'badges/delete-badge', views.badges, name='delete_badge'),
-	url(r'badges/get-user-badges', views.badges, name='get_user_badges'),
-	url(r'badges/assign-badge', views.badges, name='assign_badge'),
-	url(r'badges/remove-badge', views.badges, name='remove_badge'),
-	url(r'badges/get-badge-users', views.badges, name='get_badge_users'),
+	url(r'badges/get-user-badges', views.user_badges, name='get_user_badges'),
+	url(r'badges/assign-badge', views.user_badges, name='assign_badge'),
+	url(r'badges/remove-badge', views.user_badges, name='remove_badge'),
+	url(r'badges/get-badge-users', views.user_badges, name='get_badge_users'),
 ]
 

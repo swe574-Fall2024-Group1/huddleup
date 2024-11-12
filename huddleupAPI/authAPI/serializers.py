@@ -1,9 +1,10 @@
 from rest_framework import serializers, exceptions
 from .models import User, Session
+from communityAPI.serializers import UserBadgeSerializer
 
 
 class UserSerializer(serializers.ModelSerializer):
-
+	badges = UserBadgeSerializer(source='userbadge_set', many=True)
 	def validate_username(self, value):
 		if User.objects.filter(username=value).exists():
 			raise exceptions.ValidationError("User with this username already exists")
@@ -11,7 +12,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		fields = ['username', 'password', 'id']
+		# add badges of user
+		fields = ['username', 'password', 'id', 'badges']
 
 class SessionSerializer(serializers.ModelSerializer):
 

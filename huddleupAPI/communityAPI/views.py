@@ -607,6 +607,7 @@ def get_community_posts(request):
 			posts_data.append({
 				'id': post.id,
 				'username': post.createdBy.username,
+				'user_id': post.createdBy.id,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
@@ -1284,16 +1285,14 @@ def get_main_search(request):
 def badges(request):
 	if request.method == 'GET':
 		badges = Badge.objects.all()
-		badges_data = []
-		for badge in badges:
-			badges_data.append({
-				'id': badge.id,
-				'name': badge.name,
-				'description': badge.description,
-				'image': badge.image,
-				'community': badge.community.id if badge.community else None
-			})
+		badges_data = [badge for badge in badges if badge.community is None]
+		payload = JSONParser().parse(request) if request.body else {}
+		# list both global and community badges if communityId is provided
+		if 'communityId' in payload:
+			community = Community.objects.get(id=payload['communityId'])
+			badges_data = Badge.objects.filter(Q(community=None) | Q(community=community.id))
 
+		badges_data = BadgeSerializer(badges_data, many=True).data
 		response_data = {
 			'success': True,
 			'data': badges_data
@@ -1372,6 +1371,7 @@ def user_badges(request):
 			'user': request.user.id,
 			'badge': payload['badgeId']
 		}
+		# return JsonResponse(badge_data)
 		badge_serializer = UserBadgeSerializer(data=badge_data)
 		if badge_serializer.is_valid():
 			badge_serializer.save()

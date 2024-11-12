@@ -37,8 +37,12 @@ const Post = ({ postData }) => {
 
 	const template_result = useApi('/api/communities/templates/get-template', { templateId: postData.templateId });
 	const comments_result = useApi('/api/communities/get-post-comments', { postId: postData.id });
-	const badge_result = useApi('/api/communities/get-badges', { communityId: communityInfo.id });
-
+	const badge_result = fetchApi('/api/communities/badges/get-badges', { communityId: communityInfo.id }, 'GET').then((response) => {
+		if (response && !response.loading && loadingBadges) {
+			setLoadingBadges(false);
+			setBadges(response.data);
+		}
+	});
 	const { userInfo } = useAuth();
 
 	template_result.then((response) => {
@@ -262,11 +266,15 @@ const Post = ({ postData }) => {
 	};
 
 	const [badges, setBadges] = useState([])
+	const [loadingBadges, setLoadingBadges] = useState(true)
 	const [selectedBadge, setSelectedBadge] = useState('')
 	const [badgeMessage, setBadgeMessage] = useState('')
-	const handleBadgeSubmit = () => {
-		// Handle form submission logic here
-
+	const handleBadgeSubmit = async () => {
+		if (!selectedBadge) {
+			message.error('Please select a badge')
+			return
+		}
+		await fetchApi('/api/communities/badges/assign-badge', { badgeId: selectedBadge, username: postData.user_id, message: badgeMessage })
 		console.log({ selectedBadge, badgeMessage })
 		setShowBadgeModal(false) // Close modal on submit
 	  }
@@ -315,14 +323,17 @@ const Post = ({ postData }) => {
 					name="badge"
 					rules={[{ required: true, message: 'Please select a badge' }]}
 					>
+						{JSON.stringify(postData)}
 					<Select
 						placeholder="Choose a badge"
 						value={selectedBadge}
 						onChange={(value) => setSelectedBadge(value)}
 					>
-						<Option value="community-contributor">Creative Genius</Option>
-						<Option value="helpful-mentor">Helpful Mentor</Option>
-						<Option value="innovative-thinker">Innovative Thinker</Option>
+						{badges && badges.map((badge) => (
+						<Option key={badge.id} value={badge.id}>
+							{badge.name}
+						</Option>
+						))}
 					</Select>
 					</Form.Item>
 					

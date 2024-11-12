@@ -79,7 +79,9 @@ def get_user_info(request):
 		response_data = {
 			'success': True,
 			'data': {
-				'username': user_serializer.data['username']
+				'username': user_serializer.data['username'],
+				'id': user_serializer.data['id'],
+				'badges': user_serializer.data['badges']
 			}
 		}
 		return JsonResponse(response_data, status=200)
