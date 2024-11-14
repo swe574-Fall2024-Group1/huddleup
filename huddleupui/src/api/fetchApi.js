@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import message from 'antd/lib/message';
 
 
 
@@ -24,7 +25,6 @@ const fetchApi = async (url, payload, method = 'POST') => {
 		} else if (method === 'GET' && payload){
 			url = url + '?' + new URLSearchParams(payload).toString()
 		}
-
 		const response = await fetch( url + '/', fetchOptions);
 
 
@@ -37,6 +37,7 @@ const fetchApi = async (url, payload, method = 'POST') => {
 			return json
 		} else {
 		  // Handle non-OK responses here
+			message.error('Request failed with status:', response.status)
 		  console.error('Request failed with status:', response.status);
 		}
 	  } catch (error) {

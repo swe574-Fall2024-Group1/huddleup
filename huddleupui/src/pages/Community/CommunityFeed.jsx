@@ -1,5 +1,5 @@
 /* global BigInt */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
 import { useParams } from 'react-router-dom';
@@ -24,7 +24,18 @@ export default function CommunityFeed() {
 	const { communityId } = useParams();
 
 	const posts_result = useApi('/api/communities/get-community-posts', { communityId });
+	  const [badges, setBadges] = useState([]);
 
+	  useEffect(() => {
+		const fetchBadges = async () => {
+		  const response = await fetchApi('/api/communities/badges/get-badges', {}, 'GET');
+		  if (response.success) {
+			setBadges(response.data);
+		  }
+		};
+
+		fetchBadges();
+	  }, []);
 	posts_result.then((response) => {
 		if (response && !response.loading && postsLoading && posts.length === 0) {
 			setPosts(response.data.data)
@@ -362,7 +373,7 @@ export default function CommunityFeed() {
 				>
 					+ Add Post
 				</Button>
-				{communityInfo.memberType === 'owner' && <CreateBadge />}
+				{communityInfo.memberType === 'owner' && <CreateBadge badges={badges} />}
 			</div>
 
 			{searchOpen && (

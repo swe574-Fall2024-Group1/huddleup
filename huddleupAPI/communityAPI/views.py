@@ -604,9 +604,29 @@ def get_community_posts(request):
 
 			isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=post.createdBy).exists()
 
+			# Fetch user badges
+			user_badges = UserBadge.objects.filter(user=post.createdBy)
+			user_badges_data = []
+			for user_badge in user_badges:
+				user_badges_data.append({
+					'id': user_badge.badge.id,
+					'badge': {
+                        'id': user_badge.badge.id,
+                        'name': user_badge.badge.name,
+						'image': user_badge.badge.image,
+                        'type': user_badge.badge.type,
+                        'description': user_badge.badge.description,
+                        'criteria': user_badge.badge.criteria,
+                        'createdAt': user_badge.badge.createdAt,
+                        'community': user_badge.badge.community.id if user_badge.badge.community else None
+                    },
+					'createdAt': user_badge.createdAt,
+				})
+
 			posts_data.append({
 				'id': post.id,
 				'username': post.createdBy.username,
+				'user_badges': user_badges_data,
 				'user_id': post.createdBy.id,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
@@ -1308,7 +1328,7 @@ def badges(request):
 		badge_data = {
 			'name': payload['name'],
 			'description': payload['description'],
-			'image': payload['image'],
+			'image': payload['image'] if 'image' in payload else None,
 			'community': payload['communityId'] if 'communityId' in payload else None,
 		}
 		badge_serializer = BadgeSerializer(data=badge_data)
@@ -1371,15 +1391,17 @@ def user_badges(request):
 			'user': request.user.id,
 			'badge': payload['badgeId']
 		}
+		if UserBadge.objects.filter(user_id=request.user.id, badge_id=payload['badgeId']).exists():
+			return JsonResponse({'error': 'User already has this badge'}, status=400)
 		# return JsonResponse(badge_data)
 		badge_serializer = UserBadgeSerializer(data=badge_data)
 		if badge_serializer.is_valid():
 			badge_serializer.save()
+			# get all user badges
+			badges = UserBadge.objects.filter(user=request.user)
 			response_data = {
 				'success': True,
-				'data': {
-					'id': badge_serializer.data['id']
-				}
+				'data': UserBadgeSerializer(badges, many=True).data
 			}
 			return JsonResponse(response_data, status=201)
 		return JsonResponse(badge_serializer.errors, status=400)
