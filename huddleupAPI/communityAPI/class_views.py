@@ -1,10 +1,10 @@
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from taggit.models import Tag
 from rest_framework.response import Response
 
 
-class TagList(ListCreateAPIView):
+class TagList(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):

@@ -3,6 +3,7 @@ from django.test import TestCase
 from authAPI.models import User
 from communityAPI.views import (create_community, get_community_members, get_community_banned,
 								get_community_moderators, get_community_owners, assign_moderator, create_post)
+from communityAPI.class_views import TagList
 from communityAPI.models import Community, CommunityUserConnection, Template, Post
 from authAPI.serializers import UserSerializer
 from rest_framework import status
@@ -243,6 +244,16 @@ class CommunityTests(TestCase):
 		self.assertEqual(the_post.rowValues[0], "title")
 		self.assertEqual(the_post.rowValues[1], "text")
 		self.assertEqual(created_tags, {"tag1", "tag2", "tag3"})
+
+	def test_tag_existence(self):
+		self.test_create_post_with_tags()
+		url = reverse('tag_list')
+		request = self.request_factory.get(url, data={"search": "tag"})
+		force_authenticate(request, user=self.user)
+		view = TagList.as_view()
+		response = view(request)
+		response_data = response.data
+		self.assertEqual(set(response_data), {"tag1", "tag2", "tag3"})
 
 	def tearDown(self):
 		# Clean up any created data after each test
