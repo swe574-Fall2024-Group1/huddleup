@@ -1,4 +1,5 @@
 from django.db import models
+from taggit.managers import TaggableManager
 
 # Create your models here.
 class Community(models.Model):
@@ -45,6 +46,7 @@ class Template(models.Model):
 	createdAt = models.DateTimeField(auto_now_add=True)
 	isDeleted = models.BooleanField(default=False)
 
+
 class Post(models.Model):
 	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
 	community = models.ForeignKey('Community', on_delete=models.CASCADE)
@@ -52,6 +54,8 @@ class Post(models.Model):
 	rowValues = models.JSONField(default=list)
 	createdAt = models.DateTimeField(auto_now_add=True)
 	isEdited = models.BooleanField(default=False)
+	tags = TaggableManager(blank=True)
+
 
 class Comment(models.Model):
 	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)

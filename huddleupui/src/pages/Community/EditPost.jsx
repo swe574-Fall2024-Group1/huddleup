@@ -1,9 +1,11 @@
 /* global BigInt */
-import React, { useState, useEffect } from 'react';
-import { Form, Button, Input, InputNumber, DatePicker, message, Checkbox, Card, Select } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Form, Button, Input, InputNumber, DatePicker, message, Checkbox, Card, Select, AutoComplete, Tag } from 'antd';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
 import '../../assets/community.css';
+import axios from 'axios';
+import debounce from 'lodash/debounce';
 
 export default function EditPost() {
 	const [form] = Form.useForm();
@@ -13,12 +15,17 @@ export default function EditPost() {
 	const navigate = useNavigate();
 	const { communityId, postId } = useParams();
 
+	const [tags, setTags] = useState([]);
+  	const [suggestedTags, setSuggestedTags] = useState([]); // For tags from backend
+  	const [tagInput, setTagInput] = useState("");
+
 	useEffect(() => {
 		async function fetchPostAndTemplate() {
 			const response = await fetchApi(`/api/communities/get-post-details`, { postId });
 			if (response && response.data) {
 				setPost(response.data.post);
 				setSelectedTemplate(response.data.template);
+				setTags(response.data.post.tags.map(tag => tag.toLowerCase()));
 				form.setFieldsValue({
 					...response.data.post.rowValues.reduce((acc, curr, index) => ({ ...acc, [index]: curr }), {}),
 				});
@@ -28,12 +35,46 @@ export default function EditPost() {
 		fetchPostAndTemplate();
 	}, [postId, form]);
 
+	// Fetch tags from backend for autocomplete suggestions
+  const fetchTags = async (query) => {
+    if (query.length >= 3) {
+      try {
+        const response = await axios.get(`/api/communities/tags?search=${query}`);
+        setSuggestedTags(response.data);
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+      }
+    } else {
+      setSuggestedTags([]);
+    }
+  };
+
+  const debouncedFetchTags = useCallback(debounce(fetchTags, 300), []);
+
+  useEffect(() => {
+    debouncedFetchTags(tagInput);
+  }, [tagInput, debouncedFetchTags]);
+
+  const handleAddTag = (tag) => {
+    const lowerCaseTag = tag.toLowerCase();
+    if (lowerCaseTag.length >= 3 && !tags.includes(lowerCaseTag)) {
+      setTags([...tags, lowerCaseTag]);
+    }
+    setTagInput("");
+    setSuggestedTags([]);
+  };
+
+  const handleTagRemove = (removedTag) => {
+    setTags(tags.filter(tag => tag !== removedTag));
+  };
+
 	const onFormSubmit = async values => {
 		const rowValues = Object.values(values);
 		const payload = {
 			postId,
 			templateId: selectedTemplate.id, // Assuming the templateId is necessary for backend processing
-			rowValues
+			rowValues,
+			tags: tags
 		};
 
 		const response = await fetchApi('/api/communities/edit-post', payload);
@@ -1052,6 +1093,29 @@ export default function EditPost() {
 				{selectedTemplate && (
 					<Form form={form} layout="vertical" onFinish={onFormSubmit}>
 						{renderFormrows(selectedTemplate.rows)}
+						<AutoComplete
+						style={{ width: 200, marginBottom: "10px" }}
+						options={suggestedTags
+						  .filter(tag => !tags.includes(tag))
+						  .map(tag => ({ value: tag }))}
+						value={tagInput}
+						onChange={(value) => setTagInput(value.toLowerCase())}
+						onSelect={handleAddTag}
+						placeholder="Add a tag"
+						onBlur={() => handleAddTag(tagInput)}
+					  />
+
+					  <div>
+						{tags.map(tag => (
+						  <Tag
+							key={tag}
+							closable
+							onClose={() => handleTagRemove(tag)}
+						  >
+							{tag}
+						  </Tag>
+						))}
+					  </div>
 						<Form.Item style={{ marginTop: 20 }}>
 							<Button type="primary" size="large" htmlType="submit">
 								Update Post

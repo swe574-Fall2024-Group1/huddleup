@@ -1,5 +1,6 @@
 from django.conf.urls import url
 from communityAPI import views
+from communityAPI import class_views
 
 urlpatterns = [
 	url(r'create-community', views.create_community, name='create_community'),
@@ -42,4 +43,5 @@ urlpatterns = [
     url(r'get-owned-communities', views.get_owned_communities, name='get_owned_communities'),
     url(r'archive-community', views.archive_community, name='archive_community'),
     url(r'get-main-search', views.get_main_search, name='get_main_search'),
+	url(r'tags', class_views.TagList.as_view(), name='tag_list'),
 ]

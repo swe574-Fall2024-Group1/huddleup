@@ -15,6 +15,7 @@ Django==3.2.4
 django-appconf==1.0.6
 django-cors-headers==4.3.1
 django-cryptography==1.1
+django-taggit==4.0.0
 djangorestframework==3.15.1
 dnspython==2.6.1
 docopt==0.6.2

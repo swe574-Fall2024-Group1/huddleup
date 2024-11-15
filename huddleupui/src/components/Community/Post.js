@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal } from 'antd';
+import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Tag } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import useApi from '../../hooks/useApi';
@@ -257,6 +257,16 @@ const Post = ({ postData }) => {
 		await fetchApi('/api/communities/delete-comment', { commentId });
 	};
 
+	const TagList = ({ tags }) => {
+	  return (
+		<div>
+		  {tags.map((tag, index) => (
+			<Tag key={index}>{tag}</Tag>
+		  ))}
+		</div>
+	  );
+	};
+
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
 			{(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
@@ -375,6 +385,11 @@ const Post = ({ postData }) => {
 					</Button>
 				}
 			</div>
+			<Divider />
+				<div>
+				  <h3>Tags:</h3>
+				  <TagList tags={postData.tags} />
+				</div>
 		</Card>
 	);
 };

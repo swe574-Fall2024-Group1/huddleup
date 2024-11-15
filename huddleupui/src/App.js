@@ -20,6 +20,7 @@ import Connections from "./pages/Connections";
 import CommunitySettings from "./pages/Community/CommunitySettings";
 import EditPost from "./pages/Community/EditPost";
 import Discover from "./pages/Discover";
+import UserProfile from "./pages/UserProfile";
 
 function App() {
 
@@ -44,6 +45,14 @@ function App() {
 							<ProtectedRoute>
 								<AppLayout>
 									<UserInvitations />
+								</AppLayout>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/profile" element={
+							<ProtectedRoute>
+								<AppLayout>
+									<UserProfile />
 								</AppLayout>
 							</ProtectedRoute>
 						}
