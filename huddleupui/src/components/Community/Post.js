@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Form, Select } from 'antd';
+import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Form, Select, Tag } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import useApi from '../../hooks/useApi';
@@ -265,6 +265,16 @@ const Post = ({ postData }) => {
 		await fetchApi('/api/communities/delete-comment', { commentId });
 	};
 
+	const TagList = ({ tags }) => {
+	  return (
+		<div>
+		  {tags.map((tag, index) => (
+			<Tag key={index}>{tag}</Tag>
+		  ))}
+		</div>
+	  );
+	};
+
 	const [badges, setBadges] = useState([])
 	const [loadingBadges, setLoadingBadges] = useState(true)
 	const [selectedBadge, setSelectedBadge] = useState('')
@@ -313,7 +323,7 @@ const Post = ({ postData }) => {
 				</Button>
 			) : null}
 			</div>
-			
+
 			<Modal
 				title="Assign Badge"
 				visible={showBadgeModal}
@@ -342,7 +352,7 @@ const Post = ({ postData }) => {
 						))}
 					</Select>
 					</Form.Item>
-					
+
 					<Form.Item label="Message (Optional)" name="message">
 					<TextArea
 						placeholder="Add a personal message for the badge recipient"
@@ -450,6 +460,11 @@ const Post = ({ postData }) => {
 					</Button>
 				}
 			</div>
+			<Divider />
+				<div>
+				  <h3>Tags:</h3>
+				  <TagList tags={postData.tags} />
+				</div>
 		</Card>
 	);
 };

@@ -1,5 +1,7 @@
 from django.conf.urls import url
 from communityAPI import views
+from communityAPI import class_views
+
 urlpatterns = [
 	url(r'create-community', views.create_community, name='create_community'),
 	url(r'get-community-info', views.get_community_info, name='get_community_info'),
@@ -50,5 +52,6 @@ urlpatterns = [
 	url(r'badges/assign-badge', views.user_badges, name='assign_badge'),
 	url(r'badges/remove-badge', views.user_badges, name='remove_badge'),
 	url(r'badges/get-badge-users', views.user_badges, name='get_badge_users'),
+	url(r'tags', class_views.TagList.as_view(), name='tag_list'),
 ]
 

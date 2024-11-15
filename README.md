@@ -13,12 +13,12 @@ STEP 1:
 
 Clone the repo using https
 
-`git clone https://github.com/swe574-Fall2024-Group1/huddleup`
+`git clone https://github.com/swe574-Fall2024-Group1/huddleup.git`
 
 
 or using ssh
 
-`git@github.com:swe574-Fall2024-Group1/huddleup.git`
+`git clone git@github.com:swe574-Fall2024-Group1/huddleup.git`
 
 STEP 2:
 
@@ -72,3 +72,8 @@ and then running:
 
 Fill out the username and password, and with this credentials you can go to `http://localhost:8080/admin` and login to the admin site.
 
+STEP 8:
+
+For running the tests in this repository, you will need to run:
+
+`python manage.py test`

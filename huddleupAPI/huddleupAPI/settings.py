@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
 	'corsheaders',
 	'authAPI.apps.AuthConfig',
 	'communityAPI.apps.CommunityapiConfig',
+	'taggit'
 ]
 
 
@@ -150,3 +152,6 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ]
 }
+
+if 'test' in sys.argv or 'test_coverage' in sys.argv:  # Covers regular testing and django-coverage
+    DATABASES['default']['ENGINE'] = 'django.db.backends.sqlite3'

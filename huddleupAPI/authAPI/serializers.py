@@ -1,6 +1,8 @@
 from rest_framework import serializers, exceptions
 from .models import User, Session
 from communityAPI.serializers import UserBadgeSerializer
+from taggit.serializers import (TagListSerializerField,
+                                TaggitSerializer)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,3 +22,11 @@ class SessionSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Session
 		fields = ['userId', 'expiresAt', 'id']
+
+
+class UpdateUserSerializer(TaggitSerializer, serializers.ModelSerializer):
+	tags = TagListSerializerField(required=False)
+
+	class Meta:
+		model = User
+		fields = ['about_me', 'tags']

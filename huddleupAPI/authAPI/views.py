@@ -80,6 +80,8 @@ def get_user_info(request):
 			'success': True,
 			'data': {
 				'username': user_serializer.data['username'],
+				'about_me': user.about_me,
+				'tags': list(user.tags.values_list('name', flat=True)),
 				'id': user_serializer.data['id'],
 				'badges': user_serializer.data['badges']
 			}

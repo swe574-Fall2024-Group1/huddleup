@@ -1,25 +1,30 @@
 from django.urls import reverse
-from django.test import RequestFactory, TestCase
+from django.test import TestCase
 from authAPI.models import User
 from communityAPI.views import (create_community, get_community_members, get_community_banned,
-								get_community_moderators, get_community_owners, assign_moderator)
-from communityAPI.models import Community, CommunityUserConnection, Template
+								get_community_moderators, get_community_owners, assign_moderator, create_post)
+from communityAPI.class_views import TagList
+from communityAPI.models import Community, CommunityUserConnection, Template, Post
 from authAPI.serializers import UserSerializer
 from rest_framework import status
 import base64
 import json
+from rest_framework.test import APIRequestFactory
+from rest_framework.test import force_authenticate
+
 
 class CommunityTests(TestCase):
 
 	def setUp(self):
-		self.request_factory = RequestFactory()
+		self.request_factory = APIRequestFactory()
 		user_data = {
 			'username': 'testuser',
 			'password': 'testpass'
 		}
 		user_serializer = UserSerializer(data=user_data)
 		if user_serializer.is_valid():
-			user_serializer.save()
+			User.objects.create_user(username=user_serializer.validated_data["username"],
+									 password=user_serializer.validated_data["password"])
 		self.user = User.objects.get(username='testuser')
 
 	def test_create_community(self):
@@ -32,8 +37,8 @@ class CommunityTests(TestCase):
 			'isPrivate': False
 		}
 
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		# Call the view directly
 		response = create_community(request)
@@ -95,8 +100,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_members(request)
 
@@ -124,8 +129,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_banned(request)
 
@@ -153,8 +158,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_moderators(request)
 
@@ -172,8 +177,8 @@ class CommunityTests(TestCase):
 		payload = {
 			'communityId': self.community_id
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = get_community_owners(request)
 
@@ -202,8 +207,8 @@ class CommunityTests(TestCase):
 			'communityId': self.community_id,
 			'username': member_user.username
 		}
-		request = self.request_factory.post(url, data=json.dumps(payload), content_type='application/json')
-		request.user = self.user
+		request = self.request_factory.post(url, data=payload, format='json')
+		force_authenticate(request, user=self.user)
 
 		response = assign_moderator(request)
 
@@ -215,6 +220,40 @@ class CommunityTests(TestCase):
 		# Verify the user type is now 'moderator'
 		connection = CommunityUserConnection.objects.get(user=member_user, community_id=self.community_id)
 		self.assertEqual(connection.type, 'moderator')
+
+	def test_create_post_with_tags(self):
+		self.test_create_community()
+		url = reverse('create_post')
+		community = Community.objects.all()[0]
+		template = Template.objects.get(community=community)
+		post_data = {
+			'communityId': community.id,
+			'templateId': template.id,
+			'rowValues': ["title", "text"],
+			'tags': ["tag1", "tag2", "tag3"]
+		}
+
+		request = self.request_factory.post(url, data=post_data, format='json')
+		force_authenticate(request, user=self.user)
+
+		response = create_post(request)
+		response_data = json.loads(response.content)
+		self.assertTrue(response_data["success"])
+		the_post = Post.objects.all()[0]
+		created_tags = set([x.name for x in the_post.tags.all()])
+		self.assertEqual(the_post.rowValues[0], "title")
+		self.assertEqual(the_post.rowValues[1], "text")
+		self.assertEqual(created_tags, {"tag1", "tag2", "tag3"})
+
+	def test_tag_existence(self):
+		self.test_create_post_with_tags()
+		url = reverse('tag_list')
+		request = self.request_factory.get(url, data={"search": "tag"})
+		force_authenticate(request, user=self.user)
+		view = TagList.as_view()
+		response = view(request)
+		response_data = response.data
+		self.assertEqual(set(response_data), {"tag1", "tag2", "tag3"})
 
 	def tearDown(self):
 		# Clean up any created data after each test
