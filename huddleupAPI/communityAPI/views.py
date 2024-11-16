@@ -826,7 +826,7 @@ def create_post(request):
 		}
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():
-			post_serializer.save()
+			post = post_serializer.save()
 
 			response_data = {
 				'success': True,
@@ -834,6 +834,7 @@ def create_post(request):
 					'id': post_serializer.data['id']
 				}
 			}
+			post.update_tag_usage_create()
 			return JsonResponse(response_data, status=201)
 		return JsonResponse(post_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
@@ -1133,12 +1134,18 @@ def edit_post(request):
 		post = Post.objects.get(id=payload['postId'])
 		community = Community.objects.get(id=post.community.id)
 		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+		existing_tags = [x.id for x in post.tags.all()]
 
 		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
 			post.rowValues = payload['rowValues']
 			post.isEdited = True
 			post.tags.set(payload.get("tags", []), clear=True)
 			post.save()
+			post.refresh_from_db()
+			all_tags = [x.id for x in post.tags.all()]
+			deleted_tags = set(existing_tags).difference(set(all_tags))
+			added_tags = set(all_tags).difference(set(existing_tags))
+			post.update_tag_usage_edit(added_tags, deleted_tags)
 			return JsonResponse({'success': True, 'message': 'Post edited successfully'}, status=200)
 		return JsonResponse({'error': 'User is not authorized to edit the post'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)

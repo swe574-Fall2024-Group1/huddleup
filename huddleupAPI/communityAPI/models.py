@@ -1,5 +1,6 @@
 from django.db import models
 from taggit.managers import TaggableManager
+from taggit.models import Tag
 
 # Create your models here.
 class Community(models.Model):
@@ -56,6 +57,56 @@ class Post(models.Model):
 	isEdited = models.BooleanField(default=False)
 	tags = TaggableManager(blank=True)
 
+	def update_tag_usage_create(self):
+		if self.tags.all().count() > 0:
+			for each in self.tags.all():
+				obj1, created1 = UserTagUsage.objects.get_or_create(
+					user=self.createdBy,
+					tag=each
+				)
+				obj1.usage_count += 1
+				obj1.save(update_fields=['usage_count'])
+
+				obj2, created2 = CommunityTagUsage.objects.get_or_create(
+					community=self.community,
+					tag=each
+				)
+				obj2.usage_count += 1
+				obj2.save(update_fields=['usage_count'])
+
+
+	def update_tag_usage_edit(self, added, deleted):
+		if added:
+			for each in added:
+				obj1, created1 = UserTagUsage.objects.get_or_create(
+					user=self.createdBy,
+					tag__name=each
+				)
+				obj1.usage_count += 1
+				obj1.save(update_fields=['usage_count'])
+
+				obj2, created2 = CommunityTagUsage.objects.get_or_create(
+					community=self.community,
+					tag__name=each
+				)
+				obj2.usage_count += 1
+				obj2.save(update_fields=['usage_count'])
+		if deleted:
+			for each in deleted:
+				obj1 = UserTagUsage.objects.get(
+					user=self.createdBy,
+					tag__id=each
+				)
+				obj1.usage_count -= 1
+				obj1.save(update_fields=['usage_count'])
+
+				obj2 = CommunityTagUsage.objects.get(
+					community=self.community,
+					tag__id=each
+				)
+				obj2.usage_count -= 1
+				obj2.save(update_fields=['usage_count'])
+
 
 class Comment(models.Model):
 	createdBy = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
@@ -102,6 +153,26 @@ class UserBadge(models.Model):
 		unique_together = ['user', 'badge']
 
 
+class UserTagUsage(models.Model):
+    user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    usage_count = models.IntegerField(default=0)
+
+    class Meta:
+        unique_together = ['user', 'tag']
 
 
+class CommunityTagUsage(models.Model):
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    usage_count = models.IntegerField(default=0)
 
+    class Meta:
+        unique_together = ['community', 'tag']
+
+
+class UserRecommendation(models.Model):
+    user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    score = models.FloatField(default=0.0)
+    created_at = models.DateTimeField(auto_now_add=True)
