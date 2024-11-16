@@ -33,15 +33,3 @@ services:
     env_file:
       - .db.env
     restart: unless-stopped
-  frontend-dev:
-    build:
-      context: ./huddleupui
-      dockerfile: Dockerfile-dev
-    container_name: frontend_dev
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./huddleupui:/app
-      - ./huddleupui/node_modules:/app/node_modules
-    depends_on:
-      - backend
