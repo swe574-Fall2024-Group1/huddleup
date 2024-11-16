@@ -1,14 +1,17 @@
 /* global BigInt */
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
 import { useParams } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
 import { LoadingOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons';
 import Post from '../../components/Community/Post';
+import CreateBadge from '../../pages/Community/CreateBadge.jsx';
+import useCommunity from '../../components/Community/useCommunity';
 import { Button, Card, Spin, Input, InputNumber, DatePicker, Select, Form, Checkbox } from 'antd';
 
 export default function CommunityFeed() {
+	const { communityInfo } = useCommunity();
 	const navigate = useNavigate()
 	const [posts, setPosts] = useState([]);
 	const [templates, setTemplates] = useState([]);
@@ -21,7 +24,18 @@ export default function CommunityFeed() {
 	const { communityId } = useParams();
 
 	const posts_result = useApi('/api/communities/get-community-posts', { communityId });
+	  const [badges, setBadges] = useState([]);
 
+	  useEffect(() => {
+		const fetchBadges = async () => {
+		  const response = await fetchApi('/api/communities/badges/get-badges', {}, 'GET');
+		  if (response.success) {
+			setBadges(response.data);
+		  }
+		};
+
+		fetchBadges();
+	  }, []);
 	posts_result.then((response) => {
 		if (response && !response.loading && postsLoading && posts.length === 0) {
 			setPosts(response.data.data)
@@ -342,6 +356,7 @@ export default function CommunityFeed() {
 		<div>
 
 			<div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
+				
 				<Button
 					type="primary"
 					size="large"
@@ -353,11 +368,12 @@ export default function CommunityFeed() {
 				<Button
 					type="primary"
 					size="large"
-					style={{ backgroundColor: '#7952CC', fontWeight: 700 }}
+					style={{ backgroundColor: '#7952CC', fontWeight: 700, marginRight: 20 }}
 					onClick={() => navigate('create-post')}
 				>
 					+ Add Post
 				</Button>
+				{communityInfo.memberType === 'owner' && <CreateBadge badges={badges} />}
 			</div>
 
 			{searchOpen && (

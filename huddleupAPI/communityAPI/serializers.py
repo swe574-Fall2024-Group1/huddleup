@@ -4,6 +4,9 @@ from taggit.serializers import (TagListSerializerField,
                                 TaggitSerializer)
 from taggit.models import Tag
 
+from .models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, \
+	CommunityInvitation, UserFollowConnection, Badge, UserBadge
+
 
 class CommunitySerializer(serializers.ModelSerializer):
 
@@ -62,3 +65,12 @@ class UserFollowConnectionSerializer(serializers.ModelSerializer):
 		model = UserFollowConnection
 		fields = ['follower', 'followee', 'id', 'createdAt']
 
+class BadgeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Badge
+		fields = '__all__'
+
+class UserBadgeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserBadge
+		fields = '__all__'

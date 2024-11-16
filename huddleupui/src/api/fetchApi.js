@@ -1,8 +1,9 @@
 import Cookies from "js-cookie";
+import message from 'antd/lib/message';
 
 
 
-const fetchApi = async (url, payload) => {
+const fetchApi = async (url, payload, method = 'POST') => {
 
 	try {
 		const sessionToken = Cookies.get('hudSession')
@@ -12,14 +13,21 @@ const fetchApi = async (url, payload) => {
 			session['x-dub-session-token'] = sessionToken
 		}
 
-		const response = await fetch( url + '/', {
-			method: "POST", // *GET, POST, PUT, DELETE, etc.
+		const fetchOptions = {
+			method: method, // *GET, POST, PUT, DELETE, etc.
 			headers: {
 			  "Content-Type": "application/json",
 			  'x-dub-session-token': session['x-dub-session-token'] || ''
 			},
-			body: JSON.stringify(payload), // body data type must match "Content-Type" header
-		});
+		}
+		if(method !== 'GET'){
+			fetchOptions.body = JSON.stringify(payload)
+		} else if (method === 'GET' && payload){
+			url = url + '?' + new URLSearchParams(payload).toString()
+		}
+		const response = await fetch( url + '/', fetchOptions);
+
+
 
 
 		if (response.ok) {
@@ -29,6 +37,7 @@ const fetchApi = async (url, payload) => {
 			return json
 		} else {
 		  // Handle non-OK responses here
+			message.error('Request failed with status:', response.status)
 		  console.error('Request failed with status:', response.status);
 		}
 	  } catch (error) {

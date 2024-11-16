@@ -43,5 +43,15 @@ urlpatterns = [
     url(r'get-owned-communities', views.get_owned_communities, name='get_owned_communities'),
     url(r'archive-community', views.archive_community, name='archive_community'),
     url(r'get-main-search', views.get_main_search, name='get_main_search'),
+	url(r'badges/get-badge', views.badges, name='get_badge'),
+	url(r'badges/get-badges', views.badges, name='get_badges'),
+	url('badges/create-badge', views.badges, name='create_badge'),
+	url(r'badges/update-badge', views.badges, name='edit_badge'),
+	url(r'badges/delete-badge', views.badges, name='delete_badge'),
+	url(r'badges/get-user-badges', views.user_badges, name='get_user_badges'),
+	url(r'badges/assign-badge', views.user_badges, name='assign_badge'),
+	url(r'badges/remove-badge', views.user_badges, name='remove_badge'),
+	url(r'badges/get-badge-users', views.user_badges, name='get_badge_users'),
 	url(r'tags', class_views.TagList.as_view(), name='tag_list'),
 ]
+

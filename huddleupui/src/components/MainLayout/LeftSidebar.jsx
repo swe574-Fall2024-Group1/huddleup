@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { Layout, Menu, Divider, Drawer, Card, Grid, Button } from 'antd';
-import { TeamOutlined, PlusOutlined,NotificationOutlined, MailOutlined, CompassOutlined, UserSwitchOutlined } from '@ant-design/icons';
+import { TeamOutlined, PlusOutlined,NotificationOutlined, MailOutlined, CompassOutlined, UserSwitchOutlined, MenuOutlined } from '@ant-design/icons';
 import "../../assets/main-layout.css"
 import useAuth from '../Auth/useAuth';
 
@@ -88,7 +88,7 @@ const LeftSidebar = () => {
                         onClick={toggleDrawer}
                         style={{ position: 'absolute', left: 10, top: 80, zIndex: 1000 }}
                     >
-                        Open Sidebar
+                        <MenuOutlined />
                     </Button>
                     <Drawer
                         title="huddleup"

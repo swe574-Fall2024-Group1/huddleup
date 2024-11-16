@@ -81,6 +81,26 @@ class UserFollowConnection(models.Model):
 	followee = models.ForeignKey('authAPI.User', on_delete=models.CASCADE, related_name='followee')
 	createdAt = models.DateTimeField(auto_now_add=True)
 
+class Badge(models.Model):
+	name = models.CharField(max_length=50)
+	type = models.CharField(
+		max_length=50,
+		choices=[('manual', 'Manual'), ('automatic', 'Automatic')],
+		default='manual'
+	)
+	community = models.ForeignKey('Community', on_delete=models.CASCADE, null=True)
+	description = models.CharField(max_length=500)
+	image = models.CharField(max_length=5000000, null=True)
+	criteria = models.JSONField(default=dict, null=True)
+	createdAt = models.DateTimeField(auto_now_add=True)
+
+class UserBadge(models.Model):
+	user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	badge = models.ForeignKey('Badge', on_delete=models.CASCADE)
+	createdAt = models.DateTimeField(auto_now_add=True)
+	class Meta:
+		unique_together = ['user', 'badge']
+
 
 
 

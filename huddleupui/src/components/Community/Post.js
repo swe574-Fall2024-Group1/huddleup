@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Tag } from 'antd';
+import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Form, Select, Tag } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
 import useApi from '../../hooks/useApi';
@@ -9,6 +9,8 @@ import useAuth from '../Auth/useAuth';
 import useCommunity from '../../components/Community/useCommunity';
 
 const { Text } = Typography;
+const { TextArea } = Input;
+const { Option } = Select;
 
 const Post = ({ postData }) => {
 	const { communityInfo } = useCommunity();
@@ -28,13 +30,19 @@ const Post = ({ postData }) => {
 	const [liked, setLiked] = useState(postData.liked); // Track whether the user has liked the post or not
 	const [disliked, setDisliked] = useState(postData.disliked); // Track whether the user has disliked the post or not
 
+	const [showBadgeModal, setShowBadgeModal] = useState(false); // State to control delete confirmation modal
 	const [showDeleteModal, setShowDeleteModal] = useState(false); // State to control delete confirmation modal
 	const [editingComment, setEditingComment] = useState(null); // State to manage the comment being edited
 	const [editedCommentText, setEditedCommentText] = useState(''); // State to store the edited comment text
 
 	const template_result = useApi('/api/communities/templates/get-template', { templateId: postData.templateId });
 	const comments_result = useApi('/api/communities/get-post-comments', { postId: postData.id });
-
+	const badge_result = fetchApi('/api/communities/badges/get-badges', { communityId: communityInfo.id }, 'GET').then((response) => {
+		if (response && !response.loading && loadingBadges) {
+			setLoadingBadges(false);
+			setBadges(response.data);
+		}
+	});
 	const { userInfo } = useAuth();
 
 	template_result.then((response) => {
@@ -267,12 +275,30 @@ const Post = ({ postData }) => {
 	  );
 	};
 
+	const [badges, setBadges] = useState([])
+	const [loadingBadges, setLoadingBadges] = useState(true)
+	const [selectedBadge, setSelectedBadge] = useState('')
+	const [badgeMessage, setBadgeMessage] = useState('')
+	const handleBadgeSubmit = async () => {
+		if (!selectedBadge) {
+			message.error('Please select a badge')
+			return
+		}
+		const response = await fetchApi('/api/communities/badges/assign-badge', { badgeId: selectedBadge, username: postData.user_id, message: badgeMessage })
+			console.log(response)
+		console.log({ selectedBadge, badgeMessage })
+		// set user badges from post data
+		postData.user_badges = [...postData.user_badges, { badge: { id: selectedBadge, name: badges.find(badge => badge.id === selectedBadge).name },image: badges.find(badge => badge.id === selectedBadge).image }]
+		setShowBadgeModal(false) // Close modal on submit
+	  }
+
 	return (
 		<Card style={{ marginBottom: '16px', boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
-			{(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
+			<div className={'post-actions'}>
+				{(userInfo.username === postData.username) || communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
 				<Button
 					type="danger"
-					style={{ position: 'absolute', right: 10, top: 10, color: '#7952CC' }}
+					style={{ color: '#ffffff', backgroundColor: '#d32525' }}
 					onClick={() => setShowDeleteModal(true)}
 				>
 					Delete Post
@@ -281,13 +307,62 @@ const Post = ({ postData }) => {
 
 			{userInfo.username === postData.username ? (
 				<Button
-					style={{ position: 'absolute', right: 10, top: 10, color: '#7952CC' }}
+					style={{ color: '#7952CC'}}
 					onClick={() => window.location.href = `/communities/${communityInfo.id}/edit-post/${postData.id}`}
 				>
 					Edit Post
 				</Button>
 			) : null}
 
+			{communityInfo.memberType === 'moderator' || communityInfo.memberType === 'owner' ? (
+				<Button
+					style={{ color: '#7952CC' }}
+					onClick={() => setShowBadgeModal(true)}
+				>
+					Assign Badge
+				</Button>
+			) : null}
+			</div>
+
+			<Modal
+				title="Assign Badge"
+				visible={showBadgeModal}
+				onOk={handleBadgeSubmit}
+				onCancel={() => setShowBadgeModal(false)}
+				okText="Assign"
+				cancelText="Cancel"
+			>
+				<Form layout="vertical" onFinish={handleBadgeSubmit}>
+					<Form.Item
+					label="Select Badge"
+					name="badge"
+					rules={[{ required: true, message: 'Please select a badge' }]}
+					>
+						{console.log(postData)}
+					<Select
+						placeholder="Choose a badge"
+						value={selectedBadge}
+						onChange={(value) => setSelectedBadge(value)}
+					>
+						{badges && badges.map((badge) => (
+						<Option key={badge.id} value={badge.id}>
+							{badge.image && <img src={badge.image} alt={badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}
+							{badge.name}
+						</Option>
+						))}
+					</Select>
+					</Form.Item>
+
+					<Form.Item label="Message (Optional)" name="message">
+					<TextArea
+						placeholder="Add a personal message for the badge recipient"
+						value={badgeMessage}
+						rows={4}
+						onChange={(e) => setBadgeMessage(e.target.value)}
+					/>
+					</Form.Item>
+				</Form>
+			</Modal>
 			<Modal
 				title="Confirm Delete"
 				visible={showDeleteModal}
@@ -314,7 +389,7 @@ const Post = ({ postData }) => {
 			</Modal>
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
-				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null}</div>}
+				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <span className={'badge'}>{badge.badge.image && <img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}{badge.badge.name}</span>)}</div></div>}
 				description={<div><div>{new Date(postData.createdAt).toLocaleString()}</div> {postData.isEdited ? <div>Edited</div> : null } </div>}
 			/>
 			<div style={{ marginTop: 20 }}>

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Layout, Avatar, Drawer, Grid, Card, Button, Modal, Row, Col } from 'antd';
-import { UserOutlined, BellOutlined, TeamOutlined, PlusOutlined, UsergroupAddOutlined, NotificationOutlined } from '@ant-design/icons';
 import { useNavigate } from "react-router-dom";
 import useAuth from "../components/Auth/useAuth";
 import LeftSidebar from '../components/MainLayout/LeftSidebar';
@@ -15,9 +14,7 @@ const { useBreakpoint } = Grid;
 export default function MainLayout({ children }) {
     const { userInfo } = useAuth();
     const navigate = useNavigate();
-    const [leftDrawerVisible, setLeftDrawerVisible] = useState(false);
     const [rightDrawerVisible, setRightDrawerVisible] = useState(false);
-    const toggleRightDrawer = () => setRightDrawerVisible(!rightDrawerVisible);
 
     const screens = useBreakpoint();
 

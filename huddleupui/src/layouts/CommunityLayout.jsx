@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 import useCommunity from '../components/Community/useCommunity';
 import LeftSidebar from '../components/MainLayout/LeftSidebar';
-import { LockOutlined, UserOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, LoadingOutlined, ContactsFilled } from '@ant-design/icons';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -351,7 +351,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					): (
 					<>
 						<Button onClick={toggleDrawer} style={{ position: 'absolute', right: 10, top: 80, zIndex: 1000 }}>
-							Open Sidebar
+							<ContactsFilled style={{ fontSize: 21 }} />
 						</Button>
 						<Drawer
 							title="Community Sidebar"
