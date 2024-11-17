@@ -6,7 +6,7 @@ import useApi from '../hooks/useApi';
 
 const { Meta } = Card;
 
-const Discover = () => {
+const DiscoverCommunities = () => {
 	const [communities, setCommunities] = useState([]);
 	const [communitiesLoading, setCommunitiesLoading] = useState(true);
 
@@ -79,4 +79,4 @@ const Discover = () => {
 	);
 };
 
-export default Discover;
+export default DiscoverCommunities;

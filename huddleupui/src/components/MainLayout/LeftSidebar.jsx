@@ -29,8 +29,10 @@ const LeftSidebar = () => {
     } else if (currentPath === '/communities') {
         defaultSelectedKey = '3';
     } else if (currentPath === '/invitations') {
+        defaultSelectedKey = '4';
+    } else if (currentPath === '/discover_communities') {
         defaultSelectedKey = '5';
-    } else if (currentPath === '/discover') {
+    } else if (currentPath === '/discover_users') {
         defaultSelectedKey = '6';
     }
 
@@ -69,14 +71,17 @@ const LeftSidebar = () => {
                             <Menu.Item key="3" icon={<TeamOutlined />} onClick={() => handleMenuClick('/communities')}>
                                 Communities
                             </Menu.Item>
-                            <Menu.Item key="5" icon={<MailOutlined />} onClick={() => handleMenuClick('/invitations')}>
+                            <Menu.Item key="4" icon={<MailOutlined />} onClick={() => handleMenuClick('/invitations')}>
                                 Invitations
                             </Menu.Item>
-                            <Menu.Item key="6" icon={<CompassOutlined />} onClick={() => handleMenuClick('/discover')}>
-                                Discover
+                            <Menu.Item key="5" icon={<CompassOutlined />} onClick={() => handleMenuClick('/discover_communities')}>
+                                Discover Communities
+                            </Menu.Item>
+                            <Menu.Item key="6" icon={<CompassOutlined />} onClick={() => handleMenuClick('/discover_users')}>
+                                Discover Users
                             </Menu.Item>
                             <Divider />
-                            <Menu.Item key="4" icon={<PlusOutlined />} onClick={() => handleMenuClick('/communities/new')}>
+                            <Menu.Item key="7" icon={<PlusOutlined />} onClick={() => handleMenuClick('/communities/new')}>
                                 Start Community
                             </Menu.Item>
                         </Menu>
@@ -118,14 +123,17 @@ const LeftSidebar = () => {
                             <Menu.Item key="3" icon={<TeamOutlined />} onClick={() => handleMenuClick('/communities')}>
                                 Communities
                             </Menu.Item>
-                            <Menu.Item key="5" icon={<MailOutlined />} onClick={() => handleMenuClick('/invitations')}>
+                            <Menu.Item key="4" icon={<MailOutlined />} onClick={() => handleMenuClick('/invitations')}>
                                 Invitations
                             </Menu.Item>
-                            <Menu.Item key="6" icon={<CompassOutlined />} onClick={() => handleMenuClick('/discover')}>
-                                Discover
+                            <Menu.Item key="5" icon={<CompassOutlined />} onClick={() => handleMenuClick('/discover_communities')}>
+                                Discover Communities
+                            </Menu.Item>
+                            <Menu.Item key="6" icon={<CompassOutlined />} onClick={() => handleMenuClick('/discover_users')}>
+                                Discover Users
                             </Menu.Item>
                             <Divider />
-                            <Menu.Item key="4" icon={<PlusOutlined />} onClick={() => handleMenuClick('/communities/new')}>
+                            <Menu.Item key="7" icon={<PlusOutlined />} onClick={() => handleMenuClick('/communities/new')}>
                                 Start Community
                             </Menu.Item>
                         </Menu>
