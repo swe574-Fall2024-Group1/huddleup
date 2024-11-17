@@ -3,7 +3,7 @@ name: Deploy to Server
 on:
   push:
     branches:
-      # - main
+      - main
       - dev
       - feature/cd-pipeline
 
@@ -14,11 +14,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Modify frontend ports in docker-compose.yml for dev branch
-        if: github.ref_name == 'feature/cd-pipeline'
-        run: |
-          sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml
 
       - name: Setup SSH Key
         uses: webfactory/ssh-agent@v0.9.0
@@ -32,25 +27,37 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
           DEV_PATH: /var/www/huddleup-dev/huddleup
           MAIN_PATH: /var/www/huddleup
-          BRANCH_NAME: dev # ${{ github.ref_name }}
+          BRANCH_NAME: feature/cd-pipeline # ${{ github.ref_name }}
         run: |
           # Determine deployment path based on branch
-          if [ "$BRANCH_NAME" == "dev" ]; then
+          if [ "$BRANCH_NAME" = "dev" ]; then
             DEPLOY_PATH=$DEV_PATH
-          elif [ "$BRANCH_NAME" == "main" ]; then
+          elif [ "$BRANCH_NAME" = "main" ]; then
             DEPLOY_PATH=$MAIN_PATH
+          elif [ "$BRANCH_NAME" = "feature/cd-pipeline" ]; then
+            DEPLOY_PATH=$DEV_PATH
           else
             echo "Branch not recognized, exiting."
             exit 1
           fi
 
-          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST "
-            export BRANCH_NAME=$BRANCH_NAME; \
-            cd $DEPLOY_PATH; \
-            docker-compose -f docker-compose.yaml -p \$BRANCH_NAME down; \
-            git pull origin \$BRANCH_NAME; \
-            if [ \"\$BRANCH_NAME\" == \"dev\" ]; then \
-              sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml; \
-            fi; \
-            docker-compose -f docker-compose.yaml -p \$BRANCH_NAME up --build -d
-          "
+          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+            set -e  # Ensure script stops on error
+            cd $DEPLOY_PATH
+
+            # Stop existing containers
+            docker-compose -f docker-compose.yaml -p $BRANCH_NAME down
+
+            # Pull latest changes
+            git pull origin $BRANCH_NAME
+
+            # Modify docker-compose.yaml for dev branch
+            if [ "$BRANCH_NAME" = "dev" ]; then
+              sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml
+            elif [ "$BRANCH_NAME" = "feature/cd-pipeline" ]; then
+              sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml
+            fi
+
+            # Build and start containers
+            docker-compose -f docker-compose.yaml -p $BRANCH_NAME up --build -d
+          EOF
