@@ -1,5 +1,12 @@
 from rest_framework import serializers
 from .models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection
+from taggit.serializers import (TagListSerializerField,
+                                TaggitSerializer)
+from taggit.models import Tag
+
+from .models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, \
+	CommunityInvitation, UserFollowConnection, Badge, UserBadge
+
 
 class CommunitySerializer(serializers.ModelSerializer):
 
@@ -26,11 +33,12 @@ class TemplateSerializer(serializers.ModelSerializer):
 		fields = ['createdBy', 'community', 'templateName', 'rows', 'id', 'createdAt', 'isDeleted']
 
 
-class PostSerializer(serializers.ModelSerializer):
+class PostSerializer(TaggitSerializer, serializers.ModelSerializer):
+	tags = TagListSerializerField(required=False)
 
 	class Meta:
 		model = Post
-		fields = ['createdBy', 'community', 'template', 'rowValues', 'id', 'createdAt', 'isEdited']
+		fields = ['createdBy', 'community', 'template', 'rowValues', 'id', 'createdAt', 'isEdited', 'tags']
 
 class CommentSerializer(serializers.ModelSerializer):
 
@@ -57,3 +65,12 @@ class UserFollowConnectionSerializer(serializers.ModelSerializer):
 		model = UserFollowConnection
 		fields = ['follower', 'followee', 'id', 'createdAt']
 
+class BadgeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Badge
+		fields = '__all__'
+
+class UserBadgeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = UserBadge
+		fields = '__all__'

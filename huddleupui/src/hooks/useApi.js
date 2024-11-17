@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react"
 
-const useApi = async (url, payload) => {
+const useApi = async (url, payload, method = 'POST') => {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState(null)
 
@@ -18,7 +18,7 @@ const useApi = async (url, payload) => {
 		}
 
 		const response = await fetch( url + '/', {
-			method: "POST", // *GET, POST, PUT, DELETE, etc.
+			method: method, // *GET, POST, PUT, DELETE, etc.
 			headers: {
 			  "Content-Type": "application/json",
 			  'x-dub-session-token': session['x-dub-session-token'] || ''

@@ -7,12 +7,11 @@ from django.db.models import Q,Count
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection
-from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge
+from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 
 import json
 import datetime
-
 
 # Create a community with current user as owner
 @api_view(['POST'])
@@ -605,9 +604,30 @@ def get_community_posts(request):
 
 			isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=post.createdBy).exists()
 
+			# Fetch user badges
+			user_badges = UserBadge.objects.filter(user=post.createdBy)
+			user_badges_data = []
+			for user_badge in user_badges:
+				user_badges_data.append({
+					'id': user_badge.badge.id,
+					'badge': {
+                        'id': user_badge.badge.id,
+                        'name': user_badge.badge.name,
+						'image': user_badge.badge.image,
+                        'type': user_badge.badge.type,
+                        'description': user_badge.badge.description,
+                        'criteria': user_badge.badge.criteria,
+                        'createdAt': user_badge.badge.createdAt,
+                        'community': user_badge.badge.community.id if user_badge.badge.community else None
+                    },
+					'createdAt': user_badge.createdAt,
+				})
+
 			posts_data.append({
 				'id': post.id,
 				'username': post.createdBy.username,
+				'user_badges': user_badges_data,
+				'user_id': post.createdBy.id,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
@@ -617,6 +637,7 @@ def get_community_posts(request):
 				'liked': likedByUser,
 				'disliked': dislikedByUser,
 				'isFollowing': isFollowing,
+				'tags': [x.name for x in post.tags.all()]
 			})
 
 		# Sort the posts by createdAt in descending order
@@ -791,12 +812,17 @@ def get_template(request):
 def create_post(request):
 	if request.method == 'POST':
 		request_data = JSONParser().parse(request)
+		if request_data.get("tags"):
+			the_tags = [x.lower() for x in request_data.get("tags") if type(x) is str]
+		else:
+			the_tags = []
 
 		post_data = {
 				'createdBy': request.user.id,
 				'community': request_data['communityId'],
 				'template': request_data['templateId'],
-				'rowValues': request_data['rowValues']
+				'rowValues': request_data['rowValues'],
+				'tags': the_tags
 		}
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():
@@ -1077,7 +1103,8 @@ def get_post_details(request):
 				'id': post.id,
 				'createdBy': post.createdBy.username,
 				'createdAt': post.createdAt,
-				'rowValues': post.rowValues
+				'rowValues': post.rowValues,
+				'tags': list(post.tags.values_list("name", flat=True))
 			}
 
 			template = Template.objects.get(id=post.template.id)
@@ -1110,6 +1137,7 @@ def edit_post(request):
 		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
 			post.rowValues = payload['rowValues']
 			post.isEdited = True
+			post.tags.set(payload.get("tags", []), clear=True)
 			post.save()
 			return JsonResponse({'success': True, 'message': 'Post edited successfully'}, status=200)
 		return JsonResponse({'error': 'User is not authorized to edit the post'}, status=403)
@@ -1279,4 +1307,123 @@ def get_main_search(request):
 			}
 		}
 		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def badges(request):
+	if request.method == 'GET':
+		badges = Badge.objects.all()
+		badges_data = [badge for badge in badges if badge.community is None]
+		payload = JSONParser().parse(request) if request.body else {}
+		# list both global and community badges if communityId is provided
+		if 'communityId' in payload:
+			community = Community.objects.get(id=payload['communityId'])
+			badges_data = Badge.objects.filter(Q(community=None) | Q(community=community.id))
+
+		badges_data = BadgeSerializer(badges_data, many=True).data
+		response_data = {
+			'success': True,
+			'data': badges_data
+		}
+		return JsonResponse(response_data, status=200)
+	elif request.method == 'POST':
+		payload = JSONParser().parse(request)
+		if 'communityId' in payload:
+			community = Community.objects.get(id=payload['communityId'])
+			user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+			if user_connection.type != 'owner':
+				return JsonResponse({'error': 'User is not authorized to create a badge for the community'}, status=403)
+		badge_data = {
+			'name': payload['name'],
+			'description': payload['description'],
+			'image': payload['image'] if 'image' in payload else None,
+			'community': payload['communityId'] if 'communityId' in payload else None,
+		}
+		badge_serializer = BadgeSerializer(data=badge_data)
+		if badge_serializer.is_valid():
+			badge_serializer.save()
+			response_data = {
+				'success': True,
+				'data': {
+					'id': badge_serializer.data['id']
+				}
+			}
+			return JsonResponse(response_data, status=201)
+		return JsonResponse(badge_serializer.errors, status=400)
+	elif request.method == 'PUT':
+		payload = JSONParser().parse(request)
+		badge = Badge.objects.get(id=payload['badgeId'])
+		if badge.community:
+			community = Community.objects.get(id=badge.community.id)
+			user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+			if user_connection.type != 'owner':
+				return JsonResponse({'error': 'User is not authorized to update the badge for the community'}, status=403)
+		badge.name = payload['name']
+		badge.description = payload['description']
+		badge.image = payload['image']
+		badge.save()
+		return JsonResponse({'success': True, 'message': 'Badge updated successfully'}, status=200)
+	elif request.method == 'DELETE':
+		"delete a badge"
+		payload = JSONParser().parse(request)
+		badge = Badge.objects.get(id=payload['badgeId'])
+		if badge.community:
+			community = Community.objects.get(id=badge.community.id)
+			user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+			if user_connection.type != 'owner':
+				return JsonResponse({'error': 'User is not authorized to delete the badge for the community'}, status=403)
+		badge.delete()
+		return JsonResponse({'success': True, 'message': 'Badge deleted successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def user_badges(request):
+	if request.method == 'GET':
+		badges = UserBadge.objects.filter(user=request.user)
+		badges_data = []
+		for badge in badges:
+			badges_data.append({
+				'id': badge.id,
+				'badge': badge.badge.id,
+				'createdAt': badge.createdAt
+			})
+
+		response_data = {
+			'success': True,
+			'data': badges_data
+		}
+		return JsonResponse(response_data, status=200)
+	elif request.method == 'POST':
+		payload = JSONParser().parse(request)
+		badge_data = {
+			'user': request.user.id,
+			'badge': payload['badgeId']
+		}
+		if UserBadge.objects.filter(user_id=request.user.id, badge_id=payload['badgeId']).exists():
+			return JsonResponse({'error': 'User already has this badge'}, status=400)
+		# return JsonResponse(badge_data)
+		badge_serializer = UserBadgeSerializer(data=badge_data)
+		if badge_serializer.is_valid():
+			badge_serializer.save()
+			# get all user badges
+			badges = UserBadge.objects.filter(user=request.user)
+			response_data = {
+				'success': True,
+				'data': UserBadgeSerializer(badges, many=True).data
+			}
+			return JsonResponse(response_data, status=201)
+		return JsonResponse(badge_serializer.errors, status=400)
+	elif request.method == 'PUT':
+		"update a badge of the user"
+		payload = JSONParser().parse(request)
+		badge = UserBadge.objects.get(id=payload['userBadgeId'])
+		badge.badge = Badge.objects.get(id=payload['badgeId'])
+		badge.save()
+		return JsonResponse({'success': True, 'message': 'User badge updated successfully'}, status=200)
+	elif request.method == 'DELETE':
+		"delete a badge of the user"
+		payload = JSONParser().parse(request)
+		badge = UserBadge.objects.get(id=payload['userBadgeId'])
+		badge.delete()
+		return JsonResponse({'success': True, 'message': 'User badge deleted successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)

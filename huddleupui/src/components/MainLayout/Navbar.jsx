@@ -22,6 +22,9 @@ const Navbar = () => {
 	// Menu for the dropdown
 	const menu = (
 		<Menu>
+			<Menu.Item key="profile">
+        <Link to="/profile">Profile</Link>
+      </Menu.Item>
 			<Menu.Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}>
 				Log Out
 			</Menu.Item>
