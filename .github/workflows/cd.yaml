@@ -46,12 +46,15 @@ jobs:
 
             echo "Branch: $BRANCH_NAME"
             echo "Deploy path: $DEPLOY_PATH"
-            
+
 
             cd $DEPLOY_PATH
 
             # Stop existing containers
             docker-compose -f docker-compose.yaml -p $BRANCH_NAME down || echo "No containers to stop."
+
+            # Discard local changes
+            git reset --hard
 
             # Pull latest changes
             git pull origin $BRANCH_NAME
