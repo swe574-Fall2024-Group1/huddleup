@@ -2,7 +2,7 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 
 from authAPI.models import User
-from authAPI.serializers import UserSerializer
+from authAPI.serializers import UserSerializer, RegisterUserSerializer
 from authAPI.sessionManager import SessionManager
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
@@ -28,7 +28,7 @@ def register(request):
 		if User.objects.filter(username=username).exists():
 			return JsonResponse({'error': 'Username already exists'}, status=400)
 
-		user_serializer = UserSerializer(data=user_data)
+		user_serializer = RegisterUserSerializer(data=user_data)
 		if user_serializer.is_valid():
 			User.objects.create_user(username=user_serializer.validated_data["username"],
 									 password=user_serializer.validated_data["password"])
