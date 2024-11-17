@@ -41,12 +41,17 @@ jobs:
             exit 1
           fi
 
-          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << 'EOF'
+          ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << EOF
             set -e  # Ensure script stops on error
+
+            echo "Branch: $BRANCH_NAME"
+            echo "Deploy path: $DEPLOY_PATH"
+            
+
             cd $DEPLOY_PATH
 
             # Stop existing containers
-            docker-compose -f docker-compose.yaml -p $BRANCH_NAME down
+            docker-compose -f docker-compose.yaml -p $BRANCH_NAME down || echo "No containers to stop."
 
             # Pull latest changes
             git pull origin $BRANCH_NAME
