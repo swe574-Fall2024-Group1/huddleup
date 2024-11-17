@@ -5,7 +5,6 @@ on:
     branches:
       - main
       - dev
-      - feature/cd-pipeline
 
 jobs:
   deploy:
@@ -27,15 +26,13 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
           DEV_PATH: /var/www/huddleup-dev/huddleup
           MAIN_PATH: /var/www/huddleup
-          BRANCH_NAME: feature/cd-pipeline # ${{ github.ref_name }}
+          BRANCH_NAME: ${{ github.ref_name }}
         run: |
           # Determine deployment path based on branch
           if [ "$BRANCH_NAME" = "dev" ]; then
             DEPLOY_PATH=$DEV_PATH
           elif [ "$BRANCH_NAME" = "main" ]; then
             DEPLOY_PATH=$MAIN_PATH
-          elif [ "$BRANCH_NAME" = "feature/cd-pipeline" ]; then
-            DEPLOY_PATH=$DEV_PATH
           else
             echo "Branch not recognized, exiting."
             exit 1
@@ -43,10 +40,6 @@ jobs:
 
           ssh -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USER@$SSH_HOST << EOF
             set -e  # Ensure script stops on error
-
-            echo "Branch: $BRANCH_NAME"
-            echo "Deploy path: $DEPLOY_PATH"
-
 
             cd $DEPLOY_PATH
 
@@ -61,8 +54,6 @@ jobs:
 
             # Modify docker-compose.yaml for dev branch
             if [ "$BRANCH_NAME" = "dev" ]; then
-              sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml
-            elif [ "$BRANCH_NAME" = "feature/cd-pipeline" ]; then
               sed -i 's/127.0.0.1:8080:80/127.0.0.1:8081:80/' docker-compose.yaml
             fi
 
