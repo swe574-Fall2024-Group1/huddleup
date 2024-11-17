@@ -21,6 +21,7 @@ def create_community(request):
 		community_serializer = CommunitySerializer(data=community_data)
 		if community_serializer.is_valid():
 			community_serializer.save()
+			
 
 			communityUserConnection_data = {
 				'user': request.user.id,
@@ -31,6 +32,12 @@ def create_community(request):
 			communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
 			if communityUserConnection_serializer.is_valid():
 				communityUserConnection_serializer.save()
+
+
+				# Create default badges for the community
+				
+				com = Community.objects.get(id=community_serializer.data['id'])
+				create_default_badges_for_community(com)
 
 			# Create default template for the community
 			template_data = {
@@ -754,6 +761,9 @@ def create_template(request):
 		if template_serializer.is_valid():
 			template_serializer.save()
 
+			# Check for and award badges
+			check_and_award_badges(request.user, request_data['communityId'])
+
 			response_data = {
 				'success': True,
 				'data': {
@@ -810,33 +820,33 @@ def get_template(request):
 # Create a post with the template of the community
 @api_view(['POST'])
 def create_post(request):
-	if request.method == 'POST':
-		request_data = JSONParser().parse(request)
-		if request_data.get("tags"):
-			the_tags = [x.lower() for x in request_data.get("tags") if type(x) is str]
-		else:
-			the_tags = []
+    if request.method == 'POST':
+        request_data = JSONParser().parse(request)
+        the_tags = [x.lower() for x in request_data.get("tags", []) if isinstance(x, str)]
 
-		post_data = {
-				'createdBy': request.user.id,
-				'community': request_data['communityId'],
-				'template': request_data['templateId'],
-				'rowValues': request_data['rowValues'],
-				'tags': the_tags
-		}
-		post_serializer = PostSerializer(data=post_data)
-		if post_serializer.is_valid():
-			post_serializer.save()
+        post_data = {
+            'createdBy': request.user.id,
+            'community': request_data['communityId'],
+            'template': request_data['templateId'],
+            'rowValues': request_data['rowValues'],
+            'tags': the_tags
+        }
+        post_serializer = PostSerializer(data=post_data)
+        if post_serializer.is_valid():
+            post_serializer.save()
 
-			response_data = {
-				'success': True,
-				'data': {
-					'id': post_serializer.data['id']
-				}
-			}
-			return JsonResponse(response_data, status=201)
-		return JsonResponse(post_serializer.errors, status=400)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+            # Check for and award badges
+            check_and_award_badges(request.user, request_data['communityId'])
+
+            response_data = {
+                'success': True,
+                'data': {
+                    'id': post_serializer.data['id']
+                }
+            }
+            return JsonResponse(response_data, status=201)
+        return JsonResponse(post_serializer.errors, status=400)
+    return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
 # Create a comment for a post
@@ -853,6 +863,10 @@ def add_comment(request):
 		comment_serializer = CommentSerializer(data=comment_data)
 		if comment_serializer.is_valid():
 			comment_serializer.save()
+
+			# Get the community from the post
+			post = Post.objects.get(id=request_data['postId'])
+			awarded_badges = check_and_award_badges(request.user, post.community.id)
 
 			response_data = {
 				'success': True,
@@ -941,6 +955,9 @@ def like_post(request):
 
 			if like_serializer.is_valid():
 				like_serializer.save()
+
+				# Check for and award badges
+				awarded_badges = check_and_award_badges(request.user, post.community.id)
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
@@ -1427,3 +1444,113 @@ def user_badges(request):
 		badge.delete()
 		return JsonResponse({'success': True, 'message': 'User badge deleted successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+
+def meets_badge_criteria(user, community, criteria):
+    # Fetch counts based on user and community
+    user_posts_count = Post.objects.filter(createdBy=user, community=community).count()
+    user_comments_count = Comment.objects.filter(createdBy=user, post__community=community).count()
+    user_followers_count = CommunityUserConnection.objects.filter(
+        followee=user, community=community
+    ).count()  # Community-specific followers
+    user_templates_count = Template.objects.filter(createdBy=user, community=community).count()
+    user_likes_count = PostLike.objects.filter(post__createdBy=user, post__community=community, direction=True).count()
+
+    # Evaluate criteria only if it exists in the provided JSON
+    return all([
+        criteria.get('post_count', 0) <= user_posts_count,
+        criteria.get('comment_count', 0) <= user_comments_count,
+        criteria.get('follower_count', 0) <= user_followers_count,
+        criteria.get('template_count', 0) <= user_templates_count,
+        criteria.get('like_count', 0) <= user_likes_count
+    ])
+
+
+
+def check_and_award_badges(user, community_id):
+    community = Community.objects.get(id=community_id)
+    badges = Badge.objects.filter(community=community)
+    awarded_badges_data = []
+
+    for badge in badges:
+        # Skip if user already has the badge
+        if UserBadge.objects.filter(user=user, badge=badge).exists():
+            continue
+
+        # Check if the user meets the criteria for this badge
+        if meets_badge_criteria(user, community, badge.criteria):
+            user_badge = UserBadge.objects.create(user=user, badge=badge)
+            awarded_badges_data.append({
+                'id': badge.id,
+                'name': badge.name,
+                'description': badge.description,
+                'image': badge.image,
+                'awardedAt': user_badge.createdAt
+            })
+
+    return awarded_badges_data
+
+
+def create_default_badges_for_community(com):
+    """
+    Create default badges for a community and log the process.
+    """
+    print(f"Starting badge creation for community: (ID: {com.id})")
+
+    default_badges = [
+        {
+            'name': 'Post Master53',
+            'description': 'Awarded for creating a specific number of posts.',
+            'type': 'automatic',
+            'criteria': {'post_count': 1},
+			'community':com.id
+			
+        },
+        {
+            'name': 'Commentator2',
+            'description': 'Awarded for creating a specific number of comments.',
+            'type': 'automatic',
+            'criteria': {'comment_count': 30},
+			'community':com.id
+        },
+        {
+            'name': 'Social Butterfly2',
+            'description': 'Awarded for gaining a specific number of followers.',
+            'type': 'automatic',
+            'criteria': {'follower_count': 15},
+			'community':com.id
+        },
+        {
+            'name': 'Template Creator2',
+            'description': 'Awarded for creating a specific number of templates.',
+            'type': 'automatic',
+            'criteria': {'template_count': 15},
+			'community':com.id
+        },
+        {
+            'name': 'Appreciated2',
+            'description': 'Awarded for receiving a specific number of likes.',
+            'type': 'automatic',
+            'criteria': {'like_count': 50},
+			'community':com.id
+        }
+    ]
+
+    created_badges = []
+    for badge_data in default_badges:
+        print(f"Creating badge: {badge_data['name']} with criteria: {badge_data['criteria']}")
+        badge_serializer = BadgeSerializer(data=badge_data)
+        if badge_serializer.is_valid():
+            badge = badge_serializer.save()
+            created_badges.append(badge)
+            print(f"Badge '{badge.name}' created successfully (ID: {badge.id}).")
+        else:
+            error_message = f"Failed to create badge '{badge_data['name']}': {badge_serializer.errors}"
+            print(error_message)
+            raise ValueError(error_message)
+
+    
+    return created_badges
+
+

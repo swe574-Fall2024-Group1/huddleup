@@ -16,7 +16,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - huddleupAPI/.env
+      - .env
     depends_on:
       - db
     restart: unless-stopped
@@ -43,4 +43,6 @@ services:
       - ./postgres_data:/var/lib/postgresql/data/
     env_file:
       - .db.env
+     ports:
+    - "5432:5432"  # Expose the database port
     restart: unless-stopped

@@ -74,3 +74,5 @@ class UserBadgeSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UserBadge
 		fields = '__all__'
+
+
