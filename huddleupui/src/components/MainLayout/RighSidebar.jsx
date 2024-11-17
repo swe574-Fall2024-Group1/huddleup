@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import useApi from '../../hooks/useApi';
 import "../../assets/main-layout.css"
 import useAuth from '../../components/Auth/useAuth';
+import RecommendedCommunitiesCard from './RecommendedCommunitiesCard';
 
 const { Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -61,7 +62,8 @@ const RightSidebar = () => {
         <>
             {screens.md ? (
 				<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
-                <Card title="Owned Communities" bordered={false}>
+                <RecommendedCommunitiesCard />
+					<Card title="Owned Communities" bordered={false}>
                     <Row gutter={[20, 20]}>
                         {ownedCommunities.map(community => (
                             <Link to={`/communities/${community.id}`} key={community.id}>
