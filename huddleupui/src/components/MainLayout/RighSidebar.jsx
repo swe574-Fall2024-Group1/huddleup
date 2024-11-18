@@ -147,6 +147,7 @@ const RightSidebar = () => {
 					visible={drawerVisible}
 					width={300}
 				>
+					<RecommendedCommunitiesCard />
 					<Card title="Owned Communities" bordered={false}>
 						<Row gutter={[20, 20]}>
 							{ownedCommunities.map(community => (
