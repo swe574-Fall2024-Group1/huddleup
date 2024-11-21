@@ -68,6 +68,7 @@ huddleupui/node_modules/
 .DS_Store
 .db.env
 .env
+huddleupAPI/.env
 .env.local
 .env.development.local
 .env.test.local
@@ -79,3 +80,6 @@ yarn-error.log*
 postgres_data/
 staticfiles/
 mediafiles/
+
+# Ignore sqliite database
+*.sqlite3

@@ -4,7 +4,7 @@ Huddleup is a community building platform where each community has its own post 
 
 Application is developed to use in web browsers using Django and React and is not mobile friendly yet.   
 
-Here is [wiki page](https://github.com/qouv/swe573-omeraslan/wiki)
+Here is [wiki page](https://github.com/swe574-Fall2024-Group1/huddleup/wiki)
 
 ## Deployment Links
 ### Production Environment:
@@ -13,37 +13,73 @@ Here is [wiki page](https://github.com/qouv/swe573-omeraslan/wiki)
 [https://dev.group1.swe574.com](https://dev.group1.swe574.com)
 
 
-## Setup
+## Running the app locally
 
 STEP 1:
 
 Clone the repo using https
 
-`git clone https://github.com/qouv/swe573-omeraslan.git`
+`git clone https://github.com/swe574-Fall2024-Group1/huddleup.git`
 
 
 or using ssh
 
-`git clone git@github.com:qouv/swe573-omeraslan.git`
-
+`git clone git@github.com:swe574-Fall2024-Group1/huddleup.git`
 
 STEP 2:
-Start docker on your computer.
+
+Prepare the environment variables that are needed for backend and db services. The sample
+files are given in .env.sample and .db.env.sample files.
 
 STEP 3:
-Inside “swe573-omeraslan”  folder run below command:
+In the root of the project folder run the command:
 
-`docker-compose up --build`
-
+`docker-compose -f docker-compose-dev.yml up --build`
 
 or run docker in daemon mode:
 
-`docker-compose up --build -d`
+`docker-compose -f docker-compose-dev.yml up --build`
 
+This will build and run all the needed containers.
 
 STEP 4:
-In your browser go to below address after docker build all containers:
+In your browser go to below address after docker builds all containers:
 
-`http://localhost:3000`
+`http://localhost:8080`
 
+STEP 5: Here is the list of containers:
 
+backend_huddleup - Django backend
+
+db_huddleup - PostgreSQL database
+
+frontend_huddleup - nginx container that serves the compiled frontend files, and also routes the requests to backend_huddleup. It runs on `localhost:8080`
+
+frontend_huddleup_dev - a Node.js container needed for developing and testing reactjs changes. It runs on `localhost:3000`
+
+STEP 6:
+
+If you are developing the frontend part of the app, you can edit the files in huddlepui/src, and you can 
+see the changes by going to `http://localhost:3000`. If you want to bundle the frontend files for serving in nginx, you will need to delete the 
+frontend_huddleup container and its corresponding image from Docker, and rebuild the image for frontend_huddleup. This will 
+build the frontend files, and start the nginx server to serve these files.
+
+STEP 7:
+
+If you are developing the backend part of the app, you can edit the files in huddleupAPI folder. You can see your changes by restarting
+the backend_huddleup container. You also can utilize the Django admin part of the app to see your models. In order to access Django admin,
+ create a superuser by first going to backend_huddleup shell:
+
+`docker exec -it backend_huddleup bash`
+
+and then running:
+
+`python manage.py createsuperuser`
+
+Fill out the username and password, and with this credentials you can go to `http://localhost:8080/admin` and login to the admin site.
+
+STEP 8:
+
+For running the tests in this repository, you will need to run:
+
+`python manage.py test`

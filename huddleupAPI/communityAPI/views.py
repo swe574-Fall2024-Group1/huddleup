@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
+from rest_framework.decorators import api_view
 from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
@@ -7,15 +7,14 @@ from django.db.models import Q,Count
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection
-from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge
+from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 
 import json
 import datetime
 
-
 # Create a community with current user as owner
-@csrf_exempt
+@api_view(['POST'])
 def create_community(request):
 	if request.method == 'POST':
 		community_data = JSONParser().parse(request)
@@ -67,7 +66,7 @@ def create_community(request):
 
 
 # Get users that has connection with type 'member' of the community
-@csrf_exempt
+@api_view(['POST'])
 def get_community_members(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -87,7 +86,7 @@ def get_community_members(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get users that banned from community
-@csrf_exempt
+@api_view(['POST'])
 def get_community_banned(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -107,7 +106,7 @@ def get_community_banned(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get users that has connection with type 'moderator' of the community
-@csrf_exempt
+@api_view(['POST'])
 def get_community_moderators(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -127,7 +126,7 @@ def get_community_moderators(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get users that has connection with type 'owner' of the community
-@csrf_exempt
+@api_view(['POST'])
 def get_community_owners(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -147,7 +146,7 @@ def get_community_owners(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Assign a moderator if current user is owner of the community, and unassign if user is already a moderator
-@csrf_exempt
+@api_view(['POST'])
 def assign_moderator(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -168,7 +167,7 @@ def assign_moderator(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Change ownership of the community if current user is owner of the community
-@csrf_exempt
+@api_view(['POST'])
 def change_ownership(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -187,7 +186,7 @@ def change_ownership(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Ban a user from the community if current user is owner of the community
-@csrf_exempt
+@api_view(['POST'])
 def get_community_info(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -223,7 +222,7 @@ def get_community_info(request):
 		return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 # Gets all communities that user is not member of and not archived
-@csrf_exempt
+@api_view(['POST'])
 def get_communities(request):
 	if request.method == 'POST':
 		# Get connections
@@ -255,7 +254,7 @@ def get_communities(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get all communities that user is member of and not archived
-@csrf_exempt
+@api_view(['POST'])
 def get_user_communities(request):
 	if request.method == 'POST':
 		# Get connections if not banned
@@ -285,7 +284,7 @@ def get_user_communities(request):
 
 
 # If community is not private and user is not member of the community, add user to the community
-@csrf_exempt
+@api_view(['POST'])
 def join_community(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -312,7 +311,7 @@ def join_community(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # If community is private and user is member or moderator of the community, remove user from the community (owners cant leave the community)
-@csrf_exempt
+@api_view(['POST'])
 def leave_community(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -328,7 +327,7 @@ def leave_community(request):
 
 
 # Create a invitation for a user to join a community if community is private and inviter user is owner or moderator of the community and invited user is not member of the community 
-@csrf_exempt
+@api_view(['POST'])
 def create_invitation(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -372,7 +371,7 @@ def create_invitation(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # If community is private and user is owner or moderator of the community or either user is the member that invited, delete the invitation
-@csrf_exempt
+@api_view(['POST'])
 def cancel_invitation(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -391,7 +390,7 @@ def cancel_invitation(request):
 
 
 # If community is private and user is owner or moderator of the community, get all invitations of the community
-@csrf_exempt
+@api_view(['POST'])
 def get_invitations_by_community(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -418,7 +417,7 @@ def get_invitations_by_community(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get all invitations of the user
-@csrf_exempt
+@api_view(['POST'])
 def get_invitations_by_user(request):
 	if request.method == 'POST':
 		invitations = CommunityInvitation.objects.filter(user=request.user.id)
@@ -437,7 +436,7 @@ def get_invitations_by_user(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Response invitation either as accept or decline, delete invitation in both cases and add user to the community if accepted
-@csrf_exempt
+@api_view(['POST'])
 def response_invitation(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -467,7 +466,7 @@ def response_invitation(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get all posts of the community
-@csrf_exempt
+@api_view(['POST'])
 def get_community_posts(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -605,9 +604,30 @@ def get_community_posts(request):
 
 			isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=post.createdBy).exists()
 
+			# Fetch user badges
+			user_badges = UserBadge.objects.filter(user=post.createdBy)
+			user_badges_data = []
+			for user_badge in user_badges:
+				user_badges_data.append({
+					'id': user_badge.badge.id,
+					'badge': {
+                        'id': user_badge.badge.id,
+                        'name': user_badge.badge.name,
+						'image': user_badge.badge.image,
+                        'type': user_badge.badge.type,
+                        'description': user_badge.badge.description,
+                        'criteria': user_badge.badge.criteria,
+                        'createdAt': user_badge.badge.createdAt,
+                        'community': user_badge.badge.community.id if user_badge.badge.community else None
+                    },
+					'createdAt': user_badge.createdAt,
+				})
+
 			posts_data.append({
 				'id': post.id,
 				'username': post.createdBy.username,
+				'user_badges': user_badges_data,
+				'user_id': post.createdBy.id,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
@@ -617,6 +637,7 @@ def get_community_posts(request):
 				'liked': likedByUser,
 				'disliked': dislikedByUser,
 				'isFollowing': isFollowing,
+				'tags': [x.name for x in post.tags.all()]
 			})
 
 		# Sort the posts by createdAt in descending order
@@ -631,7 +652,7 @@ def get_community_posts(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get user feed posts. Posts of the communities that user is member,moderator,owner of and posts of the users that user is following (in the post object add as feedType either 'communityMembership' or 'userFollow' to distinguish). Dont include banned communities posts. Posts should be owned by other users and sorted by createdAt decreasing.
-@csrf_exempt
+@api_view(['POST'])
 def get_user_feed(request):
 	if request.method == 'POST':
 		# Get user connections
@@ -718,7 +739,7 @@ def get_user_feed(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Create a post with the template of the community
-@csrf_exempt
+@api_view(['POST'])
 def create_template(request):
 	if request.method == 'POST':
 		request_data = JSONParser().parse(request)
@@ -744,7 +765,7 @@ def create_template(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get all templates of the community
-@csrf_exempt
+@api_view(['POST'])
 def get_templates(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -769,7 +790,7 @@ def get_templates(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get template by id
-@csrf_exempt
+@api_view(['POST'])
 def get_template(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -787,20 +808,25 @@ def get_template(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Create a post with the template of the community
-@csrf_exempt
+@api_view(['POST'])
 def create_post(request):
 	if request.method == 'POST':
 		request_data = JSONParser().parse(request)
+		if request_data.get("tags"):
+			the_tags = [x.lower() for x in request_data.get("tags") if type(x) is str]
+		else:
+			the_tags = []
 
 		post_data = {
 				'createdBy': request.user.id,
 				'community': request_data['communityId'],
 				'template': request_data['templateId'],
-				'rowValues': request_data['rowValues']
+				'rowValues': request_data['rowValues'],
+				'tags': the_tags
 		}
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():
-			post_serializer.save()
+			post = post_serializer.save()
 
 			response_data = {
 				'success': True,
@@ -808,13 +834,14 @@ def create_post(request):
 					'id': post_serializer.data['id']
 				}
 			}
+			post.update_tag_usage_create()
 			return JsonResponse(response_data, status=201)
 		return JsonResponse(post_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
 # Create a comment for a post
-@csrf_exempt
+@api_view(['POST'])
 def add_comment(request):
 	if request.method == 'POST':
 		request_data = JSONParser().parse(request)
@@ -839,7 +866,7 @@ def add_comment(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get comments of a post with like and unlike counts
-@csrf_exempt
+@api_view(['POST'])
 def get_post_comments(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -885,7 +912,7 @@ def get_post_comments(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Like or unlike a post
-@csrf_exempt
+@api_view(['POST'])
 def like_post(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -921,7 +948,7 @@ def like_post(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Like or unlike a comment
-@csrf_exempt
+@api_view(['POST'])
 def like_comment(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -958,7 +985,7 @@ def like_comment(request):
 
 
 # Follow if user is not followed yet, unfollow if user is already followed
-@csrf_exempt
+@api_view(['POST'])
 def follow_user(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -982,7 +1009,7 @@ def follow_user(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get all users that user is following and followers of the user
-@csrf_exempt
+@api_view(['POST'])
 def get_user_connections(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1011,7 +1038,7 @@ def get_user_connections(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Ban user from community if current user is owner or moderator of the community (moderators can not ban owners). If user banned already, unban user
-@csrf_exempt
+@api_view(['POST'])
 def ban_user(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1033,7 +1060,7 @@ def ban_user(request):
 
 
 # Delete post if current user is owner of the post or owner or moderator of the community
-@csrf_exempt
+@api_view(['POST'])
 def delete_post(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1048,7 +1075,7 @@ def delete_post(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Delete comment if current user is owner of the post or owner or moderator of the community
-@csrf_exempt
+@api_view(['POST'])
 def delete_comment(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1064,7 +1091,7 @@ def delete_comment(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get post details in format {post:{...}, template: {...}} if user owner of the post
-@csrf_exempt
+@api_view(['POST'])
 def get_post_details(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1077,7 +1104,8 @@ def get_post_details(request):
 				'id': post.id,
 				'createdBy': post.createdBy.username,
 				'createdAt': post.createdAt,
-				'rowValues': post.rowValues
+				'rowValues': post.rowValues,
+				'tags': list(post.tags.values_list("name", flat=True))
 			}
 
 			template = Template.objects.get(id=post.template.id)
@@ -1099,24 +1127,31 @@ def get_post_details(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Edit post if current user is owner of the post, and make post isEdited true
-@csrf_exempt
+@api_view(['POST'])
 def edit_post(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
 		post = Post.objects.get(id=payload['postId'])
 		community = Community.objects.get(id=post.community.id)
 		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+		existing_tags = [x.id for x in post.tags.all()]
 
 		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
 			post.rowValues = payload['rowValues']
 			post.isEdited = True
+			post.tags.set(payload.get("tags", []), clear=True)
 			post.save()
+			post.refresh_from_db()
+			all_tags = [x.id for x in post.tags.all()]
+			deleted_tags = set(existing_tags).difference(set(all_tags))
+			added_tags = set(all_tags).difference(set(existing_tags))
+			post.update_tag_usage_edit(added_tags, deleted_tags)
 			return JsonResponse({'success': True, 'message': 'Post edited successfully'}, status=200)
 		return JsonResponse({'error': 'User is not authorized to edit the post'}, status=403)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Edit comment if current user is owner of the comment, and make comment isEdited true
-@csrf_exempt
+@api_view(['POST'])
 def edit_comment(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1135,7 +1170,7 @@ def edit_comment(request):
 
 
 # Get top 3 active (sorted by post count) public communities and 3 promoted communities (newest 3 communities that is not included in active communities).
-@csrf_exempt
+@api_view(['POST'])
 def get_top_communities(request):
 	if request.method == 'POST':
 		# Get all communities and then post count of communities then sort them by post count and get the top 3
@@ -1191,7 +1226,7 @@ def get_top_communities(request):
 
 
 # Get all communities that user is owner of
-@csrf_exempt
+@api_view(['POST'])
 def get_owned_communities(request):
 	if request.method == 'POST':
 		connections = CommunityUserConnection.objects.filter(Q(user=request.user.id) & Q(type='owner'))
@@ -1216,7 +1251,7 @@ def get_owned_communities(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Archive community if current user is owner of the community
-@csrf_exempt
+@api_view(['POST'])
 def archive_community(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1231,7 +1266,7 @@ def archive_community(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Add isDeleted true to the template if current user is owner or moderator of the template
-@csrf_exempt
+@api_view(['POST'])
 def delete_template(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
@@ -1247,7 +1282,7 @@ def delete_template(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # Get all not archived communities and all users
-@csrf_exempt
+@api_view(['POST'])
 def get_main_search(request):
 	if request.method == 'POST':
 		communities = Community.objects.all()
@@ -1279,4 +1314,123 @@ def get_main_search(request):
 			}
 		}
 		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def badges(request):
+	if request.method == 'GET':
+		badges = Badge.objects.all()
+		badges_data = [badge for badge in badges if badge.community is None]
+		payload = JSONParser().parse(request) if request.body else {}
+		# list both global and community badges if communityId is provided
+		if 'communityId' in payload:
+			community = Community.objects.get(id=payload['communityId'])
+			badges_data = Badge.objects.filter(Q(community=None) | Q(community=community.id))
+
+		badges_data = BadgeSerializer(badges_data, many=True).data
+		response_data = {
+			'success': True,
+			'data': badges_data
+		}
+		return JsonResponse(response_data, status=200)
+	elif request.method == 'POST':
+		payload = JSONParser().parse(request)
+		if 'communityId' in payload:
+			community = Community.objects.get(id=payload['communityId'])
+			user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+			if user_connection.type != 'owner':
+				return JsonResponse({'error': 'User is not authorized to create a badge for the community'}, status=403)
+		badge_data = {
+			'name': payload['name'],
+			'description': payload['description'],
+			'image': payload['image'] if 'image' in payload else None,
+			'community': payload['communityId'] if 'communityId' in payload else None,
+		}
+		badge_serializer = BadgeSerializer(data=badge_data)
+		if badge_serializer.is_valid():
+			badge_serializer.save()
+			response_data = {
+				'success': True,
+				'data': {
+					'id': badge_serializer.data['id']
+				}
+			}
+			return JsonResponse(response_data, status=201)
+		return JsonResponse(badge_serializer.errors, status=400)
+	elif request.method == 'PUT':
+		payload = JSONParser().parse(request)
+		badge = Badge.objects.get(id=payload['badgeId'])
+		if badge.community:
+			community = Community.objects.get(id=badge.community.id)
+			user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+			if user_connection.type != 'owner':
+				return JsonResponse({'error': 'User is not authorized to update the badge for the community'}, status=403)
+		badge.name = payload['name']
+		badge.description = payload['description']
+		badge.image = payload['image']
+		badge.save()
+		return JsonResponse({'success': True, 'message': 'Badge updated successfully'}, status=200)
+	elif request.method == 'DELETE':
+		"delete a badge"
+		payload = JSONParser().parse(request)
+		badge = Badge.objects.get(id=payload['badgeId'])
+		if badge.community:
+			community = Community.objects.get(id=badge.community.id)
+			user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+			if user_connection.type != 'owner':
+				return JsonResponse({'error': 'User is not authorized to delete the badge for the community'}, status=403)
+		badge.delete()
+		return JsonResponse({'success': True, 'message': 'Badge deleted successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def user_badges(request):
+	if request.method == 'GET':
+		badges = UserBadge.objects.filter(user=request.user)
+		badges_data = []
+		for badge in badges:
+			badges_data.append({
+				'id': badge.id,
+				'badge': badge.badge.id,
+				'createdAt': badge.createdAt
+			})
+
+		response_data = {
+			'success': True,
+			'data': badges_data
+		}
+		return JsonResponse(response_data, status=200)
+	elif request.method == 'POST':
+		payload = JSONParser().parse(request)
+		badge_data = {
+			'user': request.user.id,
+			'badge': payload['badgeId']
+		}
+		if UserBadge.objects.filter(user_id=request.user.id, badge_id=payload['badgeId']).exists():
+			return JsonResponse({'error': 'User already has this badge'}, status=400)
+		# return JsonResponse(badge_data)
+		badge_serializer = UserBadgeSerializer(data=badge_data)
+		if badge_serializer.is_valid():
+			badge_serializer.save()
+			# get all user badges
+			badges = UserBadge.objects.filter(user=request.user)
+			response_data = {
+				'success': True,
+				'data': UserBadgeSerializer(badges, many=True).data
+			}
+			return JsonResponse(response_data, status=201)
+		return JsonResponse(badge_serializer.errors, status=400)
+	elif request.method == 'PUT':
+		"update a badge of the user"
+		payload = JSONParser().parse(request)
+		badge = UserBadge.objects.get(id=payload['userBadgeId'])
+		badge.badge = Badge.objects.get(id=payload['badgeId'])
+		badge.save()
+		return JsonResponse({'success': True, 'message': 'User badge updated successfully'}, status=200)
+	elif request.method == 'DELETE':
+		"delete a badge of the user"
+		payload = JSONParser().parse(request)
+		badge = UserBadge.objects.get(id=payload['userBadgeId'])
+		badge.delete()
+		return JsonResponse({'success': True, 'message': 'User badge deleted successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)

@@ -4,13 +4,12 @@ services:
   backend:
     build:
       context: ./huddleupAPI
-    container_name: backend_huddleup
     volumes:
       - ./huddleupAPI:/app
     expose:
       - 8000
     env_file:
-      - .env
+      - huddleupAPI/.env
     depends_on:
       - db
     restart: unless-stopped
@@ -19,17 +18,13 @@ services:
       context: ./huddleupui
     ports:
       - "127.0.0.1:8080:80"
-    container_name: frontend_huddleup
-#    volumes:
-#      - ./huddleupui:/app
-#      - ./huddleupui/node_modules:/app/node_modules
-#      - ./huddleupAPI/staticfiles:/app/staticfiles
-#      - ./huddleupAPI/mediafiles:/app/mediafiles
+    volumes:
+      - ./huddleupAPI/staticfiles:/staticfiles
+      - ./huddleupAPI/mediafiles:/mediafiles
     depends_on:
       - backend
   db:
     image: postgres:13.0-alpine
-    container_name: db_huddleup
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
     env_file:

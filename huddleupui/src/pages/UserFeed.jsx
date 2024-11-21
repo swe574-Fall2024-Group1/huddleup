@@ -4,9 +4,12 @@ import useApi from '../hooks/useApi';
 import { LoadingOutlined, } from '@ant-design/icons';
 import { LockOutlined, UserOutlined, CrownOutlined } from '@ant-design/icons';
 import FeedPost from '../components/Feed/FeedPost';
-import { Button, Card, Spin } from 'antd';
+import { Button, Card, Spin, Grid } from 'antd';
+
+const { useBreakpoint } = Grid;
 
 export default function UserFeed() {
+	const screens = useBreakpoint();
 
 	const [posts, setPosts] = useState([]);
 	const [postsLoading, setPostsLoading] = useState(true);
@@ -46,8 +49,9 @@ export default function UserFeed() {
 
 	const cardContainerStyle = {
 		display: 'flex',
-		flexWrap: 'wrap',  // Wrap cards to next line if there's not enough space
+		flexWrap: screens.md ? 'wrap' : 'nowrap',  // Wrap cards to next line if there's not enough space
 		justifyContent: 'space-between',  // Align cards with space between them
+		overflow: screens.md ? "" : "scroll",
 	}
 
 	const activeIndicatorStyle = {
@@ -107,15 +111,16 @@ export default function UserFeed() {
 									<Card
 										key={community.id}
 										style={{
-											width: 200,
+											width: screens.md ? 200 : "max-content",
 											marginBottom: 20,
 											marginRight: 20,
 											boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
+											padding: screens.md ? "20px" : "10px",
 										}}
 										actions={[
 											<Link to={`/communities/${community.id}`} key="visit">
 												<Button
-													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800 }}
+													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800, padding: screens.md ? "0px" : "0px 10px"}}
 													size="middle"
 												>
 													Visit the community
@@ -176,15 +181,16 @@ export default function UserFeed() {
 									<Card
 										key={community.id}
 										style={{
-											width: 200,
+											width: screens.md ? 200 : "max-content",
 											marginBottom: 20,
 											marginRight: 20,
 											boxShadow: 'rgba(0, 0, 0, 0.1) 0px 4px 12px',
+											padding: screens.md ? "20px" : "10px",
 										}}
 										actions={[
 											<Link to={`/communities/${community.id}`} key="visit">
 												<Button
-													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800 }}
+													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800, padding: screens.md ? "0px" : "0px 10px" }}
 													size="middle"
 												>
 													Visit the community

@@ -3,6 +3,7 @@ import AuthContext from "../../contexts/AuthContext";
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
 import fetchApi from "../../api/fetchApi";
+import axios from "axios";
 
 
 const AuthProvider = ({ children }) => {
@@ -20,6 +21,8 @@ const AuthProvider = ({ children }) => {
 		if (data.sessionToken) {
 			setToken(data.sessionToken);
 			Cookies.set('hudSession', data.sessionToken)
+			axios.defaults.headers.common['x-dub-session-token'] = data.sessionToken;
+            axios.defaults.headers.post['Content-Type'] = 'application/json';
 		}
 	};
 
