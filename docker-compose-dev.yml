@@ -1,5 +1,5 @@
 # docker-compose-dev.yaml
-version: '3'
+#version: '3'
 
 services:
 
@@ -16,7 +16,7 @@ services:
     ports:
       - "8000:8000"
     env_file:
-      - .env
+      - huddleupAPI/.env
     depends_on:
       - db
     restart: unless-stopped
@@ -42,7 +42,7 @@ services:
     volumes:
       - ./postgres_data:/var/lib/postgresql/data/
     env_file:
-      - .db.env
-     ports:
-    - "5432:5432"  # Expose the database port
+      - huddleupAPI/.db.env
+    ports:
+      - "5432:5432"  # Map container port 5432 to host port 5432
     restart: unless-stopped

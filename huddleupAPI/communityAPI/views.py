@@ -763,7 +763,7 @@ def create_template(request):
 
 			# Check for and award badges
 			check_and_award_badges(request.user, request_data['communityId'])
-
+            
 			response_data = {
 				'success': True,
 				'data': {
@@ -866,7 +866,7 @@ def add_comment(request):
 
 			# Get the community from the post
 			post = Post.objects.get(id=request_data['postId'])
-			awarded_badges = check_and_award_badges(request.user, post.community.id)
+			check_and_award_badges(request.user, post.community.id)
 
 			response_data = {
 				'success': True,
@@ -957,7 +957,8 @@ def like_post(request):
 				like_serializer.save()
 
 				# Check for and award badges
-				awarded_badges = check_and_award_badges(request.user, post.community.id)
+				check_and_award_badges(request.user, post.community.id)
+				
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
@@ -1000,29 +1001,45 @@ def like_comment(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
-# Follow if user is not followed yet, unfollow if user is already followed
 @api_view(['POST'])
 def follow_user(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		followee = User.objects.get(username=payload['username'])
+    if request.method == 'POST':
+        payload = JSONParser().parse(request)
+        followee = User.objects.get(username=payload['username'])
 
-		if UserFollowConnection.objects.filter(follower=request.user, followee=followee).exists():
-			UserFollowConnection.objects.filter(follower=request.user, followee=followee).delete()
-			return JsonResponse({'success': True, 'message': 'User unfollowed successfully'}, status=200)
-		else:
-			follow_data = {
-				'follower': request.user.id,
-				'followee': followee.id
-			}
-			follow_serializer = UserFollowConnectionSerializer(data=follow_data)
+        # Check if the user is already following
+        if UserFollowConnection.objects.filter(follower=request.user, followee=followee).exists():
+            UserFollowConnection.objects.filter(follower=request.user, followee=followee).delete()
+            return JsonResponse({'success': True, 'message': 'User unfollowed successfully'}, status=200)
+        else:
+            follow_data = {
+                'follower': request.user.id,
+                'followee': followee.id
+            }
+            follow_serializer = UserFollowConnectionSerializer(data=follow_data)
 
-			if follow_serializer.is_valid():
-				follow_serializer.save()
-				return JsonResponse({'success': True, 'message': 'User followed successfully'}, status=201)
-			else:
-				return JsonResponse(follow_serializer.errors, status=400)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+            if follow_serializer.is_valid():
+                follow_serializer.save()
+
+                # Infer community where both follower and followee belong
+                community_connections = CommunityUserConnection.objects.filter(
+                    user=request.user
+                ).values_list('community', flat=True)
+
+                # Find a shared community between the follower and followee
+                shared_community = CommunityUserConnection.objects.filter(
+                    user=followee,
+                    community__in=community_connections
+                ).values_list('community', flat=True).first()
+
+                if shared_community:
+                    check_and_award_badges(request.user, shared_community)
+
+                return JsonResponse({'success': True, 'message': 'User followed successfully'}, status=201)
+            else:
+                return JsonResponse(follow_serializer.errors, status=400)
+    return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 # Get all users that user is following and followers of the user
 @api_view(['POST'])
@@ -1451,45 +1468,96 @@ def meets_badge_criteria(user, community, criteria):
     # Fetch counts based on user and community
     user_posts_count = Post.objects.filter(createdBy=user, community=community).count()
     user_comments_count = Comment.objects.filter(createdBy=user, post__community=community).count()
-    user_followers_count = CommunityUserConnection.objects.filter(
-        followee=user, community=community
-    ).count()  # Community-specific followers
+    followed_count = get_followed_count_in_community(user, community)
     user_templates_count = Template.objects.filter(createdBy=user, community=community).count()
     user_likes_count = PostLike.objects.filter(post__createdBy=user, post__community=community, direction=True).count()
 
-    # Evaluate criteria only if it exists in the provided JSON
-    return all([
-        criteria.get('post_count', 0) <= user_posts_count,
-        criteria.get('comment_count', 0) <= user_comments_count,
-        criteria.get('follower_count', 0) <= user_followers_count,
-        criteria.get('template_count', 0) <= user_templates_count,
-        criteria.get('like_count', 0) <= user_likes_count
-    ])
+    # Handle single condition (a dict like {"like_count": 5})
+    if isinstance(criteria, dict):
+        if 'post_count' in criteria and criteria['post_count'] > user_posts_count:
+            return False
+        if 'comment_count' in criteria and criteria['comment_count'] > user_comments_count:
+            return False
+        if 'follower_count' in criteria and criteria['follower_count'] > followed_count:
+            return False
+        if 'template_count' in criteria and criteria['template_count'] > user_templates_count:
+            return False
+        if 'like_count' in criteria and criteria['like_count'] > user_likes_count:
+            return False
+        return True
 
+    # Handle multiple conditions (criteria as a list of dictionaries)
+    if isinstance(criteria, list):
+        for criterion in criteria:
+            # Check and ignore empty or zero conditions
+            if criterion.get('post_count', 0) > 0 and criterion['post_count'] > user_posts_count:
+                return False
+            if criterion.get('comment_count', 0) > 0 and criterion['comment_count'] > user_comments_count:
+                return False
+            if criterion.get('follower_count', 0) > 0 and criterion['follower_count'] > followed_count:
+                return False
+            if criterion.get('template_count', 0) > 0 and criterion['template_count'] > user_templates_count:
+                return False
+            if criterion.get('like_count', 0) > 0 and criterion['like_count'] > user_likes_count:
+                return False
+        # If no condition fails, all are satisfied
+        return True
+
+    # Return False if criteria is invalid (neither dict nor list)
+    return False
+
+
+
+from django.db.models import Q
+
+def get_followed_count_in_community(user, community):
+    # Get all users in the community
+    community_users = CommunityUserConnection.objects.filter(community=community).values_list('user', flat=True)
+
+    # Count the number of community members followed by the user
+    followed_count = UserFollowConnection.objects.filter(
+        follower=user,
+        followee__in=community_users  # Filter followees to be within community members
+    ).count()
+
+    return followed_count
 
 
 def check_and_award_badges(user, community_id):
-    community = Community.objects.get(id=community_id)
-    badges = Badge.objects.filter(community=community)
-    awarded_badges_data = []
+    try:
+        print(f"Checking badges for user: {user.id} in community: {community_id}")
+        community = Community.objects.get(id=community_id)
+        print(f"Community found: {community.name}")
+        badges = Badge.objects.filter(community=community.id)
+        print(f"Found {len(badges)} badges for community {community.name}")
+        awarded_badges_data = []
 
-    for badge in badges:
-        # Skip if user already has the badge
-        if UserBadge.objects.filter(user=user, badge=badge).exists():
-            continue
+        for badge in badges:
+            print(f"Processing badge: {badge.name}")
+            if UserBadge.objects.filter(user=user, badge=badge).exists():
+                print(f"User already has badge: {badge.name}")
+                continue
 
-        # Check if the user meets the criteria for this badge
-        if meets_badge_criteria(user, community, badge.criteria):
-            user_badge = UserBadge.objects.create(user=user, badge=badge)
-            awarded_badges_data.append({
-                'id': badge.id,
-                'name': badge.name,
-                'description': badge.description,
-                'image': badge.image,
-                'awardedAt': user_badge.createdAt
-            })
+            if meets_badge_criteria(user, community, badge.criteria):
+                print(f"User meets criteria for badge: {badge.name}")
+                user_badge = UserBadge.objects.create(user=user, badge=badge)
+                awarded_badges_data.append({
+                    'id': badge.id,
+                    'name': badge.name,
+                    'description': badge.description,
+                    'image': badge.image,
+                    'awardedAt': user_badge.createdAt
+                })
+            else:
+                print(f"User does not meet criteria for badge: {badge.name}")
 
-    return awarded_badges_data
+        print(f"Awarded badges: {awarded_badges_data}")
+        return awarded_badges_data
+
+    except Exception as e:
+        print(f"Error in check_and_award_badges: {str(e)}")
+        raise
+
 
 
 def create_default_badges_for_community(com):
@@ -1500,40 +1568,39 @@ def create_default_badges_for_community(com):
 
     default_badges = [
         {
-            'name': 'Post Master53',
+            'name': f"{com.name} - Post Master",
             'description': 'Awarded for creating a specific number of posts.',
             'type': 'automatic',
-            'criteria': {'post_count': 1},
-			'community':com.id
-			
+            'criteria': {'post_count': 5},
+            'community': com.id
         },
         {
-            'name': 'Commentator2',
+            'name': f"{com.name} - Commentator",
             'description': 'Awarded for creating a specific number of comments.',
             'type': 'automatic',
-            'criteria': {'comment_count': 30},
-			'community':com.id
+            'criteria': {'comment_count': 5},
+            'community': com.id
         },
         {
-            'name': 'Social Butterfly2',
+            'name': f"{com.name} - Social Butterfly",
             'description': 'Awarded for gaining a specific number of followers.',
             'type': 'automatic',
-            'criteria': {'follower_count': 15},
-			'community':com.id
+            'criteria': {'follower_count': 5},
+            'community': com.id
         },
         {
-            'name': 'Template Creator2',
+            'name': f"{com.name} - Template Creator",
             'description': 'Awarded for creating a specific number of templates.',
             'type': 'automatic',
-            'criteria': {'template_count': 15},
-			'community':com.id
+            'criteria': {'template_count': 5},
+            'community': com.id
         },
         {
-            'name': 'Appreciated2',
+            'name': f"{com.name} - Appreciated",
             'description': 'Awarded for receiving a specific number of likes.',
             'type': 'automatic',
-            'criteria': {'like_count': 50},
-			'community':com.id
+            'criteria': {'like_count': 5},
+            'community': com.id
         }
     ]
 
