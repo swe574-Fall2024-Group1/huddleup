@@ -1346,13 +1346,20 @@ def get_main_search(request):
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 def badges(request):
 	if request.method == 'GET':
-		badges = Badge.objects.all()
-		badges_data = [badge for badge in badges if badge.community is None]
-		payload = JSONParser().parse(request) if request.body else {}
-		# list both global and community badges if communityId is provided
-		if 'communityId' in payload:
-			community = Community.objects.get(id=payload['communityId'])
-			badges_data = Badge.objects.filter(Q(community=None) | Q(community=community.id))
+		community_id = request.GET.get('communityId')
+
+		try:
+
+			if community_id:
+				community_id = community_id.rstrip('/')
+				community = Community.objects.get(id=community_id)
+				badges_data = Badge.objects.filter(community=community)
+
+			else:
+				badges_data = Badge.objects.all()
+		
+		except Community.DoesNotExist:
+			return JsonResponse({'error': 'Community not found'}, status=404)
 
 		badges_data = BadgeSerializer(badges_data, many=True).data
 		response_data = {
@@ -1360,6 +1367,8 @@ def badges(request):
 			'data': badges_data
 		}
 		return JsonResponse(response_data, status=200)
+	
+	
 	elif request.method == 'POST':
 		payload = JSONParser().parse(request)
 		if 'communityId' in payload:
