@@ -19,7 +19,6 @@ import Communities from "./pages/Communities";
 import Connections from "./pages/Connections";
 import CommunitySettings from "./pages/Community/CommunitySettings";
 import EditPost from "./pages/Community/EditPost";
-import DiscoverCommunities from "./pages/DiscoverCommunities";
 import DiscoverUsers from "./pages/DiscoverUsers";
 import UserProfile from "./pages/UserProfile";
 
@@ -70,14 +69,6 @@ function App() {
 							<ProtectedRoute>
 								<AppLayout>
 									<Communities />
-								</AppLayout>
-							</ProtectedRoute>
-						}
-						/>
-						<Route path="/discover_communities" element={
-							<ProtectedRoute>
-								<AppLayout>
-									<DiscoverCommunities/>
 								</AppLayout>
 							</ProtectedRoute>
 						}

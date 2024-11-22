@@ -1456,8 +1456,7 @@ def get_recommended_users(request):
 			id__in=posts_that_current_user_likes).values_list('createdBy', flat=True)
 
 		# The users that the current user likes their comments
-		comments_that_current_user_likes = CommentLike.objects.filter(createdBy=request.user).values_list('comment',
-																										  flat=True)
+		comments_that_current_user_likes = CommentLike.objects.filter(createdBy=request.user).values_list('comment', flat=True)
 		authors_of_comments_that_current_user_likes = Comment.objects.filter(
 			id__in=comments_that_current_user_likes).values_list('createdBy', flat=True)
 
