@@ -1537,7 +1537,7 @@ def check_and_award_badges(user, community_id):
         print(f"Checking badges for user: {user.id} in community: {community_id}")
         community = Community.objects.get(id=community_id)
         print(f"Community found: {community.name}")
-        badges = Badge.objects.filter(community=community.id)
+        badges = Badge.objects.filter(community=community.id, type='automatic')
         print(f"Found {len(badges)} badges for community {community.name}")
         awarded_badges_data = []
 
