@@ -2,15 +2,16 @@ from django.urls import reverse
 from django.test import TestCase
 from authAPI.models import User
 from communityAPI.views import (create_community, get_community_members, get_community_banned,
-								get_community_moderators, get_community_owners, assign_moderator, create_post, badges)
+								get_community_moderators, get_community_owners, assign_moderator, create_post, badges, get_recommended_users)
 from communityAPI.class_views import TagList
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Badge
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Badge, PostLike, Comment, CommentLike, UserFollowConnection
 from authAPI.serializers import UserSerializer
 from rest_framework import status
 import base64
 import json
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import force_authenticate
+from rest_framework.test import APIClient
 
 
 class CommunityTests(TestCase):
@@ -18,7 +19,6 @@ class CommunityTests(TestCase):
 	def setUp(self):
 		self.request_factory = APIRequestFactory()
 		self.user = User.objects.create_user(username='testuser', password='testpassword')
-
 		self.user = User.objects.get(username='testuser')
 
 	def test_create_community(self):
@@ -267,3 +267,93 @@ class CommunityTests(TestCase):
 			badge = Badge.objects.get(id=self.badge_id)
 			self.assertEqual(badge.name, 'Test Badge')
 			self.assertEqual(badge.description, 'A test badge description')
+
+class GetRecommendedUsersTestCase(TestCase):
+
+	def setUp(self):
+
+		self.request_factory = APIRequestFactory()
+
+		# Create test users
+		self.user1 = User.objects.create_user(username="user1", password="password1")
+		self.user2 = User.objects.create_user(username="user2", password="password2")
+		self.user3 = User.objects.create_user(username="user3", password="password3")
+		self.user4 = User.objects.create_user(username="user4", password="password4")
+
+		# Create a community
+		communityInstance = CommunityTests()
+		communityInstance.setUp()
+		CommunityTests.test_create_community(communityInstance)
+		self.community = Community.objects.all()[0]
+
+		self.template = Template.objects.get(community=self.community)
+
+		# Create posts
+		self.post1 = Post.objects.create(
+			createdBy=self.user1,
+			community=self.community,
+			template=self.template,
+			rowValues=["Post 1 Title", "Post 1 Content"]
+		)
+		self.post2 = Post.objects.create(
+			createdBy=self.user2,
+			community=self.community,
+			template=self.template,
+			rowValues=["Post 2 Title", "Post 2 Content"]
+		)
+
+		# Create comments
+		self.comment1 = Comment.objects.create(post=self.post1, createdBy=self.user3)
+		self.comment2 = Comment.objects.create(post=self.post2, createdBy=self.user4)
+
+		# Likes on posts
+		PostLike.objects.create(post=self.post1, createdBy=self.user2, direction=True)
+		PostLike.objects.create(post=self.post2, createdBy=self.user3, direction=True)
+
+		# Likes on comments
+		CommentLike.objects.create(comment=self.comment1, createdBy=self.user1, direction=True)
+		CommentLike.objects.create(comment=self.comment2, createdBy=self.user1,
+								   direction=True)  # Ensure user4 interacts
+
+		# Follow connections (ensure user4 is not already followed)
+		UserFollowConnection.objects.create(follower=self.user1, followee=self.user2)
+
+		# Authenticate user1
+		self.client = APIClient()
+		self.client.login(username="user1", password="password1")
+
+	def test_get_recommended_user_success(self):
+		url = reverse('get_recommended_users')
+		request = self.request_factory.post(url)
+		force_authenticate(request, user=self.user1)
+		response = get_recommended_users(request)
+
+		# Parse the response JSON content
+		response_data = json.loads(response.content)
+
+		self.assertEqual(response.status_code, 200)
+
+		# Check that the recommended users list contains the expected users
+		recommended_user_ids = {user['id'] for user in response_data['data']}
+		expected_user_ids = {self.user3.id, self.user4.id}  # Users not already followed
+		self.assertEqual(recommended_user_ids, expected_user_ids)
+
+	def test_no_interactions(self):
+		# Clear all interactions
+		PostLike.objects.all().delete()
+		CommentLike.objects.all().delete()
+		UserFollowConnection.objects.all().delete()
+		Comment.objects.all().delete()
+
+		url = reverse('get_recommended_users')
+		request = self.request_factory.post(url)
+		force_authenticate(request, user=self.user1)
+		response = get_recommended_users(request)
+		response_data = json.loads(response.content)
+
+		recommended_user_ids = {user['id'] for user in response_data['data']}
+
+		self.assertEqual(response.status_code, 200)
+
+		# No recommendations should be returned
+		self.assertEqual(recommended_user_ids, set())
