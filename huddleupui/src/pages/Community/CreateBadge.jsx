@@ -15,8 +15,12 @@ class CreateBadge extends Component {
     badgeDescription: '',
     badgeImage: null,
     criteria: {},
+    communityId: this.props.communityInfo?.id,
+    templateCount: '',
+    postCount: '',
+    followerCount: '',
+    likeCount: ''
   };
-
 
   handleIconUpload = (event) => {
     const reader = new FileReader();
@@ -28,16 +32,23 @@ class CreateBadge extends Component {
   };
 
   handleSubmit = async () => {
-    const { badgeName, badgeType, badgeDescription, badgeImage, criteria } = this.state;
+    const { badgeName, badgeType, badgeDescription, badgeImage, criteria, communityId, templateCount, postCount, followerCount, likeCount } = this.state;
+
+    //const criteria = {};
+    if (templateCount) criteria.template_count = parseInt(templateCount);
+    if (postCount) criteria.post_count = parseInt(postCount);
+    if (followerCount) criteria.follower_count = parseInt(followerCount);
+    if (likeCount) criteria.like_count = parseInt(likeCount);
+
     const values = {
-        name: badgeName,
-        type: badgeType,
-        description: badgeDescription,
-        image: badgeImage,
-        criteria,
+      name: badgeName,
+      type: badgeType,
+      description: badgeDescription,
+      image: badgeImage,
+      criteria,
+      communityId
     };
 
-    console.log(this.state)
     try {
       const response = await fetchApi('/api/communities/badges/create-badge', values, 'POST');
       if (response?.success) {
@@ -48,7 +59,7 @@ class CreateBadge extends Component {
       }
     } catch (error) {
       message.error('Failed to create badge');
-      console.log(values, error)
+      console.log(values, error);
     }
   };
 
@@ -66,7 +77,7 @@ class CreateBadge extends Component {
 
   render() {
     const { badges } = this.props;
-    const { visible, badgeName, badgeType, badgeDescription } = this.state;
+    const { visible, badgeName, badgeType, badgeDescription, templateCount, postCount, followerCount, likeCount } = this.state;
 
     return (
       <div>
@@ -95,6 +106,34 @@ class CreateBadge extends Component {
                 <Option value="automatic">Automatic</Option>
               </Select>
             </Form.Item>
+            {badgeType === 'automatic' && (
+              <>
+                <Form.Item label="Template Count">
+                  <Input
+                    value={templateCount}
+                    onChange={(e) => this.setState({ templateCount: e.target.value })}
+                  />
+                </Form.Item>
+                <Form.Item label="Post Count">
+                  <Input
+                    value={postCount}
+                    onChange={(e) => this.setState({ postCount: e.target.value })}
+                  />
+                </Form.Item>
+                <Form.Item label="Follower Count">
+                  <Input
+                    value={followerCount}
+                    onChange={(e) => this.setState({ followerCount: e.target.value })}
+                  />
+                </Form.Item>
+                <Form.Item label="Like Count">
+                  <Input
+                    value={likeCount}
+                    onChange={(e) => this.setState({ likeCount: e.target.value })}
+                  />
+                </Form.Item>
+              </>
+            )}
             <Form.Item label="Badge Description">
               <TextArea
                 value={badgeDescription}

@@ -25,7 +25,7 @@ const fetchApi = async (url, payload, method = 'POST') => {
 		} else if (method === 'GET' && payload){
 			url = url + '?' + new URLSearchParams(payload).toString()
 		}
-		const response = await fetch( url + '/', fetchOptions);
+		const response = await fetch( url, fetchOptions);
 
 
 

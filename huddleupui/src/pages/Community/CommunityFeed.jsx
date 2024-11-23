@@ -28,7 +28,7 @@ export default function CommunityFeed() {
 
 	  useEffect(() => {
 		const fetchBadges = async () => {
-		  const response = await fetchApi('/api/communities/badges/get-badges', {}, 'GET');
+		  const response = await fetchApi('/api/communities/badges/get-badges', {communityId: communityId}, 'GET');
 		  if (response.success) {
 			setBadges(response.data);
 		  }
@@ -373,7 +373,7 @@ export default function CommunityFeed() {
 				>
 					+ Add Post
 				</Button>
-				{communityInfo.memberType === 'owner' && <CreateBadge badges={badges} />}
+				{communityInfo.memberType === 'owner' && <CreateBadge badges={badges} communityInfo={communityInfo} />}
 			</div>
 
 			{searchOpen && (

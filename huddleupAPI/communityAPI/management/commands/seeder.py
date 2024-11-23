@@ -5,7 +5,7 @@ class Command(BaseCommand):
     help = 'Seed the database with default values'
 
     def handle(self, *args, **kwargs):
-       self.seed_badges()
+        # self.seed_badges()
     def seed_badges(self):
         default_badges = [
             {
@@ -38,3 +38,9 @@ class Command(BaseCommand):
             )
 
         self.stdout.write(self.style.SUCCESS('Successfully seeded the database with default badges'))
+
+    def seed_users(self):
+        # TODO seed users
+
+    def seed_communities(self):
+        # TODO seed communities
