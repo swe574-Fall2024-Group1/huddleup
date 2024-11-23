@@ -1439,18 +1439,19 @@ def user_badges(request):
 		return JsonResponse(response_data, status=200)
 	elif request.method == 'POST':
 		payload = JSONParser().parse(request)
+		user = User.objects.get(id=payload['username'])
 		badge_data = {
-			'user': request.user.id,
+			'user': payload['username'],
 			'badge': payload['badgeId']
 		}
-		if UserBadge.objects.filter(user_id=request.user.id, badge_id=payload['badgeId']).exists():
+		if UserBadge.objects.filter(user_id=payload['username'], badge_id=payload['badgeId']).exists():
 			return JsonResponse({'error': 'User already has this badge'}, status=400)
 		# return JsonResponse(badge_data)
 		badge_serializer = UserBadgeSerializer(data=badge_data)
 		if badge_serializer.is_valid():
 			badge_serializer.save()
 			# get all user badges
-			badges = UserBadge.objects.filter(user=request.user)
+			badges = UserBadge.objects.filter(user=user)
 			response_data = {
 				'success': True,
 				'data': UserBadgeSerializer(badges, many=True).data
