@@ -762,7 +762,7 @@ def create_template(request):
 
 			# Check for and award badges
 			check_and_award_badges(request.user, request_data['communityId'])
-
+            
 			response_data = {
 				'success': True,
 				'data': {
@@ -958,7 +958,7 @@ def like_post(request):
 
 				# Check for and award badges
 				check_and_award_badges(request.user, post.community.id)
-
+				
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
@@ -1363,6 +1363,8 @@ def badges(request):
 			'data': badges_data
 		}
 		return JsonResponse(response_data, status=200)
+
+
 	elif request.method == 'POST':
 		payload = JSONParser().parse(request)
 		if 'communityId' not in payload:
@@ -1535,7 +1537,7 @@ def check_and_award_badges(user, community_id):
         print(f"Checking badges for user: {user.id} in community: {community_id}")
         community = Community.objects.get(id=community_id)
         print(f"Community found: {community.name}")
-        badges = Badge.objects.filter(community=community.id)
+        badges = Badge.objects.filter(community=community.id, type='automatic')
         print(f"Found {len(badges)} badges for community {community.name}")
         awarded_badges_data = []
 
@@ -1624,7 +1626,7 @@ def create_default_badges_for_community(com):
             print(error_message)
             raise ValueError(error_message)
 
-
+    
     return created_badges
 
 
