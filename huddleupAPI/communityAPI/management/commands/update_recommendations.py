@@ -43,7 +43,7 @@ class Command(BaseCommand):
 
         # Sort communities by similarity
         recommendations = sorted(recommendations, key=lambda x: x[1], reverse=True)
-        return recommendations[:5]  # Top 5 recommendations
+        return recommendations[:10]  # Top 10 recommendations
 
     def handle(self, *args, **kwargs):
         active_users = User.objects.filter(is_active=True)
