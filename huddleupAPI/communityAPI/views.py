@@ -1446,7 +1446,7 @@ def get_recommended_users(request):
 			post__in=current_user_posts).values_list('createdBy', flat=True)
 
 		# The users that like the comments of the current user
-		current_user_comments = Comment.objects.filter(createdBy=request.user).values_list('post', flat=True)
+		current_user_comments = Comment.objects.filter(createdBy=request.user).values_list('id', flat=True)
 		users_who_like_comments_of_the_current_user = CommentLike.objects.filter(
 			comment__in=current_user_comments).values_list('createdBy', flat=True)
 
