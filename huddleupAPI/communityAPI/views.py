@@ -1404,6 +1404,7 @@ def badges(request):
 		badge.name = payload['name']
 		badge.description = payload['description']
 		badge.image = payload['image']
+		badge.criteria = payload['criteria'] if 'criteria' in payload else None
 		badge.save()
 		return JsonResponse({'success': True, 'message': 'Badge updated successfully'}, status=200)
 	elif request.method == 'DELETE':
