@@ -611,21 +611,21 @@ def get_community_posts(request):
 			isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=post.createdBy).exists()
 
 			# Fetch user badges
-			user_badges = UserBadge.objects.filter(user=post.createdBy)
+			user_badges = UserBadge.objects.filter(user=post.createdBy, badge__community=community_id)
 			user_badges_data = []
 			for user_badge in user_badges:
 				user_badges_data.append({
 					'id': user_badge.badge.id,
 					'badge': {
-                        'id': user_badge.badge.id,
-                        'name': user_badge.badge.name,
+						'id': user_badge.badge.id,
+						'name': user_badge.badge.name,
 						'image': user_badge.badge.image,
-                        'type': user_badge.badge.type,
-                        'description': user_badge.badge.description,
-                        'criteria': user_badge.badge.criteria,
-                        'createdAt': user_badge.badge.createdAt,
-                        'community': user_badge.badge.community.id if user_badge.badge.community else None
-                    },
+						'type': user_badge.badge.type,
+						'description': user_badge.badge.description,
+						'criteria': user_badge.badge.criteria,
+						'createdAt': user_badge.badge.createdAt,
+						'community': user_badge.badge.community.id if user_badge.badge.community else None
+					},
 					'createdAt': user_badge.createdAt,
 				})
 
@@ -762,7 +762,7 @@ def create_template(request):
 
 			# Check for and award badges
 			check_and_award_badges(request.user, request_data['communityId'])
-            
+
 			response_data = {
 				'success': True,
 				'data': {
@@ -958,7 +958,7 @@ def like_post(request):
 
 				# Check for and award badges
 				check_and_award_badges(request.user, post.community.id)
-				
+
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
@@ -1627,7 +1627,67 @@ def create_default_badges_for_community(com):
             print(error_message)
             raise ValueError(error_message)
 
-    
+
     return created_badges
 
 
+
+
+
+@api_view(['POST'])
+def get_recommended_users(request):
+	if request.method == 'POST':
+
+		# The users that like the posts of the current user
+		current_user_posts = Post.objects.filter(createdBy=request.user).values_list('id', flat=True)
+		users_who_like_posts_of_the_current_user = PostLike.objects.filter(
+			post__in=current_user_posts).values_list('createdBy', flat=True)
+
+		# The users that like the comments of the current user
+		current_user_comments = Comment.objects.filter(createdBy=request.user).values_list('id', flat=True)
+		users_who_like_comments_of_the_current_user = CommentLike.objects.filter(
+			comment__in=current_user_comments).values_list('createdBy', flat=True)
+
+		# The users that the current user likes their posts
+		posts_that_current_user_likes = PostLike.objects.filter(createdBy=request.user).values_list('post', flat=True)
+		authors_of_posts_that_current_user_likes = Post.objects.filter(
+			id__in=posts_that_current_user_likes).values_list('createdBy', flat=True)
+
+		# The users that the current user likes their comments
+		comments_that_current_user_likes = CommentLike.objects.filter(createdBy=request.user).values_list('comment', flat=True)
+		authors_of_comments_that_current_user_likes = Comment.objects.filter(
+			id__in=comments_that_current_user_likes).values_list('createdBy', flat=True)
+
+		# The users that the current user comments on their posts
+		posts_that_current_user_comments = Comment.objects.filter(createdBy=request.user).values_list('post', flat=True)
+		authors_of_posts_that_current_user_comments = Post.objects.filter(id__in=posts_that_current_user_comments).values_list('createdBy', flat=True)
+
+		# The users who comment on posts of the current user
+		authors_of_comments_in_current_user_posts = Comment.objects.filter(id__in=current_user_posts).values_list('createdBy', flat=True)
+
+		# Add all interacted users into a set class
+		interacted_users = set(
+			list(users_who_like_posts_of_the_current_user) + list(users_who_like_comments_of_the_current_user) + list(authors_of_posts_that_current_user_likes) + list(authors_of_comments_that_current_user_likes) + list(authors_of_posts_that_current_user_comments) + list(authors_of_comments_in_current_user_posts))
+
+		already_followed_users = set(
+			UserFollowConnection.objects.filter(follower=request.user).values_list('followee', flat=True))
+
+		recommended_users = interacted_users - already_followed_users
+		recommended_users_table = User.objects.filter(id__in=recommended_users)
+
+		users_list = []
+
+		for user in recommended_users_table:
+			users_list.append({
+				'id': user.id,
+				'username': user.username,
+				'profile_pic': None
+			})
+
+		response_data = {
+			'success': True,
+			'data': users_list
+		}
+		return JsonResponse(response_data, status=200)
+
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
