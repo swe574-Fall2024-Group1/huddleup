@@ -6,6 +6,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # self.seed_badges()
+        pass
+
     def seed_badges(self):
         default_badges = [
             {
@@ -41,6 +43,8 @@ class Command(BaseCommand):
 
     def seed_users(self):
         # TODO seed users
+        pass
 
     def seed_communities(self):
         # TODO seed communities
+        pass

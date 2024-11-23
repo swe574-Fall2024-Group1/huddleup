@@ -1474,7 +1474,7 @@ def user_badges(request):
 
 
 
-def meets_badge_criteria(user, community, criteria):
+def meets_badge_criteria(user, community, criteria): 
     # Fetch counts based on user and community
     user_posts_count = Post.objects.filter(createdBy=user, community=community).count()
     user_comments_count = Comment.objects.filter(createdBy=user, post__community=community).count()
@@ -1482,39 +1482,44 @@ def meets_badge_criteria(user, community, criteria):
     user_templates_count = Template.objects.filter(createdBy=user, community=community).count()
     user_likes_count = PostLike.objects.filter(post__createdBy=user, post__community=community, direction=True).count()
 
+    # Function to validate non-empty and non-zero criteria
+    def is_valid(value):
+        return value not in ("", None) and value > 0
+
     # Handle single condition (a dict like {"like_count": 5})
     if isinstance(criteria, dict):
-        if 'post_count' in criteria and criteria['post_count'] > user_posts_count:
+        if 'post_count' in criteria and is_valid(criteria['post_count']) and criteria['post_count'] > user_posts_count:
             return False
-        if 'comment_count' in criteria and criteria['comment_count'] > user_comments_count:
+        if 'comment_count' in criteria and is_valid(criteria['comment_count']) and criteria['comment_count'] > user_comments_count:
             return False
-        if 'follower_count' in criteria and criteria['follower_count'] > followed_count:
+        if 'follower_count' in criteria and is_valid(criteria['follower_count']) and criteria['follower_count'] > followed_count:
             return False
-        if 'template_count' in criteria and criteria['template_count'] > user_templates_count:
+        if 'template_count' in criteria and is_valid(criteria['template_count']) and criteria['template_count'] > user_templates_count:
             return False
-        if 'like_count' in criteria and criteria['like_count'] > user_likes_count:
+        if 'like_count' in criteria and is_valid(criteria['like_count']) and criteria['like_count'] > user_likes_count:
             return False
         return True
 
     # Handle multiple conditions (criteria as a list of dictionaries)
     if isinstance(criteria, list):
         for criterion in criteria:
-            # Check and ignore empty or zero conditions
-            if criterion.get('post_count', 0) > 0 and criterion['post_count'] > user_posts_count:
+            # Check and ignore invalid or zero conditions
+            if 'post_count' in criterion and is_valid(criterion['post_count']) and criterion['post_count'] > user_posts_count:
                 return False
-            if criterion.get('comment_count', 0) > 0 and criterion['comment_count'] > user_comments_count:
+            if 'comment_count' in criterion and is_valid(criterion['comment_count']) and criterion['comment_count'] > user_comments_count:
                 return False
-            if criterion.get('follower_count', 0) > 0 and criterion['follower_count'] > followed_count:
+            if 'follower_count' in criterion and is_valid(criterion['follower_count']) and criterion['follower_count'] > followed_count:
                 return False
-            if criterion.get('template_count', 0) > 0 and criterion['template_count'] > user_templates_count:
+            if 'template_count' in criterion and is_valid(criterion['template_count']) and criterion['template_count'] > user_templates_count:
                 return False
-            if criterion.get('like_count', 0) > 0 and criterion['like_count'] > user_likes_count:
+            if 'like_count' in criterion and is_valid(criterion['like_count']) and criterion['like_count'] > user_likes_count:
                 return False
         # If no condition fails, all are satisfied
         return True
 
     # Return False if criteria is invalid (neither dict nor list)
     return False
+
 
 
 

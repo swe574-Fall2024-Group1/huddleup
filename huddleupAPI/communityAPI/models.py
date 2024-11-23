@@ -139,7 +139,7 @@ class Badge(models.Model):
 		choices=[('manual', 'Manual'), ('automatic', 'Automatic')],
 		default='manual'
 	)
-	community = models.ForeignKey('Community', on_delete=models.CASCADE)
+	community = models.ForeignKey('Community', on_delete=models.CASCADE, null=True)
 	description = models.CharField(max_length=500)
 	image = models.CharField(max_length=5000000, null=True)
 	criteria = models.JSONField(default=dict, null=True)
