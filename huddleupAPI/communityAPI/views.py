@@ -835,7 +835,7 @@ def create_post(request):
 		}
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():
-			post_serializer.save()
+			post = post_serializer.save()
 			check_and_award_badges(request.user, request_data['communityId'])
 
 			response_data = {
@@ -844,6 +844,8 @@ def create_post(request):
 					'id': post_serializer.data['id']
 				}
 			}
+			post.refresh_from_db()
+			post.update_tag_usage_create()
 			return JsonResponse(response_data, status=201)
 		return JsonResponse(post_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
