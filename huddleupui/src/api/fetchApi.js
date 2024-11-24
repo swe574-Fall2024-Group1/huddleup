@@ -37,8 +37,10 @@ const fetchApi = async (url, payload, method = 'POST') => {
 			return json
 		} else {
 		  // Handle non-OK responses here
-			message.error('Request failed with status:', response.status)
-		  console.error('Request failed with status:', response.status);
+			if (url !== "/api/auth/get-user-info") {
+				message.error('Request failed with status: ' + response.status)
+				console.error('Request failed with status:', response.status);
+			}
 		}
 	  } catch (error) {
 		// Handle fetch errors here
