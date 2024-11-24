@@ -357,3 +357,4 @@ class GetRecommendedUsersTestCase(TestCase):
 
 		# No recommendations should be returned
 		self.assertEqual(recommended_user_ids, set())
+
