@@ -6,12 +6,6 @@ Application is developed to use in web browsers using Django and React and is no
 
 Here is [wiki page](https://github.com/swe574-Fall2024-Group1/huddleup/wiki)
 
-## Deployment Links
-### Production Environment:
-[https://huddleup.space](https://huddleup.space)
-### Development Environment:
-[https://dev.group1.swe574.com](https://dev.group1.swe574.com)
-
 
 ## Running the app locally
 

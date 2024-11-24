@@ -5,7 +5,7 @@ import useAuth from "../components/Auth/useAuth";
 import LeftSidebar from '../components/MainLayout/LeftSidebar';
 import '../assets/logo.css';
 import Navbar from '../components/MainLayout/Navbar';
-import RightSidebar from '../components/MainLayout/RighSidebar';
+import RightSidebar from '../components/MainLayout/RightSidebar';
 
 
 const { Header, Content, Footer, Sider } = Layout;

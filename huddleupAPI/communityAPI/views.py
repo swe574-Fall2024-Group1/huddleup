@@ -32,6 +32,12 @@ def create_community(request):
 			if communityUserConnection_serializer.is_valid():
 				communityUserConnection_serializer.save()
 
+
+				# Create default badges for the community
+
+				com = Community.objects.get(id=community_serializer.data['id'])
+				create_default_badges_for_community(com)
+
 			# Create default template for the community
 			template_data = {
 				'createdBy': request.user.id,
@@ -605,21 +611,21 @@ def get_community_posts(request):
 			isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=post.createdBy).exists()
 
 			# Fetch user badges
-			user_badges = UserBadge.objects.filter(user=post.createdBy)
+			user_badges = UserBadge.objects.filter(user=post.createdBy, badge__community=community_id)
 			user_badges_data = []
 			for user_badge in user_badges:
 				user_badges_data.append({
 					'id': user_badge.badge.id,
 					'badge': {
-                        'id': user_badge.badge.id,
-                        'name': user_badge.badge.name,
+						'id': user_badge.badge.id,
+						'name': user_badge.badge.name,
 						'image': user_badge.badge.image,
-                        'type': user_badge.badge.type,
-                        'description': user_badge.badge.description,
-                        'criteria': user_badge.badge.criteria,
-                        'createdAt': user_badge.badge.createdAt,
-                        'community': user_badge.badge.community.id if user_badge.badge.community else None
-                    },
+						'type': user_badge.badge.type,
+						'description': user_badge.badge.description,
+						'criteria': user_badge.badge.criteria,
+						'createdAt': user_badge.badge.createdAt,
+						'community': user_badge.badge.community.id if user_badge.badge.community else None
+					},
 					'createdAt': user_badge.createdAt,
 				})
 
@@ -754,6 +760,9 @@ def create_template(request):
 		if template_serializer.is_valid():
 			template_serializer.save()
 
+			# Check for and award badges
+			check_and_award_badges(request.user, request_data['communityId'])
+
 			response_data = {
 				'success': True,
 				'data': {
@@ -827,6 +836,7 @@ def create_post(request):
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():
 			post = post_serializer.save()
+			check_and_award_badges(request.user, request_data['communityId'])
 
 			response_data = {
 				'success': True,
@@ -834,6 +844,7 @@ def create_post(request):
 					'id': post_serializer.data['id']
 				}
 			}
+			post.refresh_from_db()
 			post.update_tag_usage_create()
 			return JsonResponse(response_data, status=201)
 		return JsonResponse(post_serializer.errors, status=400)
@@ -854,6 +865,10 @@ def add_comment(request):
 		comment_serializer = CommentSerializer(data=comment_data)
 		if comment_serializer.is_valid():
 			comment_serializer.save()
+
+			# Get the community from the post
+			post = Post.objects.get(id=request_data['postId'])
+			check_and_award_badges(request.user, post.community.id)
 
 			response_data = {
 				'success': True,
@@ -942,6 +957,10 @@ def like_post(request):
 
 			if like_serializer.is_valid():
 				like_serializer.save()
+
+				# Check for and award badges
+				check_and_award_badges(request.user, post.community.id)
+
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
@@ -984,29 +1003,45 @@ def like_comment(request):
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 
-# Follow if user is not followed yet, unfollow if user is already followed
 @api_view(['POST'])
 def follow_user(request):
-	if request.method == 'POST':
-		payload = JSONParser().parse(request)
-		followee = User.objects.get(username=payload['username'])
+    if request.method == 'POST':
+        payload = JSONParser().parse(request)
+        followee = User.objects.get(username=payload['username'])
 
-		if UserFollowConnection.objects.filter(follower=request.user, followee=followee).exists():
-			UserFollowConnection.objects.filter(follower=request.user, followee=followee).delete()
-			return JsonResponse({'success': True, 'message': 'User unfollowed successfully'}, status=200)
-		else:
-			follow_data = {
-				'follower': request.user.id,
-				'followee': followee.id
-			}
-			follow_serializer = UserFollowConnectionSerializer(data=follow_data)
+        # Check if the user is already following
+        if UserFollowConnection.objects.filter(follower=request.user, followee=followee).exists():
+            UserFollowConnection.objects.filter(follower=request.user, followee=followee).delete()
+            return JsonResponse({'success': True, 'message': 'User unfollowed successfully'}, status=200)
+        else:
+            follow_data = {
+                'follower': request.user.id,
+                'followee': followee.id
+            }
+            follow_serializer = UserFollowConnectionSerializer(data=follow_data)
 
-			if follow_serializer.is_valid():
-				follow_serializer.save()
-				return JsonResponse({'success': True, 'message': 'User followed successfully'}, status=201)
-			else:
-				return JsonResponse(follow_serializer.errors, status=400)
-	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+            if follow_serializer.is_valid():
+                follow_serializer.save()
+
+                # Infer community where both follower and followee belong
+                community_connections = CommunityUserConnection.objects.filter(
+                    user=request.user
+                ).values_list('community', flat=True)
+
+                # Find a shared community between the follower and followee
+                shared_community = CommunityUserConnection.objects.filter(
+                    user=followee,
+                    community__in=community_connections
+                ).values_list('community', flat=True).first()
+
+                if shared_community:
+                    check_and_award_badges(request.user, shared_community)
+
+                return JsonResponse({'success': True, 'message': 'User followed successfully'}, status=201)
+            else:
+                return JsonResponse(follow_serializer.errors, status=400)
+    return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
 
 # Get all users that user is following and followers of the user
 @api_view(['POST'])
@@ -1319,13 +1354,10 @@ def get_main_search(request):
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 def badges(request):
 	if request.method == 'GET':
-		badges = Badge.objects.all()
-		badges_data = [badge for badge in badges if badge.community is None]
-		payload = JSONParser().parse(request) if request.body else {}
-		# list both global and community badges if communityId is provided
-		if 'communityId' in payload:
-			community = Community.objects.get(id=payload['communityId'])
-			badges_data = Badge.objects.filter(Q(community=None) | Q(community=community.id))
+		if 'communityId' not in request.GET:
+			return JsonResponse({'message': 'No community provided'}, status=400)
+		community = Community.objects.get(id=request.GET['communityId'])
+		badges_data = Badge.objects.filter(Q(community=community.id))
 
 		badges_data = BadgeSerializer(badges_data, many=True).data
 		response_data = {
@@ -1333,22 +1365,28 @@ def badges(request):
 			'data': badges_data
 		}
 		return JsonResponse(response_data, status=200)
+
+
 	elif request.method == 'POST':
 		payload = JSONParser().parse(request)
-		if 'communityId' in payload:
-			community = Community.objects.get(id=payload['communityId'])
-			user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
-			if user_connection.type != 'owner':
-				return JsonResponse({'error': 'User is not authorized to create a badge for the community'}, status=403)
+		if 'communityId' not in payload:
+			return JsonResponse({'error': 'No community'}, status=400)
+		community = Community.objects.get(id=payload['communityId'])
+		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
+		if user_connection.type != 'owner':
+			return JsonResponse({'error': 'User is not authorized to create a badge for the community'}, status=403)
 		badge_data = {
 			'name': payload['name'],
 			'description': payload['description'],
 			'image': payload['image'] if 'image' in payload else None,
-			'community': payload['communityId'] if 'communityId' in payload else None,
+			'community': payload['communityId'],
+			'type': payload['type'],
+			'criteria': payload['criteria'] if 'criteria' in payload else None
 		}
 		badge_serializer = BadgeSerializer(data=badge_data)
 		if badge_serializer.is_valid():
 			badge_serializer.save()
+			check_and_award_badges(request.user, payload['communityId'])
 			response_data = {
 				'success': True,
 				'data': {
@@ -1368,6 +1406,7 @@ def badges(request):
 		badge.name = payload['name']
 		badge.description = payload['description']
 		badge.image = payload['image']
+		badge.criteria = payload['criteria'] if 'criteria' in payload else None
 		badge.save()
 		return JsonResponse({'success': True, 'message': 'Badge updated successfully'}, status=200)
 	elif request.method == 'DELETE':
@@ -1402,18 +1441,19 @@ def user_badges(request):
 		return JsonResponse(response_data, status=200)
 	elif request.method == 'POST':
 		payload = JSONParser().parse(request)
+		user = User.objects.get(id=payload['username'])
 		badge_data = {
-			'user': request.user.id,
+			'user': payload['username'],
 			'badge': payload['badgeId']
 		}
-		if UserBadge.objects.filter(user_id=request.user.id, badge_id=payload['badgeId']).exists():
+		if UserBadge.objects.filter(user_id=payload['username'], badge_id=payload['badgeId']).exists():
 			return JsonResponse({'error': 'User already has this badge'}, status=400)
 		# return JsonResponse(badge_data)
 		badge_serializer = UserBadgeSerializer(data=badge_data)
 		if badge_serializer.is_valid():
 			badge_serializer.save()
 			# get all user badges
-			badges = UserBadge.objects.filter(user=request.user)
+			badges = UserBadge.objects.filter(user=user)
 			response_data = {
 				'success': True,
 				'data': UserBadgeSerializer(badges, many=True).data
@@ -1433,4 +1473,229 @@ def user_badges(request):
 		badge = UserBadge.objects.get(id=payload['userBadgeId'])
 		badge.delete()
 		return JsonResponse({'success': True, 'message': 'User badge deleted successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+
+def meets_badge_criteria(user, community, criteria): 
+    # Fetch counts based on user and community
+    user_posts_count = Post.objects.filter(createdBy=user, community=community).count()
+    user_comments_count = Comment.objects.filter(createdBy=user, post__community=community).count()
+    followed_count = get_followed_count_in_community(user, community)
+    user_templates_count = Template.objects.filter(createdBy=user, community=community).count()
+    user_likes_count = PostLike.objects.filter(post__createdBy=user, post__community=community, direction=True).count()
+
+    # Function to validate non-empty and non-zero criteria
+    def is_valid(value):
+        return value not in ("", None) and value > 0
+
+    # Handle single condition (a dict like {"like_count": 5})
+    if isinstance(criteria, dict):
+        if 'post_count' in criteria and is_valid(criteria['post_count']) and criteria['post_count'] > user_posts_count:
+            return False
+        if 'comment_count' in criteria and is_valid(criteria['comment_count']) and criteria['comment_count'] > user_comments_count:
+            return False
+        if 'follower_count' in criteria and is_valid(criteria['follower_count']) and criteria['follower_count'] > followed_count:
+            return False
+        if 'template_count' in criteria and is_valid(criteria['template_count']) and criteria['template_count'] > user_templates_count:
+            return False
+        if 'like_count' in criteria and is_valid(criteria['like_count']) and criteria['like_count'] > user_likes_count:
+            return False
+        return True
+
+    # Handle multiple conditions (criteria as a list of dictionaries)
+    if isinstance(criteria, list):
+        for criterion in criteria:
+            # Check and ignore invalid or zero conditions
+            if 'post_count' in criterion and is_valid(criterion['post_count']) and criterion['post_count'] > user_posts_count:
+                return False
+            if 'comment_count' in criterion and is_valid(criterion['comment_count']) and criterion['comment_count'] > user_comments_count:
+                return False
+            if 'follower_count' in criterion and is_valid(criterion['follower_count']) and criterion['follower_count'] > followed_count:
+                return False
+            if 'template_count' in criterion and is_valid(criterion['template_count']) and criterion['template_count'] > user_templates_count:
+                return False
+            if 'like_count' in criterion and is_valid(criterion['like_count']) and criterion['like_count'] > user_likes_count:
+                return False
+        # If no condition fails, all are satisfied
+        return True
+
+    # Return False if criteria is invalid (neither dict nor list)
+    return False
+
+
+
+
+from django.db.models import Q
+
+def get_followed_count_in_community(user, community):
+    # Get all users in the community
+    community_users = CommunityUserConnection.objects.filter(community=community).values_list('user', flat=True)
+
+    # Count the number of community members followed by the user
+    followed_count = UserFollowConnection.objects.filter(
+        follower=user,
+        followee__in=community_users  # Filter followees to be within community members
+    ).count()
+
+    return followed_count
+
+
+def check_and_award_badges(user, community_id):
+    try:
+        print(f"Checking badges for user: {user.id} in community: {community_id}")
+        community = Community.objects.get(id=community_id)
+        print(f"Community found: {community.name}")
+        badges = Badge.objects.filter(community=community.id, type='automatic')
+        print(f"Found {len(badges)} badges for community {community.name}")
+        awarded_badges_data = []
+
+        for badge in badges:
+            print(f"Processing badge: {badge.name}")
+            if UserBadge.objects.filter(user=user, badge=badge).exists():
+                print(f"User already has badge: {badge.name}")
+                continue
+
+            if meets_badge_criteria(user, community, badge.criteria):
+                print(f"User meets criteria for badge: {badge.name}")
+                user_badge = UserBadge.objects.create(user=user, badge=badge)
+                awarded_badges_data.append({
+                    'id': badge.id,
+                    'name': badge.name,
+                    'description': badge.description,
+                    'image': badge.image,
+                    'awardedAt': user_badge.createdAt
+                })
+            else:
+                print(f"User does not meet criteria for badge: {badge.name}")
+
+        print(f"Awarded badges: {awarded_badges_data}")
+        return awarded_badges_data
+
+    except Exception as e:
+        print(f"Error in check_and_award_badges: {str(e)}")
+        raise
+
+
+
+def create_default_badges_for_community(com):
+    """
+    Create default badges for a community and log the process.
+    """
+    print(f"Starting badge creation for community: (ID: {com.id})")
+
+    default_badges = [
+        {
+            'name': f"{com.name} - Post Master",
+            'description': 'Awarded for creating a specific number of posts.',
+            'type': 'automatic',
+            'criteria': {'post_count': 5},
+            'community': com.id
+        },
+        {
+            'name': f"{com.name} - Commentator",
+            'description': 'Awarded for creating a specific number of comments.',
+            'type': 'automatic',
+            'criteria': {'comment_count': 5},
+            'community': com.id
+        },
+        {
+            'name': f"{com.name} - Social Butterfly",
+            'description': 'Awarded for gaining a specific number of followers.',
+            'type': 'automatic',
+            'criteria': {'follower_count': 5},
+            'community': com.id
+        },
+        {
+            'name': f"{com.name} - Template Creator",
+            'description': 'Awarded for creating a specific number of templates.',
+            'type': 'automatic',
+            'criteria': {'template_count': 5},
+            'community': com.id
+        },
+        {
+            'name': f"{com.name} - Appreciated",
+            'description': 'Awarded for receiving a specific number of likes.',
+            'type': 'automatic',
+            'criteria': {'like_count': 5},
+            'community': com.id
+        }
+    ]
+
+    created_badges = []
+    for badge_data in default_badges:
+        print(f"Creating badge: {badge_data['name']} with criteria: {badge_data['criteria']}")
+        badge_serializer = BadgeSerializer(data=badge_data)
+        if badge_serializer.is_valid():
+            badge = badge_serializer.save()
+            created_badges.append(badge)
+            print(f"Badge '{badge.name}' created successfully (ID: {badge.id}).")
+        else:
+            error_message = f"Failed to create badge '{badge_data['name']}': {badge_serializer.errors}"
+            print(error_message)
+            raise ValueError(error_message)
+
+
+    return created_badges
+
+
+
+
+
+@api_view(['POST'])
+def get_recommended_users(request):
+	if request.method == 'POST':
+
+		# The users that like the posts of the current user
+		current_user_posts = Post.objects.filter(createdBy=request.user).values_list('id', flat=True)
+		users_who_like_posts_of_the_current_user = PostLike.objects.filter(
+			post__in=current_user_posts).values_list('createdBy', flat=True)
+
+		# The users that like the comments of the current user
+		current_user_comments = Comment.objects.filter(createdBy=request.user).values_list('id', flat=True)
+		users_who_like_comments_of_the_current_user = CommentLike.objects.filter(
+			comment__in=current_user_comments).values_list('createdBy', flat=True)
+
+		# The users that the current user likes their posts
+		posts_that_current_user_likes = PostLike.objects.filter(createdBy=request.user).values_list('post', flat=True)
+		authors_of_posts_that_current_user_likes = Post.objects.filter(
+			id__in=posts_that_current_user_likes).values_list('createdBy', flat=True)
+
+		# The users that the current user likes their comments
+		comments_that_current_user_likes = CommentLike.objects.filter(createdBy=request.user).values_list('comment', flat=True)
+		authors_of_comments_that_current_user_likes = Comment.objects.filter(
+			id__in=comments_that_current_user_likes).values_list('createdBy', flat=True)
+
+		# The users that the current user comments on their posts
+		posts_that_current_user_comments = Comment.objects.filter(createdBy=request.user).values_list('post', flat=True)
+		authors_of_posts_that_current_user_comments = Post.objects.filter(id__in=posts_that_current_user_comments).values_list('createdBy', flat=True)
+
+		# The users who comment on posts of the current user
+		authors_of_comments_in_current_user_posts = Comment.objects.filter(id__in=current_user_posts).values_list('createdBy', flat=True)
+
+		# Add all interacted users into a set class
+		interacted_users = set(
+			list(users_who_like_posts_of_the_current_user) + list(users_who_like_comments_of_the_current_user) + list(authors_of_posts_that_current_user_likes) + list(authors_of_comments_that_current_user_likes) + list(authors_of_posts_that_current_user_comments) + list(authors_of_comments_in_current_user_posts))
+
+		already_followed_users = set(
+			UserFollowConnection.objects.filter(follower=request.user).values_list('followee', flat=True))
+
+		recommended_users = interacted_users - already_followed_users
+		recommended_users_table = User.objects.filter(id__in=recommended_users)
+
+		users_list = []
+
+		for user in recommended_users_table:
+			users_list.append({
+				'id': user.id,
+				'username': user.username,
+				'profile_pic': None
+			})
+
+		response_data = {
+			'success': True,
+			'data': users_list
+		}
+		return JsonResponse(response_data, status=200)
+
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)

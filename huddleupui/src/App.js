@@ -19,7 +19,7 @@ import Communities from "./pages/Communities";
 import Connections from "./pages/Connections";
 import CommunitySettings from "./pages/Community/CommunitySettings";
 import EditPost from "./pages/Community/EditPost";
-import Discover from "./pages/Discover";
+import DiscoverUsers from "./pages/DiscoverUsers";
 import UserProfile from "./pages/UserProfile";
 
 function App() {
@@ -73,10 +73,10 @@ function App() {
 							</ProtectedRoute>
 						}
 						/>
-						<Route path="/discover" element={
+						<Route path="/discover_users" element={
 							<ProtectedRoute>
 								<AppLayout>
-									<Discover />
+									<DiscoverUsers/>
 								</AppLayout>
 							</ProtectedRoute>
 						}

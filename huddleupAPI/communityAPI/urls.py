@@ -54,5 +54,6 @@ urlpatterns = [
 	url(r'badges/get-badge-users', views.user_badges, name='get_badge_users'),
 	url(r'tags', class_views.TagList.as_view(), name='tag_list'),
 	url(r'rec-communities', class_views.RecCommunitiesList.as_view(), name='rec_communities'),
+	url(r'get-recommended-users', views.get_recommended_users, name='get_recommended_users')
 ]
 

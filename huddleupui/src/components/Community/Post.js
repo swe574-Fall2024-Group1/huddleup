@@ -344,7 +344,9 @@ const Post = ({ postData }) => {
 						value={selectedBadge}
 						onChange={(value) => setSelectedBadge(value)}
 					>
-						{badges && badges.map((badge) => (
+						{badges && badges
+							.filter(badge => badge.type === 'manual')
+							.map((badge) => (
 						<Option key={badge.id} value={badge.id}>
 							{badge.image && <img src={badge.image} alt={badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}
 							{badge.name}

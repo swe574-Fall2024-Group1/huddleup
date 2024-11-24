@@ -52,6 +52,6 @@ class Command(BaseCommand):
             # Save recommendations to the database
             UserRecommendation.objects.filter(user=user).delete()  # Clear old recommendations
             for community, score in recommendations:
-                if not np.isnan(score):
+                if not np.isnan(score) and float(score) > 0:
                     UserRecommendation.objects.create(user=user, community=community, score=score)
         self.stdout.write("Community recommendations updated successfully.")
