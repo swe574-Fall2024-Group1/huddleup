@@ -9,6 +9,7 @@ from django.db.models import Q,Count
 from authAPI.models import User
 from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
+from authAPI.serializers import UserSerializer
 
 import json
 import datetime
@@ -284,6 +285,28 @@ def get_user_communities(request):
 		response_data = {
 			'success': True,
 			'data': communities_data
+		}
+		return JsonResponse(response_data, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+# Get user profile by user id
+@api_view(['POST'])
+def get_user_profile(request):
+	if request.method == 'POST':
+		payload = JSONParser().parse(request)
+		user_id = payload['userId']
+		user = User.objects.get(id=user_id)
+		user_serializer = UserSerializer(user)
+		response_data = {
+			'success': True,
+			'data': {
+				'username': user_serializer.data['username'],
+				'about_me': user.about_me,
+				'tags': list(user.tags.values_list('name', flat=True)),
+				'id': user_serializer.data['id'],
+				'badges': user_serializer.data['badges']
+			}
 		}
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
