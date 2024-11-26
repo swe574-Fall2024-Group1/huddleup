@@ -18,12 +18,12 @@ These features were implemented collaboratively by all group members, ensuring c
 #### Plans for Final Submission
 For the final submission, we plan to enhance the platform further with the following updates:
 
-Semantic Tagging: We will add semantic labels to tags to improve the community recommendation system, as it is the system's most critical functionality.
-User Profiles: User Profiles will be introduced to provide a more meaningful user recommendation system. Profiles will also display earned badges, promoting user engagement.
-Improved Badge System: We will refine the badge system's usability by defining how badges can be accessed via the user interface. Also, we will revise them to have a specific date/time range so that earning them will be more logical.
-Mobile Features: Mobile-specific features will be added, such as the ability for users to share their GPS coordinates for map-related fields in posts, if they choose to.
-By the final delivery, we will present a fully functional HuddleUp application, offering a seamless user experience. The platform will enable users to:
+Semantic Tagging: We will add semantic labels to tags to improve the community recommendation system, as it is the system's most critical functionality. \
+User Profiles: User Profiles will be introduced to provide a more meaningful user recommendation system. Profiles will also display earned badges, promoting user engagement. \
+Improved Badge System: We will refine the badge system's usability by defining how badges can be accessed via the user interface. Also, we will revise them to have a specific date/time range so that earning them will be more logical. \
+Mobile Features: Mobile-specific features will be added, such as the ability for users to share their GPS coordinates for map-related fields in posts, if they choose to. \
 
+By the final delivery, we will present a fully functional HuddleUp application, offering a seamless user experience. The platform will enable users to: \
 Discover communities that match their interests precisely,
 Connect with users they wish to interact with more,
 Earn badges that motivate engagement,
