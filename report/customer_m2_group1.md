@@ -1,7 +1,88 @@
 ## Milestone Review: 
 
 ### Deliverables
-
+| Functional Requirements | Not Started | In Progress | Completed |
+|--------------------------|-------------|-------------|-----------|
+| F1                       |             |             |           |
+| F2                       |             |             |           |
+| F3                       |             |             |           |
+| F4                       |             |             |           |
+| F5                       |             |             |           |
+| F6                       |             |             |           |
+| F7                       |             |             |           |
+| F8                       |             |             |           |
+| F9                       |             |             |           |
+| F10                      |             |             |           |
+| F11                      |             |             |           |
+| F12                      |             |             |           |
+| F13                      |             |             |           |
+| F14                      |             |             |           |
+| F15                      |             |             |           |
+| F16                      |             |             |           |
+| F17                      |             |             |           |
+| F18                      |             |             |           |
+| F19                      |             |             |           |
+| F20                      |             |             |           |
+| F21                      |             |             |           |
+| F22                      |             |             |           |
+| F23                      |             |             |           |
+| F24                      |             |             |           |
+| F25                      |             |             |           |
+| F26                      |             |             |           |
+| F27                      |             |             |           |
+| F28                      |             |             |           |
+| F29                      |             |             |           |
+| F30                      |             |             |           |
+| F31                      |             |             |           |
+| F32                      |             |             |           |
+| F33                      |             |             |           |
+| F34                      |             |             |           |
+| F35                      |             |             |           |
+| F36                      |             |             |           |
+| F37                      |             |             |           |
+| F38                      |             |             |           |
+| F39                      |             |             |           |
+| F40                      |             |             |    X       |
+| F41                      |             |             |    X       |
+| F42                      |             |             |    X       |
+| F43                      |             |             |    X       |
+| F44                      |      X       |             |           |
+| F45                      |             |       X      |           |
+| F46                      |             |      X       |           |
+| F47                      |             |      X       |           |
+| F48                      |      X       |             |           |
+| F49                      |      X       |             |           |
+| F50                      |      X       |             |           |
+| F51                      |             |             |     X      |
+| F52                      |       X      |             |           |
+| F53                      |             |             |      X     |
+| F54                      |             |     X        |           |
+| F55                      |             |     X        |           |
+| F56                      |             |             |     X      |
+| F57                      |             |             |     X      |
+| F58                      |             |      X       |           |
+| F59                      |    X         |             |           |
+| F60                      |    X        |             |           |
+| F61                      |             |      X       |           |
+| F62                      |             |             |     X      |
+| F63                      |             |             |     X      |
+| F64                      |             |     X        |           |
+| F65                      |             |     X        |           |
+| F66                      |             |             |     X      |
+| F67                      |      X       |             |           |
+| F68                      |      X       |             |           |
+| F69                      |             |             |      X     |
+| F70                      |             |             |      X     |
+| F71                      |             |             |      X     |
+| F72                      |             |             |      X     |
+| F73                      |             |             |      X     |
+| F74                      |             |             |      X     |
+| F75                      |             |             |      X     |
+| F76                      |             |             |      X     |
+| F77                      |             |    X         |           |
+| F78                      |             |    X         |           |
+| F79                      |             |    X        |           |
+| F80                      |             |    X         |           |
 ### Testing
 
 ### Planning and Team Process
@@ -41,3 +122,12 @@ With these improvements, HuddleUp will provide an engaging, dynamic, and user-ce
 **Non-code-related Significant Issues:** - \
 **Pull requests:** PR #79 is created and approved by Aibek \
 **Additional Information:** -
+
+#### Member: Muharrem Ustaoğlu
+**Responsibilities:** Backend feature implementations and entity modeling \
+**Main Contributions:** Backend part of system automatic and community based system automatic badge. \
+**Code-related Significant Issues:** Feature #65,Feature #60 \
+**Non-code-related Significant Issues:** Database entity decision #45 Database entity decision #46 \
+**Pull requests:** PR #70 reviewed by me. PR #80 reviewed, bug fixed, approved and merged by me \
+**Additional Information:** -
+
