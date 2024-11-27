@@ -131,3 +131,10 @@ With these improvements, HuddleUp will provide an engaging, dynamic, and user-ce
 **Pull requests:** PR #70 reviewed by me. PR #80 reviewed, bug fixed, approved and merged by me \
 **Additional Information:** -
 
+#### Member: Doruk Büyükyıldırım
+**Responsibilities:** Automation, Infrastructure, and DevOps Practices Implementation  \
+**Main Contributions:** Infrastructure Creation, Management, and Debugging. Automate Branch Protection/ Unit Tests. Automate Deployments to Multiple Environments.  \
+**Code-related Significant Issues:** Feature #13, Feature #58, Feature #59  \
+**Non-code-related Significant Issues:** Feature #48,  Feature #57 \
+**Pull requests:** PR #63 unit test automation & checks, PR #72 cd pipeline (automated deployment), PR #81 merge team efforts to main \
+**Additional Information:** -
