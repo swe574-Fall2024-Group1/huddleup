@@ -93,7 +93,7 @@ Automated tests: For all new features that we add on the backend, we are require
 
 Manual tests: Since we have configured automatic deployment on push events, we can test manually our functionality on our server right away. Any new developed functionality is tested by team members, and any bugs or errors are reported to the developer of the feature.
 
-##### Backend & Mobile
+##### Frontend & Mobile
 
 Manual tests: Feature related to UI are all tested manually by all the team members.
 
