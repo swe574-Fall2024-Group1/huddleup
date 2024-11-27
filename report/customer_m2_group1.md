@@ -206,6 +206,14 @@ By incorporating this feedback and reflection into our next development phases, 
 **Pull requests:** PR #54 manual badges feature, PR #70 docker dev created. PR #55 mobile UI and PR #80 parameter based badge reviewed.\
 **Additional Information:** -
 
+#### Member: Omer Aslan
+**Responsibilities:** Backend and Frontend Feature Implementation \
+**Main Contributions:** Backend and frontend for user profile page where users can see other users personal info, badges and communities.\
+**Code-related Significant Issues:** Feature #85, Feature #86 \
+**Non-code-related Significant Issues:**  \
+**Pull requests:** PR #84 includes both backend and frontend developments for user profile page.\
+**Additional Information:** -
+
 
 
 
