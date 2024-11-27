@@ -1,5 +1,6 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import { List, Button, Card, Avatar } from 'antd';
+import { Link } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 import fetchApi from '../api/fetchApi';
 
@@ -40,7 +41,7 @@ const Connections = () => {
 						<List.Item actions={[<Button onClick={() => handleUnfollowUser(user.username)}>{'Unfollow'}</Button>]}>
 							<List.Item.Meta
 								avatar={<Avatar>{getInitials(user.username)}</Avatar>}  // Add Avatar with first letter of username
-								title={user.username}
+								title={<Link to={`/users/${user.userId}`}>{user.username}</Link>}
 							/>
 						</List.Item>
 					)}
@@ -54,7 +55,7 @@ const Connections = () => {
 						<List.Item>
 							<List.Item.Meta
 								avatar={<Avatar>{getInitials(user.username)}</Avatar>}  // Add Avatar with first letter of username
-								title={user.username}
+								title={<Link to={`/users/${user.userId}`}>{user.username}</Link>}
 							/>
 						</List.Item>
 					)}

@@ -298,6 +298,22 @@ def get_user_profile(request):
 		user_id = payload['userId']
 		user = User.objects.get(id=user_id)
 		user_serializer = UserSerializer(user)
+		isFollowing = UserFollowConnection.objects.filter(follower=request.user, followee=user).exists()
+
+		# get all commmunities that user is member of and get image and name and desc of the communities
+		connections = CommunityUserConnection.objects.filter(user=user_id)
+		communities_data = []
+
+		for connection in connections:
+			communities_data.append({
+				'id': connection.community.id,
+				'name': connection.community.name,
+				'mainImage': connection.community.mainImage,
+				'description': connection.community.description,
+				'isPrivate': connection.community.isPrivate,
+				'archived': connection.community.archived,
+				'type': connection.type
+			})
 
 		# Fetch user badges
 		user_badges = UserBadge.objects.filter(user=user_id)
@@ -311,7 +327,7 @@ def get_user_profile(request):
 					'type': user_badge.badge.type,
 					'description': user_badge.badge.description,
 					'criteria': user_badge.badge.criteria,
-					'community': user_badge.badge.community.id if user_badge.badge.community else None
+					'community': user_badge.badge.community.name if user_badge.badge.community else None
 				},
 				'badgeAssignedAt': user_badge.createdAt,
 			})
@@ -320,10 +336,12 @@ def get_user_profile(request):
 			'success': True,
 			'data': {
 				'username': user_serializer.data['username'],
+				'isFollowing': isFollowing,
 				'about_me': user.about_me,
 				'tags': list(user.tags.values_list('name', flat=True)),
 				'id': user_serializer.data['id'],
-				'badges': user_badges_data
+				'badges': user_badges_data,
+				'communities': communities_data
 			}
 		}
 		return JsonResponse(response_data, status=200)
@@ -753,6 +771,7 @@ def get_user_feed(request):
 			posts_data.append({
 				'id': post.id,
 				'username': post.createdBy.username,
+				'userId': post.createdBy.id,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
@@ -952,6 +971,7 @@ def get_post_comments(request):
 			comments_data.append({
 				'id': comment.id,
 				'username': comment.createdBy.username,
+				'userId': comment.createdBy.id,
 				'createdAt': comment.createdAt,
 				'comment': comment.comment,
 				'isEdited': comment.isEdited,
@@ -1093,14 +1113,16 @@ def get_user_connections(request):
 		followers_data = []
 		for follower in followers:
 			followers_data.append({
-				'username': follower.follower.username
+				'username': follower.follower.username,
+				'userId': follower.follower.id
 			})
 
 		following = UserFollowConnection.objects.filter(follower=request.user)
 		following_data = []
 		for followee in following:
 			following_data.append({
-				'username': followee.followee.username
+				'username': followee.followee.username,
+				'userId': followee.followee.id
 			})
 
 		response_data = {

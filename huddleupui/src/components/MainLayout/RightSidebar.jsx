@@ -92,7 +92,7 @@ const RightSidebar = () => {
                                     <Avatar>{connection.username.charAt(0).toUpperCase()}</Avatar>
                                 </Row>
                                 <Row justify="center">
-                                    <span>{connection.username}</span>
+								<Link to={`/users/${connection.userId}`}><span>{connection.username}</span></Link>
                                 </Row>
                             </Col>
                         ))}
@@ -188,7 +188,7 @@ const RightSidebar = () => {
 							</Button>
 						)}
 					</Card>
-				</Drawer>	
+				</Drawer>
 				</>
 			)}
         </>
