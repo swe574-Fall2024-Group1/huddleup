@@ -138,3 +138,11 @@ With these improvements, HuddleUp will provide an engaging, dynamic, and user-ce
 **Non-code-related Significant Issues:** Feature #48,  Feature #57 \
 **Pull requests:** PR #63 unit test automation & checks, PR #72 cd pipeline (automated deployment), PR #81 merge team efforts to main \
 **Additional Information:** -
+
+#### Member: Erkin Gönültaş
+**Responsibilities:** Feature implementation, UI/UX Implementations \
+**Main Contributions:** Frontend of the badge system is implemented. The project implemented to mobile screens. \
+**Code-related Significant Issues:** Feature #71, Feature #72, Issue #56 \
+**Non-code-related Significant Issues:** - \
+**Pull requests:** PR #55 Mobile UI Implementations \
+**Additional Information:** -
