@@ -85,6 +85,18 @@
 | F80                      |             | X           |           |
 ### Testing
 
+#### Testing strategy
+
+##### Backend
+
+Automated tests: For all new features that we add on the backend, we are required to add unit tests. Unit tests are executed when a pull request is created, and a successful run of unit tests is a requirement for a pull request to be merged to a target branch.
+
+Manual tests: Since we have configured automatic deployment on push events, we can test manually our functionality on our server right away. Any new developed functionality is tested by team members, and any bugs or errors are reported to the developer of the feature.
+
+##### Backend & Mobile
+
+Manual tests: Feature related to UI are all tested manually by all the team members.
+
 ### Planning and Team Process
 
 #### Team Process
@@ -189,7 +201,6 @@ By incorporating this feedback and reflection into our next development phases, 
 **Pull requests:** PR #63 unit test automation & checks, PR #72 cd pipeline (automated deployment), PR #81 merge team efforts to main \
 **Additional Information:** -
 
-<<<<<<< Updated upstream
 #### Member: Erkin Gönültaş
 **Responsibilities:** Feature implementation, UI/UX Implementations \
 **Main Contributions:** Frontend of the badge system is implemented. The project implemented to mobile screens. \
@@ -214,6 +225,12 @@ By incorporating this feedback and reflection into our next development phases, 
 **Pull requests:** PR #84 includes both backend and frontend developments for user profile page.\
 **Additional Information:** -
 
-
+#### Member: Aibek Aldabergenov
+**Responsibilities:** Backend and Frontend Feature Implementation \
+**Main Contributions:** Developing the backend and frontend parts of post tagging, adding tags to user profile, and an algorithm for community recommendation to users. \
+**Code-related Significant Issues:** Feature #53, Feature #57, Feature #62, Feature #63 \
+**Non-code-related Significant Issues:** Decision on how to implement the database structure relating to tagging. Research on similarity calculation based on tag usage. \
+**Pull requests:** PR #68, #73, #74 and #75 were created by me. #70, #72, #79 and #81 were reviewed by me. \
+**Additional Information:** -
 
 
