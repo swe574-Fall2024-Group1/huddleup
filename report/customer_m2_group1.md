@@ -3,86 +3,86 @@
 ### Deliverables
 | Functional Requirements | Not Started | In Progress | Completed |
 |--------------------------|-------------|-------------|-----------|
-| F1                       |             |             |           |
-| F2                       |             |             |           |
-| F3                       |             |             |           |
-| F4                       |             |             |           |
-| F5                       |             |             |           |
-| F6                       |             |             |           |
-| F7                       |             |             |           |
-| F8                       |             |             |           |
-| F9                       |             |             |           |
-| F10                      |             |             |           |
-| F11                      |             |             |           |
-| F12                      |             |             |           |
-| F13                      |             |             |           |
-| F14                      |             |             |           |
-| F15                      |             |             |           |
-| F16                      |             |             |           |
-| F17                      |             |             |           |
-| F18                      |             |             |           |
-| F19                      |             |             |           |
-| F20                      |             |             |           |
-| F21                      |             |             |           |
-| F22                      |             |             |           |
-| F23                      |             |             |           |
-| F24                      |             |             |           |
-| F25                      |             |             |           |
-| F26                      |             |             |           |
-| F27                      |             |             |           |
-| F28                      |             |             |           |
-| F29                      |             |             |           |
-| F30                      |             |             |           |
-| F31                      |             |             |           |
-| F32                      |             |             |           |
-| F33                      |             |             |           |
-| F34                      |             |             |           |
-| F35                      |             |             |           |
-| F36                      |             |             |           |
-| F37                      |             |             |           |
-| F38                      |             |             |           |
-| F39                      |             |             |           |
-| F40                      |             |             |    X       |
-| F41                      |             |             |    X       |
-| F42                      |             |             |    X       |
-| F43                      |             |             |    X       |
-| F44                      |      X       |             |           |
-| F45                      |             |       X      |           |
-| F46                      |             |      X       |           |
-| F47                      |             |      X       |           |
-| F48                      |      X       |             |           |
-| F49                      |      X       |             |           |
-| F50                      |      X       |             |           |
-| F51                      |             |             |     X      |
-| F52                      |       X      |             |           |
-| F53                      |             |             |      X     |
-| F54                      |             |     X        |           |
-| F55                      |             |     X        |           |
-| F56                      |             |             |     X      |
-| F57                      |             |             |     X      |
-| F58                      |             |      X       |           |
-| F59                      |    X         |             |           |
-| F60                      |    X        |             |           |
-| F61                      |             |      X       |           |
-| F62                      |             |             |     X      |
-| F63                      |             |             |     X      |
-| F64                      |             |     X        |           |
-| F65                      |             |     X        |           |
-| F66                      |             |             |     X      |
-| F67                      |      X       |             |           |
-| F68                      |      X       |             |           |
-| F69                      |             |             |      X     |
-| F70                      |             |             |      X     |
-| F71                      |             |             |      X     |
-| F72                      |             |             |      X     |
-| F73                      |             |             |      X     |
-| F74                      |             |             |      X     |
-| F75                      |             |             |      X     |
-| F76                      |             |             |      X     |
-| F77                      |             |    X         |           |
-| F78                      |             |    X         |           |
-| F79                      |             |    X        |           |
-| F80                      |             |    X         |           |
+| F1                       |             |             | X         |
+| F2                       | X           |             |           |
+| F3                       | X           |             |           |
+| F4                       |             | X           |           |
+| F5                       | X           |             |           |
+| F6                       | X           |             |           |
+| F7                       |             |             | X         |
+| F8                       |             |             | X         |
+| F9                       |             |             | X         |
+| F10                      |             |             | X         |
+| F11                      |             |             | X         |
+| F12                      |             |             | X         |
+| F13                      |             |             | X         |
+| F14                      |             |             | X         |
+| F15                      |             |             | X         |
+| F16                      |             |             | X         |
+| F17                      |             |             | X         |
+| F18                      |             |             | X         |
+| F19                      |             |             | X         |
+| F20                      | X           |             |           |
+| F21                      |             |             | X         |
+| F22                      |             |             | X         |
+| F23                      |             |             | X         |
+| F24                      |             |             | X         |
+| F25                      |             |             | X         |
+| F26                      |             |             | X         |
+| F27                      |             |             | X         |
+| F28                      |             |             | X         |
+| F29                      |             |             | X         |
+| F30                      |             |             | X         |
+| F31                      |             | X           |           |
+| F32                      |             |             | X         |
+| F33                      |             |             | X         |
+| F34                      |             |             | X         |
+| F35                      |             |             | X         |
+| F36                      |             |             | X         |
+| F37                      |             | X           |           |
+| F38                      |             | X           |           |
+| F39                      |             |             | X         |
+| F40                      |             |             | X         |
+| F41                      |             |             | X         |
+| F42                      |             |             | X         |
+| F43                      |             |             | X         |
+| F44                      | X           |             |           |
+| F45                      |             | X           |           |
+| F46                      |             | X           |           |
+| F47                      |             | X           |           |
+| F48                      | X           |             |           |
+| F49                      | X           |             |           |
+| F50                      | X           |             |           |
+| F51                      |             |             | X         |
+| F52                      | X           |             |           |
+| F53                      |             |             | X         |
+| F54                      |             | X           |           |
+| F55                      |             | X           |           |
+| F56                      |             |             | X         |
+| F57                      |             |             | X         |
+| F58                      |             | X           |           |
+| F59                      | X           |             |           |
+| F60                      | X           |             |           |
+| F61                      |             | X           |           |
+| F62                      |             |             | X         |
+| F63                      |             |             | X         |
+| F64                      |             | X           |           |
+| F65                      |             | X           |           |
+| F66                      |             |             | X         |
+| F67                      | X           |             |           |
+| F68                      | X           |             |           |
+| F69                      |             |             | X         |
+| F70                      |             |             | X         |
+| F71                      |             |             | X         |
+| F72                      |             |             | X         |
+| F73                      |             |             | X         |
+| F74                      |             |             | X         |
+| F75                      |             |             | X         |
+| F76                      |             |             | X         |
+| F77                      |             | X           |           |
+| F78                      |             | X           |           |
+| F79                      |             | X           |           |
+| F80                      |             | X           |           |
 ### Testing
 
 ### Planning and Team Process
@@ -139,10 +139,19 @@ With these improvements, HuddleUp will provide an engaging, dynamic, and user-ce
 **Pull requests:** PR #63 unit test automation & checks, PR #72 cd pipeline (automated deployment), PR #81 merge team efforts to main \
 **Additional Information:** -
 
+<<<<<<< Updated upstream
 #### Member: Erkin Gönültaş
 **Responsibilities:** Feature implementation, UI/UX Implementations \
 **Main Contributions:** Frontend of the badge system is implemented. The project implemented to mobile screens. \
 **Code-related Significant Issues:** Feature #71, Feature #72, Issue #56 \
 **Non-code-related Significant Issues:** - \
 **Pull requests:** PR #55 Mobile UI Implementations \
+**Additional Information:** -
+
+#### Member: Mustafa Tuna
+**Responsibilities:** Backend and Frontend Feature Implementation \
+**Main Contributions:** Backend part of the manual badge system, frontend part of the automatic badge system. Optimizing local dev environment \
+**Code-related Significant Issues:** Feature #69, Feature #53 \
+**Non-code-related Significant Issues:** Issue #52. \
+**Pull requests:** PR #54 manual badges feature, PR #70 docker dev created. PR #55 mobile UI and PR #80 parameter based badge reviewed.\
 **Additional Information:** -
