@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
 import fetchApi from '../../api/fetchApi';
 import { Spin } from 'antd';
@@ -298,7 +299,7 @@ const FeedPost = ({ postData }) => {
 						)}
 					</span>
 					<div style={{ color: "#7952CC" }}>
-						{postData?.username} {postData?.username !== userInfo?.username ? (
+						<Link to={`/users/${postData.userId}`}>{postData?.username}</Link> {postData?.username !== userInfo?.username ? (
 							<Button size='small' onClick={() => { handleFollowUser(postData?.username) }}>
 								{isFollowing ? 'Unfollow' : 'Follow'}
 							</Button>
@@ -351,7 +352,7 @@ const FeedPost = ({ postData }) => {
 						<div key={index}>
 							<Comment
 								actions={renderCommentActions(comment)} // Pass the comment object to renderCommentActions function
-								author={comment.username}
+								author={<Link to={`/users/${comment.userId}`}>{comment.username}</Link>}
 								content={comment.comment  + (comment.isEdited  ? ' (edited)' : '')}
 								datetime={new Date(comment.createdAt).toLocaleString('tr-TR', {
 									day: '2-digit',

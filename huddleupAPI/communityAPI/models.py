@@ -154,25 +154,25 @@ class UserBadge(models.Model):
 
 
 class UserTagUsage(models.Model):
-    user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    usage_count = models.IntegerField(default=0)
+	user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+	usage_count = models.IntegerField(default=0)
 
-    class Meta:
-        unique_together = ['user', 'tag']
+	class Meta:
+		unique_together = ['user', 'tag']
 
 
 class CommunityTagUsage(models.Model):
-    community = models.ForeignKey(Community, on_delete=models.CASCADE)
-    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
-    usage_count = models.IntegerField(default=0)
+	community = models.ForeignKey(Community, on_delete=models.CASCADE)
+	tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+	usage_count = models.IntegerField(default=0)
 
-    class Meta:
-        unique_together = ['community', 'tag']
+	class Meta:
+		unique_together = ['community', 'tag']
 
 
 class UserRecommendation(models.Model):
-    user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
-    community = models.ForeignKey(Community, on_delete=models.CASCADE)
-    score = models.FloatField(default=0.0)
-    created_at = models.DateTimeField(auto_now_add=True)
+	user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+	community = models.ForeignKey(Community, on_delete=models.CASCADE)
+	score = models.FloatField(default=0.0)
+	created_at = models.DateTimeField(auto_now_add=True)
