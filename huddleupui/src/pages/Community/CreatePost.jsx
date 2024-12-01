@@ -1,6 +1,7 @@
 /* global BigInt */
 import React, { useState, useCallback, useEffect } from 'react';
-import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete } from 'antd';
+import { AimOutlined, CloseOutlined } from '@ant-design/icons';
+import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete, Grid } from 'antd';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
@@ -11,12 +12,18 @@ import axios from 'axios';
 import debounce from 'lodash/debounce';
 
 const { Step } = Steps;
+const { useBreakpoint } = Grid;
 
 export default function CreatePost() {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [templates, setTemplates] = useState([]);
 	const [selectedTemplate, setSelectedTemplate] = useState({});
 	const [form] = Form.useForm();
+	const [isLoadingLoc, setIsLoadingLoc] = useState(false);
+	const [longitude, setLongtitude] = useState("0.0");
+	const [latitude, setLatitude] = useState("0.0");
+
+	const screens = useBreakpoint();
 
 	const navigate = useNavigate();
 
@@ -987,13 +994,18 @@ export default function CreatePost() {
 							</Form.Item>
 						);
 					case 'geolocation':
-						const handleLongitude = (e) => {
-							const longitude = e.target.valueAsNumber;
+						const handleLongitude = (e, isAuto = false) => {
+							let longitude = 0.0;
+							if (isAuto) {
+								longitude = e;	
+							} else {
+								longitude = e.target.valueAsNumber;
+							}
 							const errors = form.getFieldError(index);
 							if (Number.isFinite(longitude) && longitude >= -180 && longitude <= 180) {
 								const currentValue = form.getFieldValue(index) || [];
 								form.setFieldsValue({ [index]: [longitude, currentValue[1]] });
-
+								setLongtitude(longitude);
 								if (errors.length > 0) {
 									// Remove longitude error from errors array
 									const newErrors = errors.filter(e => e !== 'Longitude must be a valid number between -180 and 180')
@@ -1022,13 +1034,19 @@ export default function CreatePost() {
 							}
 						};
 
-						const handleLatitude = (e) => {
-							const latitude = e.target.valueAsNumber;
+						const handleLatitude = (e, isAuto = false) => {
+							let latitude = 0.0;
+							if (isAuto) {
+								latitude = e;	
+							} else {
+								latitude = e.target.valueAsNumber;
+							}
 							const errors = form.getFieldError(index);
 
 							if (Number.isFinite(latitude) && latitude >= -90 && latitude <= 90) {
 								const currentValue = form.getFieldValue(index) || [];
 								form.setFieldsValue({ [index]: [currentValue[0], latitude] });
+								setLatitude(latitude);
 								if (errors.length > 0) {
 									// Remove longitude error from errors array
 									const newErrors = errors.filter(e => e !== 'Latitude must be a valid number between -90 and 90')
@@ -1056,36 +1074,86 @@ export default function CreatePost() {
 							}
 						};
 
-						return (
-							<Form.Item
-								key={index}
-								name={index}
-								label={row.title + `  (${labelValue})`}
-								validateStatus={form.getFieldError(index).length > 0 ? 'error' : 'success'}
-								help={form.getFieldError(index).length > 0 ? form.getFieldError(index) : null}
-							>
-								<Input.Group>
-									<Input
-										key='longitude'
-										name='longitude'
-										style={{ width: '15%' }}
-										addonBefore="LON"
-										type="number"
-										onChange={(e) => { handleLongitude(e) }}
-										required={row.required}
-									/>
-									<Input
-										key='latitude'
-										name='latitude'
-										style={{ width: '15%' }}
-										addonBefore="LAT"
-										type="number"
-										onChange={(e) => { handleLatitude(e) }}
-										required={row.required}
-									/>
+						const resetLocation = () => {
+							setLatitude("0.0");
+							setLongtitude("0.0");
+							setIsLoadingLoc(false);
+						}
 
-								</Input.Group>
-							</Form.Item>
+						const getUserLocation = () => {
+							// if geolocation is supported by the users browser
+							if (navigator.geolocation) {
+								
+								// get the current users location
+							  navigator.geolocation.getCurrentPosition(
+								(position) => {
+								  // save the geolocation coordinates in two variables
+								  const { latitude, longitude } = position.coords;
+								  console.log({ latitude, longitude });
+								  // update the value of userlocation variable
+								  handleLongitude(longitude, true);
+								  handleLatitude(latitude, true);
+								  setIsLoadingLoc(true);
+								},
+								// if there was an error getting the users location
+								(error) => {
+								  console.error('Error getting user location:', error);
+								},
+								{
+									enableHighAccuracy: true,
+									timeout: 5000,
+									maximumAge: 0,
+								}
+							  );
+							  
+							}
+							// if geolocation is not supported by the users browser
+							else {
+							  console.error('Geolocation is not supported by this browser.');
+							}
+						  };
+
+						return (
+							<>
+								<Form.Item
+									key={index}
+									name={index}
+									label={row.title + `  (${labelValue})`}
+									validateStatus={form.getFieldError(index).length > 0 ? 'error' : 'success'}
+									help={form.getFieldError(index).length > 0 ? form.getFieldError(index) : null}
+								>
+									<Input.Group style={{display: "flex", justifyContent: "space-between"}}>
+										<Input
+											key='longitude'
+											name='longitude'
+											style={{ width: '15%' }}
+											addonBefore="LON"
+											type="number"
+											disabled={isLoadingLoc}
+											onChange={(e) => { handleLongitude(e) }}
+											required={row.required}
+										/>
+										<Input
+											key='latitude'
+											name='latitude'
+											style={{ width: '15%' }}
+											addonBefore="LAT"
+											type="number"
+											disabled={isLoadingLoc}
+											onChange={(e) => { handleLatitude(e) }}
+											required={row.required}
+										/>
+										<Button 
+											onClick={() => isLoadingLoc ? resetLocation() : getUserLocation()}
+											style={{marginLeft: 5, display: screens.md ? "none" : "block"}}>
+												{isLoadingLoc ? <CloseOutlined /> :<AimOutlined />}
+										</Button>
+									</Input.Group>
+								</Form.Item>
+								<p style={{display: !isLoadingLoc ? "none": "block"}}>
+									Geolocation set. LAT: {latitude} LON: {longitude}
+								</p>
+							</>
 						);
 					default:
 						return null;
