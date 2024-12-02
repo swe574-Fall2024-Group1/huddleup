@@ -1,5 +1,6 @@
 /* global BigInt */
 import React, { useState, useCallback, useEffect } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { AimOutlined, CloseOutlined } from '@ant-design/icons';
 import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete, Grid } from 'antd';
 import { Link } from 'react-router-dom';
@@ -20,8 +21,8 @@ export default function CreatePost() {
 	const [selectedTemplate, setSelectedTemplate] = useState({});
 	const [form] = Form.useForm();
 	const [isLoadingLoc, setIsLoadingLoc] = useState(false);
-	const [longitude, setLongtitude] = useState("0.0");
-	const [latitude, setLatitude] = useState("0.0");
+	const [longitude, setLongtitude] = useState(28.994504653991893);
+	const [latitude, setLatitude] = useState(41.039040946957925);
 
 	const screens = useBreakpoint();
 
@@ -1075,9 +1076,16 @@ export default function CreatePost() {
 						};
 
 						const resetLocation = () => {
-							setLatitude("0.0");
-							setLongtitude("0.0");
+							const defaultLocation =  [41.039040946957925, 28.994504653991893];
+							setLatitude(defaultLocation[0]);
+							setLongtitude(defaultLocation[1]);
 							setIsLoadingLoc(false);
+						}
+
+						const setLocation = (e) => {
+							handleLongitude(e.lng, true);
+							handleLatitude(e.lat, true);
+							setIsLoadingLoc(true);
 						}
 
 						const getUserLocation = () => {
@@ -1113,6 +1121,18 @@ export default function CreatePost() {
 							}
 						  };
 
+						function LocationMarker() {
+						const map = useMapEvents({
+							click(e) {
+							setLocation(e.latlng);
+							map.flyTo(e.latlng, map.getZoom());
+							},
+						});
+						return <Marker position={[latitude, longitude]}>
+								<Popup>Selected Location</Popup>
+							</Marker>;
+						}
+
 						return (
 							<>
 								<Form.Item
@@ -1122,7 +1142,7 @@ export default function CreatePost() {
 									validateStatus={form.getFieldError(index).length > 0 ? 'error' : 'success'}
 									help={form.getFieldError(index).length > 0 ? form.getFieldError(index) : null}
 								>
-									<Input.Group style={{display: "flex", justifyContent: "space-between"}}>
+									<Input.Group style={{display: "none", justifyContent: "space-between"}}>
 										<Input
 											key='longitude'
 											name='longitude'
@@ -1143,16 +1163,25 @@ export default function CreatePost() {
 											onChange={(e) => { handleLatitude(e) }}
 											required={row.required}
 										/>
-										<Button 
-											onClick={() => isLoadingLoc ? resetLocation() : getUserLocation()}
-											style={{marginLeft: 5, display: screens.md ? "none" : "block"}}>
-												{isLoadingLoc ? <CloseOutlined /> :<AimOutlined />}
-										</Button>
 									</Input.Group>
 								</Form.Item>
-								<p style={{display: !isLoadingLoc ? "none": "block"}}>
-									Geolocation set. LAT: {latitude} LON: {longitude}
-								</p>
+								<div style={{ display: "flex", marginBottom: "1rem" }}>
+									<Button 
+										onClick={() => isLoadingLoc ? resetLocation() : getUserLocation()}
+										style={{marginLeft: 5, display: screens.md ? "none" : "block", marginRight: 10}}>
+											{isLoadingLoc ? <CloseOutlined /> :<AimOutlined />}
+									</Button>
+									<span style={{display: !isLoadingLoc ? "none": "block", alignSelf: "center"}}>
+										Geolocation set. LAT: {latitude} LON: {longitude}
+									</span>
+								</div>
+								<MapContainer center={[41.039040946957925, 28.994504653991893]} zoom={14} scrollWheelZoom={false} style={{height: 400 ,width: "100%", marginBottom: "1rem"}}>
+								<TileLayer
+									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+								/>
+									<LocationMarker />
+								</MapContainer>
 							</>
 						);
 					default:

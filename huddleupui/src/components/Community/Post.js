@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Form, Select, Tag } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
@@ -44,6 +45,11 @@ const Post = ({ postData }) => {
 		}
 	});
 	const { userInfo } = useAuth();
+
+	const [mapModalVisible, setMapModalVisible] = useState(false);
+	const toggleMapModal = () => {
+		setMapModalVisible(!mapModalVisible);
+	};
 
 	template_result.then((response) => {
 		if (response && !response.loading && loadingTemplate) {
@@ -117,9 +123,28 @@ const Post = ({ postData }) => {
 			case 'geolocation':
 				const [longitude, latitude] = getRowValue(row.title) || [];
 				return (
-					<Text>
-						{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
-					</Text>
+					<>
+					<Button type="link" onClick={toggleMapModal}>
+						View in map
+					</Button>
+					<Modal
+						title="Geolocation Data"
+						visible={mapModalVisible}
+						onCancel={toggleMapModal}
+						footer={null}>
+						<Text>
+							{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
+						</Text>
+						<MapContainer center={[latitude, longitude]} zoom={14} scrollWheelZoom={false} style={{height: 400 ,width: "100%", marginBottom: "1rem"}}>
+							<TileLayer
+								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+							<Marker position={[latitude, longitude]}>
+								<Popup>Selected Location</Popup>
+							</Marker>
+						</MapContainer>
+					</Modal>
+				</>
 				);
 
 			default:
