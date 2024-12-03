@@ -36,9 +36,9 @@ const FeedPost = ({ postData }) => {
 
 	const { userInfo } = useAuth();
 
-	const [mapModalVisible, setMapModalVisible] = useState(false);
-	const toggleMapModal = () => {
-		setMapModalVisible(!mapModalVisible);
+	const [imgModalVisible, setImgModalVisible] = useState(false);
+	const toggleImgModal = () => {
+		setImgModalVisible(!imgModalVisible);
 	};
 
 	template_result.then((response) => {
@@ -99,7 +99,19 @@ const FeedPost = ({ postData }) => {
 			case 'language':
 				return <Text>{getRowValue(row.title)}</Text>;
 			case 'image':
-				return <img src={getRowValue(row.title)} alt={row.title} style={{ maxWidth: '100%', maxHeight: '100px' }} />;
+				const img = getRowValue(row.title)
+				return <>
+					<Button type="link" onClick={toggleImgModal}>
+						<img src={img} alt={img} style={{ maxWidth: '100%', maxHeight: '100px' }} />
+						</Button>
+						<Modal
+							title="Post Image"
+							visible={imgModalVisible}
+							onCancel={toggleImgModal}
+							footer={null}>
+								<img src={img} alt={img} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+						</Modal>
+				</>;
 
 			case 'Boolean':
 				return <Text>{getRowValue(row.title) ? 'Yes' : 'No'}</Text>;
@@ -108,26 +120,17 @@ const FeedPost = ({ postData }) => {
 				const [longitude, latitude] = getRowValue(row.title) || [];
 				return (
 					<>
-					<Button type="link" onClick={toggleMapModal}>
-						View in map
-					</Button>
-					<Modal
-						title="Geolocation Data"
-						visible={mapModalVisible}
-						onCancel={toggleMapModal}
-						footer={null}>
-						<Text>
-							{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
-						</Text>
-						<MapContainer center={[latitude, longitude]} zoom={14} scrollWheelZoom={false} style={{height: 400 ,width: "100%", marginBottom: "1rem"}}>
-							<TileLayer
-								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-							<Marker position={[latitude, longitude]}>
-								<Popup>Selected Location</Popup>
-							</Marker>
-						</MapContainer>
-					</Modal>
+					<Text>
+						{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
+					</Text>
+					<MapContainer center={[latitude, longitude]} zoom={14} scrollWheelZoom={false} style={{height: 250 ,width: "100%", marginBottom: "1rem"}}>
+						<TileLayer
+							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+						<Marker position={[latitude, longitude]}>
+							<Popup>Selected Location</Popup>
+						</Marker>
+					</MapContainer>
 				</>
 				);
 
