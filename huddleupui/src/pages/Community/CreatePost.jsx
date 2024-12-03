@@ -1122,16 +1122,23 @@ export default function CreatePost() {
 						  };
 
 						function LocationMarker() {
-						const map = useMapEvents({
-							click(e) {
-							setLocation(e.latlng);
-							map.flyTo(e.latlng, map.getZoom());
-							},
-						});
-						return <Marker position={[latitude, longitude]}>
+							const map = useMapEvents({
+								click(e) {
+								setLocation(e.latlng);
+									map.flyTo(e.latlng, map.getZoom());
+								},
+							});
+							return <Marker position={[latitude, longitude]}>
 								<Popup>Selected Location</Popup>
 							</Marker>;
 						}
+						const RecenterAutomatically = ({lat,lng}) => {
+							const map = useMap();
+							 useEffect(() => {
+							   map.setView([lat, lng]);
+							 }, [lat, lng]);
+							 return null;
+						   }
 
 						return (
 							<>
@@ -1175,12 +1182,13 @@ export default function CreatePost() {
 										Geolocation set. LAT: {latitude} LON: {longitude}
 									</span>
 								</div>
-								<MapContainer center={[41.039040946957925, 28.994504653991893]} zoom={14} scrollWheelZoom={false} style={{height: 400 ,width: "100%", marginBottom: "1rem"}}>
+								<MapContainer center={[latitude, longitude]} zoom={14} scrollWheelZoom={false} style={{height: 400 ,width: "100%", marginBottom: "1rem"}}>
 								<TileLayer
 									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
 								/>
 									<LocationMarker />
+									<RecenterAutomatically lat={latitude} lng={longitude} />
 								</MapContainer>
 							</>
 						);
