@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
@@ -34,6 +35,11 @@ const FeedPost = ({ postData }) => {
 	const comments_result = useApi('/api/communities/get-post-comments', { postId: postData.id });
 
 	const { userInfo } = useAuth();
+
+	const [imgModalVisible, setImgModalVisible] = useState(false);
+	const toggleImgModal = () => {
+		setImgModalVisible(!imgModalVisible);
+	};
 
 	template_result.then((response) => {
 		if (response && !response.loading && loadingTemplate) {
@@ -93,7 +99,19 @@ const FeedPost = ({ postData }) => {
 			case 'language':
 				return <Text>{getRowValue(row.title)}</Text>;
 			case 'image':
-				return <img src={getRowValue(row.title)} alt={row.title} style={{ maxWidth: '100%', maxHeight: '100px' }} />;
+				const img = getRowValue(row.title)
+				return <>
+					<Button type="link" onClick={toggleImgModal}>
+						<img src={img} alt={img} style={{ maxWidth: '100%', maxHeight: '100px' }} />
+						</Button>
+						<Modal
+							title="Post Image"
+							visible={imgModalVisible}
+							onCancel={toggleImgModal}
+							footer={null}>
+								<img src={img} alt={img} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+						</Modal>
+				</>;
 
 			case 'Boolean':
 				return <Text>{getRowValue(row.title) ? 'Yes' : 'No'}</Text>;
@@ -101,9 +119,19 @@ const FeedPost = ({ postData }) => {
 			case 'geolocation':
 				const [longitude, latitude] = getRowValue(row.title) || [];
 				return (
+					<>
 					<Text>
 						{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
 					</Text>
+					<MapContainer center={[latitude, longitude]} zoom={14} scrollWheelZoom={false} style={{height: 250 ,width: "100%", marginBottom: "1rem"}}>
+						<TileLayer
+							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+						<Marker position={[latitude, longitude]}>
+							<Popup>Selected Location</Popup>
+						</Marker>
+					</MapContainer>
+				</>
 				);
 
 			default:

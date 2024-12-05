@@ -68,8 +68,8 @@ const UserProfile = () => {
   };
 
   return (
-    <div>
-      <h2>User Profile</h2>
+    <div style={{marginTop: 10, marginBottom: 10, backgroundColor: 'white', padding: 20, borderRadius: 10, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
+      <h2 style={{marginTop: 0}}>User Profile</h2>
 
       <div style={{ marginBottom: "20px" }}>
         <h4>About Me</h4>
@@ -108,7 +108,7 @@ const UserProfile = () => {
         </div>
       </div>
 
-      <Button type="primary" onClick={handleSaveProfile}>
+      <Button type="primary" onClick={handleSaveProfile} style={{ backgroundColor: '#7952CC', fontWeight: 700 }}>
         Save Profile
       </Button>
     </div>

@@ -1117,7 +1117,7 @@ export default function EditPost() {
 						))}
 					  </div>
 						<Form.Item style={{ marginTop: 20 }}>
-							<Button type="primary" size="large" htmlType="submit">
+							<Button type="primary" size="large" htmlType="submit" style={{ backgroundColor: '#7952CC', fontWeight: 700 }}>
 								Update Post
 							</Button>
 						</Form.Item>
