@@ -176,3 +176,25 @@ class UserRecommendation(models.Model):
 	community = models.ForeignKey(Community, on_delete=models.CASCADE)
 	score = models.FloatField(default=0.0)
 	created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+class CommunityActivity(models.Model):
+    ACTION_CHOICES = [
+        ('create_post', 'Created a post'),
+        ('add_comment', 'Added a comment'),
+        ('create_template', 'Created a template'),
+        ('earn_badge', 'Earned a badge'),
+        ('like_post', 'Liked a post'),
+        ('like_comment', 'Liked a comment'),
+        ('follow_user', 'Followed a user'),
+        ('join_community', 'Joined a community'),
+    ]
+
+    user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+    community = models.ForeignKey('Community', on_delete=models.CASCADE, null=True, blank=True)
+    action = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    target = models.TextField(null=True, blank=True)  # Additional info (e.g., post id, comment id)
+    createdAt = models.DateTimeField(auto_now_add=True)
+
+    
