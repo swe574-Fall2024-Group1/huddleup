@@ -177,6 +177,14 @@ const renderGeolocationField = () => {
     );
   };
 
+const RecenterAutomatically = ({lat,lng}) => {
+    const map = useMap();
+     useEffect(() => {
+       map.setView([lat, lng]);
+     }, [lat, lng]);
+     return null;
+   }
+
   return (
     <div>
       <MapContainer
@@ -189,6 +197,7 @@ const renderGeolocationField = () => {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <LocationMarker />
+        <RecenterAutomatically lat={latitude} lng={longitude} />
       </MapContainer>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
         <span>
