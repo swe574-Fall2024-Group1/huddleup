@@ -7,7 +7,7 @@ from django.db.models import Q,Count
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge,CommunityActivity
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
 
@@ -1762,3 +1762,46 @@ def get_recommended_users(request):
 		return JsonResponse(response_data, status=200)
 
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+def log_community_activity(user, community_id, action, target=None):
+	activity = CommunityActivity.objects.create(
+            user=user,
+            community_id=community_id,
+            action=action,
+            target=json.dumps(target) if target else None
+        )
+
+
+
+@api_view(['POST'])
+def get_community_activity_feed(request):
+    try:
+        # Parse community_id from request payload
+        payload = JSONParser().parse(request)
+        community_id = payload.get('community_id')
+
+        if not community_id:
+            return JsonResponse({'success': False, 'error': 'community_id is required'}, status=400)
+
+        # Fetch the last 10 actions for the given community
+        activities = CommunityActivity.objects.filter(community_id=community_id).order_by('-createdAt')[:10]
+
+        # Prepare response data
+        activity_data = [
+            {
+                'user': activity.user.username,
+                'action': activity.get_action_display(),
+                'target': json.loads(activity.target) if activity.target else None,
+            }
+            for activity in activities
+        ]
+
+        return JsonResponse({'success': True, 'data': activity_data}, status=200)
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+
+
