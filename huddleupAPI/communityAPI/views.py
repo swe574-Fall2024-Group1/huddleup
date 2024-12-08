@@ -38,6 +38,7 @@ def create_community(request):
 
 				com = Community.objects.get(id=community_serializer.data['id'])
 				create_default_badges_for_community(com)
+				log_community_activity(request.user, community_serializer.data['id'], 'create_community', {'Community Name': community_serializer.data['name']})
 
 			# Create default template for the community
 			template_data = {
@@ -371,6 +372,7 @@ def join_community(request):
 		communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
 		if communityUserConnection_serializer.is_valid():
 			communityUserConnection_serializer.save()
+			log_community_activity(request.user, community.id, 'join_community', {'Community Name': community.name})
 			return JsonResponse({'success': True, 'message': 'User added to the community successfully'}, status=201)
 		return JsonResponse(communityUserConnection_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
@@ -818,7 +820,9 @@ def create_template(request):
 		}
 		template_serializer = TemplateSerializer(data=template_data)
 		if template_serializer.is_valid():
-			template_serializer.save()
+			template=template_serializer.save()
+			log_community_activity(request.user, request_data['communityId'], 'create_template', {'templateId': template.id, 'Template Name': template.templateName})
+
 
 			# Check for and award badges
 			check_and_award_badges(request.user, request_data['communityId'])
@@ -897,6 +901,7 @@ def create_post(request):
 		if post_serializer.is_valid():
 			post = post_serializer.save()
 			check_and_award_badges(request.user, request_data['communityId'])
+			log_community_activity(request.user, request_data['communityId'], 'create_post', {'postId': post.id, 'Title': post.rowValues[0]})
 
 			response_data = {
 				'success': True,
@@ -924,11 +929,14 @@ def add_comment(request):
 		}
 		comment_serializer = CommentSerializer(data=comment_data)
 		if comment_serializer.is_valid():
-			comment_serializer.save()
+			comment=comment_serializer.save()
+			
 
 			# Get the community from the post
 			post = Post.objects.get(id=request_data['postId'])
 			check_and_award_badges(request.user, post.community.id)
+			log_community_activity(request.user, post.community.id, 'add_comment', {'commentId': comment.id, 'postId': post.id, 'Content': comment.comment})
+
 
 			response_data = {
 				'success': True,
@@ -1021,6 +1029,8 @@ def like_post(request):
 
 				# Check for and award badges
 				check_and_award_badges(request.user, post.community.id)
+				log_community_activity(request.user, post.community.id, 'like_post', {'postId': post.id, 'Title': post.rowValues[0]})
+
 
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
@@ -1039,6 +1049,10 @@ def like_comment(request):
 			comment = Comment.objects.get(id=comment_id)
 		except Comment.DoesNotExist:
 			return JsonResponse({'error': 'Comment not found'}, status=404)
+		
+		post = Post.objects.get(id=comment.post.id)
+		community_id = post.community.id  # Access community ID from the post
+		
 
 		# Check if the user has already liked the comment
 		existing_like = CommentLike.objects.filter(comment=comment, createdBy=request.user).first()
@@ -1057,7 +1071,9 @@ def like_comment(request):
 			like_serializer = CommentLikeSerializer(data=like_data)
 
 			if like_serializer.is_valid():
-				like_serializer.save()
+				like=like_serializer.save()
+				log_community_activity(request.user, community_id, 'like_comment', {'commentId': like.comment.id, 'Content': comment.comment})
+
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
@@ -1083,7 +1099,7 @@ def follow_user(request):
 
 			if follow_serializer.is_valid():
 				follow_serializer.save()
-
+				log_community_activity(request.user, None, 'follow_user', {'followedUser': followee.username})
 				# Infer community where both follower and followee belong
 				community_connections = CommunityUserConnection.objects.filter(
 					user=request.user
@@ -1629,6 +1645,8 @@ def check_and_award_badges(user, community_id):
 					'image': badge.image,
 					'awardedAt': user_badge.createdAt
 				})
+				log_community_activity(user=user, community_id=community.id, action='earn_badge', target={'badgeId': badge.id, 'Badge Name': badge.name, 'Badge Description': badge.description})
+
 			else:
 				print(f"User does not meet criteria for badge: {badge.name}")
 
@@ -1772,8 +1790,6 @@ def log_community_activity(user, community_id, action, target=None):
             target=json.dumps(target) if target else None
         )
 
-
-
 @api_view(['POST'])
 def get_community_activity_feed(request):
     try:
@@ -1793,6 +1809,7 @@ def get_community_activity_feed(request):
                 'user': activity.user.username,
                 'action': activity.get_action_display(),
                 'target': json.loads(activity.target) if activity.target else None,
+				'createdAt': activity.createdAt.isoformat()  # Include the createdAt timestamp in ISO format
             }
             for activity in activities
         ]

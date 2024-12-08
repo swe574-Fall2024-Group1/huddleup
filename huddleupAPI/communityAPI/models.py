@@ -189,6 +189,7 @@ class CommunityActivity(models.Model):
         ('like_comment', 'Liked a comment'),
         ('follow_user', 'Followed a user'),
         ('join_community', 'Joined a community'),
+		('create_community', 'Created a community'),
     ]
 
     user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)

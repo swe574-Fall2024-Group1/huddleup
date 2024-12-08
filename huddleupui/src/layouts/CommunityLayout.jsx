@@ -29,11 +29,55 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	const [showModeratorSettingsModal, setShowModeratorSettingsModal] = useState(false);
 	const [drawerVisible, setDrawerVisible] = useState(false);
 
+	const [activityFeed, setActivityFeed] = useState([]);
+	const [activityLoading, setActivityLoading] = useState(true);
+
+	
+
+	
+
 	const toggleDrawer = () => setDrawerVisible(!drawerVisible);
 
 	const navigate = useNavigate();
 
 	const { communityId } = useParams();
+
+	const activity_feed_result = useApi('/api/communities/get-community-activity-feed', { community_id: communityId });
+
+	if (activity_feed_result.then) {
+	    activity_feed_result.then((response) => {
+	        if (response && !response.loading && activityLoading) {
+	            setActivityFeed(response.data.data);
+	            setActivityLoading(false);
+	        }
+	    });
+	}
+
+	const timeAgo = (isoDate) => {
+		if (!isoDate) return "Unknown time";
+	
+		const now = new Date();
+		const activityTime = new Date(isoDate);
+	
+		if (isNaN(activityTime.getTime())) {
+			return "Invalid date";
+		}
+	
+		const difference = now - activityTime;
+	
+		const seconds = Math.floor(difference / 1000);
+		const minutes = Math.floor(seconds / 60);
+		const hours = Math.floor(minutes / 60);
+		const days = Math.floor(hours / 24);
+	
+		if (seconds < 60) return `${seconds} seconds ago`;
+		if (minutes < 60) return `${minutes} minutes ago`;
+		if (hours < 24) return `${hours} hours ago`;
+		return `${days} days ago`;
+	};
+	
+	
+	
 
 	const handleMembershipChange = async () => {
 		if (communityInfo.memberType === 'notMember') {
@@ -263,6 +307,47 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
 						{(communityInfo.memberType && (!communityInfo.isPrivate || communityInfo.memberType !== 'notMember') && communityInfo.memberType !== 'banned') ? (
 							<div>
+
+								{/* Community Activity Feed */}
+								<Card title="Community Activity">
+								    {activityLoading ? (
+								        <Spin />
+								    ) : activityFeed.length > 0 ? (
+								        <ul style={{ listStyleType: "none", padding: 0 }}>
+								            {activityFeed.map((activity, index) => (
+								                <li key={index} style={{ marginBottom: 10 }}>
+								                    <p>
+								                        <b>{activity.user}</b> {activity.action}
+								                    </p>
+								                    {activity.target && (
+								                        <p style={{ fontSize: "smaller", color: "gray" }}>
+								                            {Object.entries(activity.target)
+								                                .filter(([key]) => !["postId", "commentId","templateId","badgeId"].includes(key)) // Exclude keys
+								                                .map(([key, value]) => (
+								                                    <span key={key}>
+								                                        {key}: {value}{" "}
+								                                    </span>
+								                                ))}
+								                        </p>
+								                    )}
+								                </li>
+								            ))}
+								        </ul>
+								    ) : (
+								        <p>No recent activity.</p>
+								    )}
+								</Card>
+
+
+
+								<Card
+								    title="Description"
+								    style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}
+								>
+								    <span>{communityInfo ? communityInfo.description : ''}</span>
+								</Card>
+
+
 								<Card title="Description" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									<span>{communityInfo ? communityInfo.description : ''}</span>
 								</Card>
@@ -362,6 +447,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 						>
 							{(communityInfo.memberType && (!communityInfo.isPrivate || communityInfo.memberType !== 'notMember') && communityInfo.memberType !== 'banned') ? (
 								<div>
+
 									{/* Repeating the same structure for mobile */}
 									<Card title="Description" style={{ marginBottom: 15 }}>
 										<span>{communityInfo ? communityInfo.description : ''}</span>
