@@ -1,4 +1,4 @@
-import { Layout, Card, Avatar, Row, Col, Modal, Button, Spin, message, Drawer, Grid } from 'antd';
+import { Layout, Card, Avatar, Row, Col, Tooltip, Modal, Button, Spin, message, Drawer, Grid } from 'antd';
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from 'react';
 import Navbar from "../components/MainLayout/Navbar";
@@ -7,7 +7,8 @@ import { useParams } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 import useCommunity from '../components/Community/useCommunity';
 import LeftSidebar from '../components/MainLayout/LeftSidebar';
-import { LockOutlined, UserOutlined, LoadingOutlined, ContactsFilled } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, LoadingOutlined, ContactsFilled, TrophyOutlined} from '@ant-design/icons';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -148,7 +149,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	if (communityInfo && communityInfo.name && canNotMembersSee && !communityInfo.isPrivate) {
 		allowedUserTypes.push('notMember');
 	}
-	
+
 	const screens = useBreakpoint();
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
@@ -156,287 +157,217 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 			<Layout>
 				<LeftSidebar />
 				{communityInfo && !communityInfo.archived ? (
-				<Layout style={{ padding: screens.md ? '0 24px 24px' :  '44px 24px 24px' }}>
-					<div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 10, backgroundColor: 'white', padding: 10, borderRadius: 10, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
-						{Object.keys(communityInfo).length > 0 ? (
-							<>
-								{communityInfo && communityInfo.mainImage && (
-									<img
-										alt={communityInfo.name}
-										src={`${communityInfo.mainImage}`}
-										style={{
-											marginLeft: 10,
-											width: '100px',
-											height: '100px',
-											objectFit: 'cover',
-											borderRadius: 10,
-											boxShadow: "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px"
-										}}
-									/>
-								)}
-								<div style={{ marginLeft: 40, fontWeight: 500, color: '#626263' }}>
-									<h2>{communityInfo ? communityInfo.name : ''}</h2>
-									{communityInfo.isPrivate ? (
+					<Layout style={{ padding: screens.md ? '0 24px 24px' : '44px 24px 24px' }}>
+						<div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 10, backgroundColor: 'white', padding: 10, borderRadius: 10, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
+							{Object.keys(communityInfo).length > 0 ? (
+								<>
+									{communityInfo && communityInfo.mainImage && (
+										<img
+											alt={communityInfo.name}
+											src={`${communityInfo.mainImage}`}
+											style={{
+												marginLeft: 10,
+												width: '100px',
+												height: '100px',
+												objectFit: 'cover',
+												borderRadius: 10,
+												boxShadow: "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px"
+											}}
+										/>
+									)}
+									<div style={{ marginLeft: 40, fontWeight: 500, color: '#626263' }}>
+										<h2>{communityInfo ? communityInfo.name : ''}</h2>
+										{communityInfo.isPrivate ? (
+											<div>
+												{' '}
+												<LockOutlined style={{ marginRight: 5 }} />Private Community{' '}
+											</div>
+										) : (
+											<div>
+												{' '}
+												<UserOutlined style={{ marginRight: 5 }} />Public Community{' '}
+											</div>
+										)}
+										{communityInfo && communityInfo.memberType && communityInfo.memberType !== 'notMember' && (
+											<p>{`You are ${communityInfo.memberType} of this community`}</p>
+										)}
+										{communityInfo && !communityInfo.isPrivate && communityInfo.memberType !== 'banned' && (
+											<Button
+												style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
+												type="primary"
+												onClick={handleMembershipChange}
+												disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
+											>
+												{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
+											</Button>
+										)}
+										{communityInfo && communityInfo.isPrivate && ['member', 'moderator', 'owner'].includes(communityInfo.memberType) && (
+											<Button
+												style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
+												type="primary"
+												onClick={handleMembershipChange}
+												disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
+											>
+												{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
+											</Button>
+										)}
+
+										{communityInfo && communityInfo.isPrivate && communityInfo.memberType === 'notMember' && (
+											<div style={{ marginTop: 20, color: '#626263', fontSize: 12 }}>
+												This community is private. You need an invitation to join.
+											</div>
+										)}
+									</div>
+								</>
+							) : (
+								<div style={{ textAlign: 'center', margin: 'auto' }}>
+									<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
+								</div>
+							)}
+						</div>
+						<Layout>
+							<Content
+								className="site-layout-background"
+								style={{
+									marginTop: 10,
+									minHeight: 280,
+								}}
+							>
+								{allowedUserTypes.includes(communityInfo && communityInfo.memberType) ? (
+									children // Render children if allowed
+								) : (
+									communityInfo && communityInfo.memberType ? (
 										<div>
-											{' '}
-											<LockOutlined style={{ marginRight: 5 }} />Private Community{' '}
+											<Card>
+												<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You have to be a member to see posts of private communities.</p>
+												<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You don't have an invitation yet? Check your <a href='/invitations' style={{ color: "#7952CC", textDecoration: "none" }}>invitations</a>.</p>
+											</Card>
 										</div>
 									) : (
-										<div>
-											{' '}
-											<UserOutlined style={{ marginRight: 5 }} />Public Community{' '}
+										<div style={{ textAlign: 'center' }}>
+											<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
 										</div>
-									)}
-									{communityInfo && communityInfo.memberType && communityInfo.memberType !== 'notMember' && (
-										<p>{`You are ${communityInfo.memberType} of this community`}</p>
-									)}
-									{communityInfo && !communityInfo.isPrivate && communityInfo.memberType !== 'banned' && (
-										<Button
-											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
-											type="primary"
-											onClick={handleMembershipChange}
-											disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
-										>
-											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
-										</Button>
-									)}
-									{communityInfo && communityInfo.isPrivate && ['member', 'moderator', 'owner'].includes(communityInfo.memberType) && (
-										<Button
-											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
-											type="primary"
-											onClick={handleMembershipChange}
-											disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
-										>
-											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
-										</Button>
-									)}
-
-									{communityInfo && communityInfo.isPrivate && communityInfo.memberType === 'notMember' && (
-										<div style={{ marginTop: 20, color: '#626263', fontSize: 12 }}>
-											This community is private. You need an invitation to join.
-										</div>
-									)}
-								</div>
-							</>
-						) : (
-							<div style={{ textAlign: 'center', margin: 'auto' }}>
-								<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
-							</div>
-						)}
-					</div>
-					<Layout>
-						<Content
-							className="site-layout-background"
-							style={{
-								marginTop: 10,
-								minHeight: 280,
-							}}
-						>
-							{allowedUserTypes.includes(communityInfo && communityInfo.memberType) ? (
-								children // Render children if allowed
-							) : (
-								communityInfo && communityInfo.memberType ? (
-									<div>
-										<Card>
-											<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You have to be a member to see posts of private communities.</p>
-											<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You don't have an invitation yet? Check your <a href='/invitations' style={{ color: "#7952CC", textDecoration: "none" }}>invitations</a>.</p>
-										</Card>
-									</div>
-								) : (
-									<div style={{ textAlign: 'center' }}>
-										<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
-									</div>
-								)
-							)}
-						</Content>
+									)
+								)}
+							</Content>
+						</Layout>
+						<Footer className='logo' style={{ textAlign: 'center', fontWeight: 700, color: '#a1a1a1' }}>huddleup ©{new Date().getFullYear()}</Footer>
 					</Layout>
-					<Footer className='logo' style={{ textAlign: 'center', fontWeight: 700, color: '#a1a1a1' }}>huddleup ©{new Date().getFullYear()}</Footer>
-				</Layout>
-				): (
+				) : (
 					<div style={{ textAlign: 'center', margin: 'auto' }}>
 						<h1 style={{ color: '#626263', fontSize: 30, fontWeight: 500 }}>This community is archived.</h1>
 					</div>
 				)}
 				{/* Right Bar Begin */}
 				<>
-				{screens.md ? (
-					<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
-						{(communityInfo.memberType && (!communityInfo.isPrivate || communityInfo.memberType !== 'notMember') && communityInfo.memberType !== 'banned') ? (
-							<div>
-								<Card title="Description" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-									<span>{communityInfo ? communityInfo.description : ''}</span>
-								</Card>
-
-								{/* Members */}
-								<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-									{members.slice(0, 10).map(member => (
-										<Row key={member.username} justify="center">
-											<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{member.username}</span>
-										</Row>
-									))}
-									{members.length > 10 && (
-										<Row justify="center">
-											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
-										</Row>
-									)}
-									{communityInfo.isPrivate && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={() => navigate(`/communities/${communityId}/invitations`)}>
-											User Invitations
-										</Button>
-									)}
-									{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowUserSettings}>
-											User Settings
-										</Button>
-									)}
-								</Card>
-
-								{/* Moderators */}
-								<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-									{moderators.slice(0, 10).map(moderator => (
-										<Row key={moderator.username} justify="center">
-											<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{moderator.username}</span>
-										</Row>
-									))}
-									{moderators.length > 10 && (
-										<Row justify="center">
-											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreModerators}>Show More Moderators</span>
-										</Row>
-									)}
-									{communityInfo.memberType === 'owner' && (
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowModeratorSettings}>
-											Moderator Settings
-										</Button>
-									)}
-								</Card>
-
-								{/* Owners */}
-								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center">
-											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{owner.username}</span>
-										</Row>
-									))}
-									{owners.length > 10 && (
-										<Row justify="center">
-											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreOwners}>Show More Owners</span>
-										</Row>
-									)}
-								</Card>
-
-								{/* Moderator Menu */}
-								{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
-									<Card title="Moderator Menu" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => navigate(`/communities/${communityId}/settings`)}>
-											Community Settings
-										</Button>
-									</Card>
-								)}
-							</div>
-						) : (
-							<Card title="Users" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-								<Row justify="center">
-									<span>
-										You have to be a member to see users.
-										You don't have an invitation yet?
-										Check your <Link to='/invitations' style={{ color: "#7952CC" }}>invitations</Link>.
-									</span>
-								</Row>
-							</Card>
-						)}
-					</Sider>
-					): (
-					<>
-						<Button onClick={toggleDrawer} style={{ position: 'absolute', right: 10, top: 80, zIndex: 1000 }}>
-							<ContactsFilled style={{ fontSize: 21 }} />
-						</Button>
-						<Drawer
-							title="Community Sidebar"
-							placement="right"
-							onClose={toggleDrawer}
-							visible={drawerVisible}
-							width={300}
-						>
+					{screens.md ? (
+						<Sider width={300} style={{ background: 'transparent', borderTop: '1px solid #f0f0f0', marginRight: 20, marginTop: 20 }}>
 							{(communityInfo.memberType && (!communityInfo.isPrivate || communityInfo.memberType !== 'notMember') && communityInfo.memberType !== 'banned') ? (
 								<div>
-									{/* Repeating the same structure for mobile */}
-									<Card title="Description" style={{ marginBottom: 15 }}>
+									<Card title="Description" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 										<span>{communityInfo ? communityInfo.description : ''}</span>
 									</Card>
-
-									<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-									{members.slice(0, 10).map(member => (
-										<Row key={member.username} justify="center">
-											<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{member.username}</span>
-										</Row>
-									))}
-									{members.length > 10 && (
-										<Row justify="center">
-											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
-										</Row>
-									)}
-									{communityInfo.isPrivate && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={() => navigate(`/communities/${communityId}/invitations`)}>
-											User Invitations
-										</Button>
-									)}
-									{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowUserSettings}>
-											User Settings
-										</Button>
-									)}
-								</Card>
-
-								{/* Moderators */}
-								<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-									{moderators.slice(0, 10).map(moderator => (
-										<Row key={moderator.username} justify="center">
-											<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{moderator.username}</span>
-										</Row>
-									))}
-									{moderators.length > 10 && (
-										<Row justify="center">
-											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreModerators}>Show More Moderators</span>
-										</Row>
-									)}
-									{communityInfo.memberType === 'owner' && (
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowModeratorSettings}>
-											Moderator Settings
-										</Button>
-									)}
-								</Card>
-
-								{/* Owners */}
-								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center">
-											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{owner.username}</span>
-										</Row>
-									))}
-									{owners.length > 10 && (
-										<Row justify="center">
-											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreOwners}>Show More Owners</span>
-										</Row>
-									)}
-								</Card>
-
-								{/* Moderator Menu */}
-								{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
-									<Card title="Moderator Menu" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-										<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => (toggleDrawer(), navigate(`/communities/${communityId}/settings`))}>
-											Community Settings
-										</Button>
+									<Card title="Badges" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+										{communityInfo.badges && communityInfo.badges.length > 0 ? (
+											<>
+												<Row justify="center">
+													{communityInfo.badges.slice(0, 10).map(badge => (
+														<Col key={badge.id} span={8} style={{ textAlign: 'center', marginBottom: 10 }}>
+															<Tooltip title={badge.description}>
+																<Avatar 
+																	src={badge.image} 
+																	shape="circle" 
+																	size={64} 
+																	icon={!badge.image && <TrophyOutlined />} 
+																	style={{ filter: badge.userHasBadge ? 'none' : 'blur(4px)' }}
+																/>
+																<div>{badge.name}</div>
+															</Tooltip>
+														</Col>
+													))}
+												</Row>
+												{communityInfo.badges.length > 10 && (
+													<Row justify="center">
+														<span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setShowMoreBadges(true)}>Show More Badges</span>
+													</Row>
+												)}
+											</>
+										) : (
+											<span>No badges available</span>
+										)}
 									</Card>
-								)}
+
+									{/* Members */}
+									<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+										{members.slice(0, 10).map(member => (
+											<Row key={member.username} justify="center">
+												<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
+												<span>{member.username}</span>
+											</Row>
+										))}
+										{members.length > 10 && (
+											<Row justify="center">
+												<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
+											</Row>
+										)}
+										{communityInfo.isPrivate && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+											<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={() => navigate(`/communities/${communityId}/invitations`)}>
+												User Invitations
+											</Button>
+										)}
+										{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+											<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowUserSettings}>
+												User Settings
+											</Button>
+										)}
+									</Card>
+
+									{/* Moderators */}
+									<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+										{moderators.slice(0, 10).map(moderator => (
+											<Row key={moderator.username} justify="center">
+												<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
+												<span>{moderator.username}</span>
+											</Row>
+										))}
+										{moderators.length > 10 && (
+											<Row justify="center">
+												<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreModerators}>Show More Moderators</span>
+											</Row>
+										)}
+										{communityInfo.memberType === 'owner' && (
+											<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowModeratorSettings}>
+												Moderator Settings
+											</Button>
+										)}
+									</Card>
+
+									{/* Owners */}
+									<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+										{owners.slice(0, 10).map(owner => (
+											<Row key={owner.username} justify="center">
+												<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
+												<span>{owner.username}</span>
+											</Row>
+										))}
+										{owners.length > 10 && (
+											<Row justify="center">
+												<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreOwners}>Show More Owners</span>
+											</Row>
+										)}
+									</Card>
+
+									{/* Moderator Menu */}
+									{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+										<Card title="Moderator Menu" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+											<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => navigate(`/communities/${communityId}/settings`)}>
+												Community Settings
+											</Button>
+										</Card>
+									)}
 								</div>
 							) : (
-								<Card title="Users" style={{ marginBottom: 15 }}>
+								<Card title="Users" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									<Row justify="center">
 										<span>
 											You have to be a member to see users.
@@ -446,8 +377,107 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 									</Row>
 								</Card>
 							)}
-						</Drawer>
-					</>
+						</Sider>
+					) : (
+						<>
+							<Button onClick={toggleDrawer} style={{ position: 'absolute', right: 10, top: 80, zIndex: 1000 }}>
+								<ContactsFilled style={{ fontSize: 21 }} />
+							</Button>
+							<Drawer
+								title="Community Sidebar"
+								placement="right"
+								onClose={toggleDrawer}
+								visible={drawerVisible}
+								width={300}
+							>
+								{(communityInfo.memberType && (!communityInfo.isPrivate || communityInfo.memberType !== 'notMember') && communityInfo.memberType !== 'banned') ? (
+									<div>
+										{/* Repeating the same structure for mobile */}
+										<Card title="Description" style={{ marginBottom: 15 }}>
+											<span>{communityInfo ? communityInfo.description : ''}</span>
+										</Card>
+
+										<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+											{members.slice(0, 10).map(member => (
+												<Row key={member.username} justify="center">
+													<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
+													<span>{member.username}</span>
+												</Row>
+											))}
+											{members.length > 10 && (
+												<Row justify="center">
+													<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
+												</Row>
+											)}
+											{communityInfo.isPrivate && (communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+												<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={() => navigate(`/communities/${communityId}/invitations`)}>
+													User Invitations
+												</Button>
+											)}
+											{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+												<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowUserSettings}>
+													User Settings
+												</Button>
+											)}
+										</Card>
+
+										{/* Moderators */}
+										<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+											{moderators.slice(0, 10).map(moderator => (
+												<Row key={moderator.username} justify="center">
+													<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
+													<span>{moderator.username}</span>
+												</Row>
+											))}
+											{moderators.length > 10 && (
+												<Row justify="center">
+													<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreModerators}>Show More Moderators</span>
+												</Row>
+											)}
+											{communityInfo.memberType === 'owner' && (
+												<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white', marginTop: 10 }} onClick={handleShowModeratorSettings}>
+													Moderator Settings
+												</Button>
+											)}
+										</Card>
+
+										{/* Owners */}
+										<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+											{owners.slice(0, 10).map(owner => (
+												<Row key={owner.username} justify="center">
+													<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
+													<span>{owner.username}</span>
+												</Row>
+											))}
+											{owners.length > 10 && (
+												<Row justify="center">
+													<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreOwners}>Show More Owners</span>
+												</Row>
+											)}
+										</Card>
+
+										{/* Moderator Menu */}
+										{(communityInfo.memberType === 'owner' || communityInfo.memberType === 'moderator') && (
+											<Card title="Moderator Menu" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+												<Button style={{ backgroundColor: '#7952CC', fontWeight: 700, color: 'white' }} onClick={() => (toggleDrawer(), navigate(`/communities/${communityId}/settings`))}>
+													Community Settings
+												</Button>
+											</Card>
+										)}
+									</div>
+								) : (
+									<Card title="Users" style={{ marginBottom: 15 }}>
+										<Row justify="center">
+											<span>
+												You have to be a member to see users.
+												You don't have an invitation yet?
+												Check your <Link to='/invitations' style={{ color: "#7952CC" }}>invitations</Link>.
+											</span>
+										</Row>
+									</Card>
+								)}
+							</Drawer>
+						</>
 					)}
 				</>
 				{/* Right Bar End */}
