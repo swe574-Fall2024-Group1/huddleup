@@ -176,3 +176,12 @@ class UserRecommendation(models.Model):
 	community = models.ForeignKey(Community, on_delete=models.CASCADE)
 	score = models.FloatField(default=0.0)
 	created_at = models.DateTimeField(auto_now_add=True)
+
+
+class TagSemanticMetadata(models.Model):
+    tag = models.OneToOneField(Tag, on_delete=models.CASCADE, related_name="semantic_metadata")
+    wikidata_id = models.CharField(max_length=50, null=True, blank=True)
+    semantic_data = models.JSONField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Semantic Metadata for Tag: {self.tag.name}"
