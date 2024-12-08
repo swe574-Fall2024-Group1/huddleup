@@ -1,6 +1,8 @@
 /* global BigInt */
 import React, { useState, useCallback, useEffect } from 'react';
-import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete } from 'antd';
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { AimOutlined, CloseOutlined } from '@ant-design/icons';
+import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete, Grid } from 'antd';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
@@ -11,12 +13,18 @@ import axios from 'axios';
 import debounce from 'lodash/debounce';
 
 const { Step } = Steps;
+const { useBreakpoint } = Grid;
 
 export default function CreatePost() {
 	const [currentStep, setCurrentStep] = useState(0);
 	const [templates, setTemplates] = useState([]);
 	const [selectedTemplate, setSelectedTemplate] = useState({});
 	const [form] = Form.useForm();
+	const [isLoadingLoc, setIsLoadingLoc] = useState(false);
+	const [longitude, setLongitude] = useState(28.994504653991893);
+	const [latitude, setLatitude] = useState(41.039040946957925);
+
+	const screens = useBreakpoint();
 
 	const navigate = useNavigate();
 
@@ -150,6 +158,69 @@ export default function CreatePost() {
       setSuggestedTags([]);
     }
   }, [tagInput, debouncedFetchTags]);
+
+const renderGeolocationField = () => {
+  const handleMapClick = ({ latlng }) => {
+    setLatitude(latlng.lat);
+    setLongitude(latlng.lng);
+    form.setFieldsValue({ geolocation: [latlng.lat, latlng.lng] });
+  };
+
+  const LocationMarker = () => {
+    const map = useMapEvents({
+      click: handleMapClick,
+    });
+    return (
+      <Marker position={[latitude, longitude]}>
+        <Popup>Selected Location</Popup>
+      </Marker>
+    );
+  };
+
+const RecenterAutomatically = ({lat,lng}) => {
+    const map = useMap();
+     useEffect(() => {
+       map.setView([lat, lng]);
+     }, [lat, lng]);
+     return null;
+   }
+
+  return (
+    <div>
+      <MapContainer
+        center={[latitude, longitude]}
+        zoom={14}
+        style={{ height: 400, width: "100%", marginBottom: "1rem" }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <LocationMarker />
+        <RecenterAutomatically lat={latitude} lng={longitude} />
+      </MapContainer>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
+        <span>
+          Latitude: {latitude.toFixed(6)}, Longitude: {longitude.toFixed(6)}
+        </span>
+        <Button
+          icon={<AimOutlined />}
+          onClick={() => {
+            navigator.geolocation.getCurrentPosition(({ coords }) => {
+              setLatitude(coords.latitude);
+              setLongitude(coords.longitude);
+              form.setFieldsValue({ geolocation: [coords.latitude, coords.longitude] });
+            });
+          }}
+        >
+          Use Current Location
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+
 
 	const renderFormrows = (rows) => {
 		if (rows.length > 0) {
@@ -987,106 +1058,16 @@ export default function CreatePost() {
 							</Form.Item>
 						);
 					case 'geolocation':
-						const handleLongitude = (e) => {
-							const longitude = e.target.valueAsNumber;
-							const errors = form.getFieldError(index);
-							if (Number.isFinite(longitude) && longitude >= -180 && longitude <= 180) {
-								const currentValue = form.getFieldValue(index) || [];
-								form.setFieldsValue({ [index]: [longitude, currentValue[1]] });
-
-								if (errors.length > 0) {
-									// Remove longitude error from errors array
-									const newErrors = errors.filter(e => e !== 'Longitude must be a valid number between -180 and 180')
-
-									form.setFields([
-										{
-											name: index,
-											errors: newErrors,
-										},
-									]);
-								}
-							} else {
-								// Display error message for invalid latitude
-
-								let newErrors = [...errors]
-								if (!errors.includes('Longitude must be a valid number between -180 and 180')) {
-									newErrors.push('Longitude must be a valid number between -180 and 180')
-								}
-
-								form.setFields([
-									{
-										name: index,
-										errors: newErrors,
-									},
-								]);
-							}
-						};
-
-						const handleLatitude = (e) => {
-							const latitude = e.target.valueAsNumber;
-							const errors = form.getFieldError(index);
-
-							if (Number.isFinite(latitude) && latitude >= -90 && latitude <= 90) {
-								const currentValue = form.getFieldValue(index) || [];
-								form.setFieldsValue({ [index]: [currentValue[0], latitude] });
-								if (errors.length > 0) {
-									// Remove longitude error from errors array
-									const newErrors = errors.filter(e => e !== 'Latitude must be a valid number between -90 and 90')
-									form.setFields([
-										{
-											name: index,
-											errors: newErrors,
-										},
-									]);
-								}
-							} else {
-								// Display error message for invalid latitude
-								const errors = form.getFieldError(index);
-								let newErrors = [...errors]
-								if (!errors.includes('Latitude must be a valid number between -90 and 90')) {
-									newErrors.push('Latitude must be a valid number between -90 and 90')
-								}
-
-								form.setFields([
-									{
-										name: index,
-										errors: newErrors,
-									},
-								]);
-							}
-						};
-
 						return (
-							<Form.Item
-								key={index}
-								name={index}
-								label={row.title + `  (${labelValue})`}
-								validateStatus={form.getFieldError(index).length > 0 ? 'error' : 'success'}
-								help={form.getFieldError(index).length > 0 ? form.getFieldError(index) : null}
-							>
-								<Input.Group>
-									<Input
-										key='longitude'
-										name='longitude'
-										style={{ width: '15%' }}
-										addonBefore="LON"
-										type="number"
-										onChange={(e) => { handleLongitude(e) }}
-										required={row.required}
-									/>
-									<Input
-										key='latitude'
-										name='latitude'
-										style={{ width: '15%' }}
-										addonBefore="LAT"
-										type="number"
-										onChange={(e) => { handleLatitude(e) }}
-										required={row.required}
-									/>
-
-								</Input.Group>
-							</Form.Item>
-						);
+                            <Form.Item
+                              key={index}
+                              name="geolocation"
+                              label={row.title}
+                              rules={[{ required: row.required, message: "Please select a location on the map!" }]}
+                            >
+                              {renderGeolocationField()}
+                            </Form.Item>
+                        );
 					default:
 						return null;
 				}
@@ -1169,6 +1150,13 @@ export default function CreatePost() {
 										{tag}
 									</Tag>
 								))}
+								<link
+                                  rel="stylesheet"
+                                  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+                                  integrity="sha512-xodZBNTC5n17Xt2vOTI4g9E74pI1IzRIcOa2fTUmJa65Df9acm0o7K4w5p1u7n5V6hk6K3szr5P5u7Oo1X3Mxg=="
+                                  crossorigin=""
+                                />
+
 							</div>
 							<Form.Item style={{float: 'right'}}>
 
