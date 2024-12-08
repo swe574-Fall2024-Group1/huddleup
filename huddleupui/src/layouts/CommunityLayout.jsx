@@ -309,34 +309,45 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 							<div>
 
 								{/* Community Activity Feed */}
-								<Card title="Community Activity">
+								{/* Community Activity Feed */}
+								{/* Community Activity Feed */}
+								<Card title="Community Activity Feed">
 								    {activityLoading ? (
 								        <Spin />
 								    ) : activityFeed.length > 0 ? (
-								        <ul style={{ listStyleType: "none", padding: 0 }}>
-								            {activityFeed.map((activity, index) => (
-								                <li key={index} style={{ marginBottom: 10 }}>
-								                    <p>
-								                        <b>{activity.user}</b> {activity.action}
-								                    </p>
-								                    {activity.target && (
-								                        <p style={{ fontSize: "smaller", color: "gray" }}>
-								                            {Object.entries(activity.target)
-								                                .filter(([key]) => !["postId", "commentId","templateId","badgeId"].includes(key)) // Exclude keys
-								                                .map(([key, value]) => (
-								                                    <span key={key}>
-								                                        {key}: {value}{" "}
-								                                    </span>
-								                                ))}
+								        <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
+								            <ul style={{ listStyleType: "none", padding: 0, margin: 0 }}>
+								                {activityFeed.map((activity, index) => (
+								                    <li key={index} style={{ marginBottom: 10 }}>
+								                        <p>
+								                            <b>{activity.user}</b> {activity.action}
 								                        </p>
-								                    )}
-								                </li>
-								            ))}
-								        </ul>
+								                        {activity.target && (
+								                            <p style={{ fontSize: "smaller", color: "gray" }}>
+								                                {Object.entries(activity.target)
+								                                    .filter(([key]) => !["postId", "commentId", "templateId", "badgeId"].includes(key)) // Exclude keys
+								                                    .map(([key, value]) => (
+								                                        <span key={key}>
+								                                            {key}: {value}{" "}
+								                                        </span>
+								                                    ))}
+								                            </p>
+								                        )}
+								                        <p style={{ fontSize: "smaller", color: "gray", marginTop: 5 }}>
+								                            {timeAgo(activity.createdAt)} {/* Display time below target */}
+								                        </p>
+								                    </li>
+								                ))}
+								            </ul>
+								        </div>
 								    ) : (
 								        <p>No recent activity.</p>
 								    )}
 								</Card>
+
+
+
+
 
 
 
