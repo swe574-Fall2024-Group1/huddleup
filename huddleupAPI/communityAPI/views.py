@@ -1464,7 +1464,8 @@ def badges(request):
 		}
 		badge_serializer = BadgeSerializer(data=badge_data)
 		if badge_serializer.is_valid():
-			badge_serializer.save()
+			badge=badge_serializer.save()
+			log_community_activity(request.user, payload['communityId'], 'create_badge', {'badgeId':badge.id,'Badge Name': badge_serializer.data['name'], 'Badge Description': badge_serializer.data['description']})
 			check_and_award_badges(request.user, payload['communityId'])
 			response_data = {
 				'success': True,
