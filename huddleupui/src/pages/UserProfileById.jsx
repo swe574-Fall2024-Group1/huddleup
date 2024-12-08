@@ -3,7 +3,7 @@ import { Card, Avatar, Tag, List, Tooltip, Spin, Button, message } from 'antd';
 import useApi from '../hooks/useApi';
 import fetchApi from '../api/fetchApi';
 import { useParams } from 'react-router-dom';
-
+import { TrophyOutlined } from '@ant-design/icons';
 
 const UserProfile = () => {
 	const [userInfo, setUserInfo] = useState(null);
@@ -49,6 +49,7 @@ const UserProfile = () => {
 
 	console.log(userInfo)
 
+
 	return (
 		<div style={{ maxWidth: 800, margin: '50px auto', padding: '20px' }}>
 			<Card title={`Profile: ${username}`} bordered>
@@ -70,11 +71,11 @@ const UserProfile = () => {
 									<Tooltip title={badge.description}>
 										<Card
 											hoverable
-											cover={<Avatar src={badge.image} size={64} style={{ margin: '10px auto' }} />}
+											cover={badge.image ? <Avatar src={badge.image} size={64} style={{ margin: '10px auto', borderRadius: '50%' }} /> : <TrophyOutlined style={{ fontSize: '64px', margin: '10px auto' }} />}
 										>
 											<Card.Meta title={badge.name} description={`Type: ${badge.type}`} />
 											<p>{badge.description}</p>
-											<p >Earned in <span style= {{color: '#7952CC'}} >{badge.community}</span>  community</p>
+											<p>Earned in <span style={{ color: '#7952CC' }}>{badge.community}</span> community</p>
 										</Card>
 									</Tooltip>
 								</List.Item>
