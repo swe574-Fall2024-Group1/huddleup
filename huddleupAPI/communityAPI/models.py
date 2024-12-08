@@ -191,6 +191,9 @@ class CommunityActivity(models.Model):
         ('join_community', 'Joined a community'),
 		('create_community', 'Created a community'),
 		('create_badge', 'Created a badge'), 
+		('make_moderator', 'Assign a moderator'), 
+		('ban_user', 'Banned a user'), 
+		('make_owner', 'Assign an owner'), 
     ]
 
     user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)

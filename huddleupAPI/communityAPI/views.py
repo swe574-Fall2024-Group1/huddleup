@@ -171,6 +171,8 @@ def assign_moderator(request):
 			connection.type = 'moderator'
 
 		connection.save()
+		log_community_activity(request.user, community.id, 'make_moderator', {'Username': user.username})
+
 		return JsonResponse({'success': True, 'message': 'Moderator assigned/unassigned successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
@@ -189,6 +191,8 @@ def change_ownership(request):
 		new_owner_connection = CommunityUserConnection.objects.get(user=new_owner.id, community=community.id)
 		new_owner_connection.type = 'owner'
 		new_owner_connection.save()
+		log_community_activity(request.user, community.id, 'make_owner', {'username': new_owner.username})
+
 
 		return JsonResponse({'success': True, 'message': 'Ownership changed successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
@@ -1169,6 +1173,8 @@ def ban_user(request):
 			connection.type = 'banned'
 
 		connection.save()
+		log_community_activity(request.user, community.id, 'ban_user', {'Username': user.username})
+
 		return JsonResponse({'success': True, 'message': 'User banned/unbanned successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
