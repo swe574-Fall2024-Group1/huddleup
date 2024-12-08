@@ -4,6 +4,8 @@ from rest_framework.parsers import JSONParser
 from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q,Count
+from django.utils import timezone
+
 
 
 from authAPI.models import User
@@ -211,6 +213,18 @@ def get_community_info(request):
 			connection = None
 			member_type = 'notMember'
 
+		# Fetch badges for the community
+		badges = Badge.objects.filter(community=community_id)
+		badges_data = []
+		for badge in badges:
+			user_has_badge = UserBadge.objects.filter(user=request.user.id, badge=badge.id).exists()
+			badges_data.append({
+				'image': badge.image,
+				'name': badge.name,
+				'description': badge.description,
+				'userHasBadge': user_has_badge
+			})
+
 		response_data = {
 			'success': True,
 			'data': {
@@ -221,6 +235,7 @@ def get_community_info(request):
 				'archived': community.archived,
 				'id': community.id,
 				'memberType': member_type,
+				'badges': badges_data
 			}
 		}
 
@@ -1540,13 +1555,16 @@ def user_badges(request):
 
 
 
-def meets_badge_criteria(user, community, criteria): 
-	# Fetch counts based on user and community
-	user_posts_count = Post.objects.filter(createdBy=user, community=community).count()
-	user_comments_count = Comment.objects.filter(createdBy=user, post__community=community).count()
+def meets_badge_criteria(user, community, criteria):
+	# Calculate the date one year ago from today
+	one_year_ago = timezone.now() - datetime.timedelta(days=365)
+
+	# Fetch counts based on user and community within the last year
+	user_posts_count = Post.objects.filter(createdBy=user, community=community, createdAt__gte=one_year_ago).count()
+	user_comments_count = Comment.objects.filter(createdBy=user, post__community=community, createdAt__gte=one_year_ago).count()
 	followed_count = get_followed_count_in_community(user, community)
-	user_templates_count = Template.objects.filter(createdBy=user, community=community).count()
-	user_likes_count = PostLike.objects.filter(post__createdBy=user, post__community=community, direction=True).count()
+	user_templates_count = Template.objects.filter(createdBy=user, community=community, createdAt__gte=one_year_ago).count()
+	user_likes_count = PostLike.objects.filter(post__createdBy=user, post__community=community, direction=True, createdAt__gte=one_year_ago).count()
 
 	# Function to validate non-empty and non-zero criteria
 	def is_valid(value):
