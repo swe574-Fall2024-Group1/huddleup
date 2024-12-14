@@ -2,7 +2,7 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { AimOutlined, CloseOutlined } from '@ant-design/icons';
-import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete, Grid, Tooltip } from 'antd';
+import { Steps, Form, Button, Select, Input, InputNumber, DatePicker, message, Checkbox, Card, Tag, AutoComplete, Grid } from 'antd';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
@@ -124,52 +124,37 @@ export default function CreatePost() {
 	  };
 
 	const fetchTags = async (query) => {
-		console.log("Fetching tags for query:", query); // Debug
-		setSuggestedTags([]);
-		if (query.length >= 3) {
+		if (query.length >= 3) { // Only fetch if input is at least 3 characters
 		  try {
-			const response = await axios.get(`/api/communities/tags/?search=${query}`);
-			const { local, wikidata } = response.data;
-
-			const combinedSuggestions = [
-			  ...local.map((tag) => ({ value: tag, source: "local" })),
-			  ...wikidata.map((tag) => ({
-				value: tag.name,
-				description: tag.description,
-				source: "wikidata",
-			  })),
-			];
-
-			console.log("Combined suggestions:", combinedSuggestions); // Debug
-			setSuggestedTags(combinedSuggestions);
+			const response = await axios.get(`/api/communities/tags?search=${query}`);
+			setSuggestedTags(response.data);
 		  } catch (error) {
 			console.error("Error fetching tags:", error);
-			setSuggestedTags([]);
 		  }
 		} else {
 		  setSuggestedTags([]);
 		}
-  };
-
+	  };
 
 	const handleTagRemove = (removedTag) => {
-    setTags(tags.filter((tag) => tag.value !== removedTag.value));
-  };
-	  const handleAddTag = (tag) => {
-    const lowerCaseTag = tag.value.toLowerCase();
-    if (lowerCaseTag.length >= 3 && !tags.some((t) => t.value === lowerCaseTag)) {
-      setTags([...tags, tag]);
-    }
-    setTagInput("");
-    setSuggestedTags([]);
-  };
+    	setTags(tags.filter(tag => tag.id !== removedTag));
+  	};
 
-	const debouncedFetchTags = useCallback(
-	  debounce((query) => {
-		fetchTags(query);
-	  }, 300),
-	  []
-	);
+  	const handleAddTag = (value, option) => {
+	  	console.log(option);
+	  	// Find the selected tag using the unique `id`
+		const selectedTag = suggestedTags.find((item) => item.id === option.key);
+
+		// Prevent duplicates
+		if (selectedTag && !tags.find((tag) => tag.id === selectedTag.id)) {
+		  setTags([...tags, selectedTag]);
+		}
+
+		setTagInput(""); // Clear input after selection
+
+  	};
+
+	const debouncedFetchTags = useCallback(debounce(fetchTags, 300), []);
 
 	// Trigger API call whenever tagInput changes
   useEffect(() => {
@@ -1151,43 +1136,32 @@ const RecenterAutomatically = ({lat,lng}) => {
 						<Form form={form} layout="vertical" onFinish={onFormSubmit} onFinishFailed={onFinishFailed}>
 							{renderFormrows(selectedTemplate.rows)}
 							<AutoComplete
-  style={{ width: "100%", marginBottom: "10px" }}
-  options={suggestedTags.map((tag) => ({
-    value: tag.value,
-    label: (
-      <Tooltip
-        title={
-          tag.source === "wikidata" && tag.description
-            ? tag.description
-            : null
-        }
-      >
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <span>{tag.value}</span>
-          {tag.source === "wikidata" && tag.description && (
-            <small style={{ color: "gray" }}>{tag.description}</small>
-          )}
-        </div>
-      </Tooltip>
-    ),
-  }))}
-  value={tagInput}
-  onChange={(value) => setTagInput(value.toLowerCase())}
-  onSelect={(value) => {
-    const selectedTag = suggestedTags.find((tag) => tag.value === value);
-    handleAddTag(selectedTag);
-  }}
-  placeholder="Add a tag"
-/>
+								style={{width: "100%", marginBottom: "10px"}}
+								options={suggestedTags.map((item) => ({
+								  value: item.id.toString(),
+								  label: (
+									<div>
+									  <strong>{item.name}</strong>
+									  <p style={{ margin: 0 }}>{item.description}</p>
+									</div>
+								  ),
+								  key: item.id,
+								}))}
+								value={tagInput} // Bind input to tagInput state
+								onSelect={handleAddTag}
+								onSearch={(value) => setTagInput(value)}
+								placeholder="Add a tag"
+
+							/>
 							<div>
-								{tags.map((tag) => (
-								  <Tag
-									key={tag.value}
-									closable
-									onClose={() => handleTagRemove(tag)}
-								  >
-									{tag.value} {tag.source === "wikidata" && "(Wikidata)"}
-								  </Tag>
+								{tags.map(tag => (
+									<Tag
+										key={tag.id}
+										closable
+										onClose={() => handleTagRemove(tag.id)}
+									>
+										{tag.name}
+									</Tag>
 								))}
 								<link
                                   rel="stylesheet"

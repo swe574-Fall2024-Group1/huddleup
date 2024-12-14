@@ -180,6 +180,7 @@ class UserRecommendation(models.Model):
 
 class TagSemanticMetadata(models.Model):
     tag = models.OneToOneField(Tag, on_delete=models.CASCADE, related_name="semantic_metadata")
+    description = models.TextField(blank=True)
     wikidata_id = models.CharField(max_length=50, null=True, blank=True)
     semantic_data = models.JSONField(null=True, blank=True)
 

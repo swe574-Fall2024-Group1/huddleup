@@ -32,7 +32,7 @@ class TagList(ListAPIView):
             if response.status_code == 200:
                 data = response.json()
                 return [
-                    {"name": result["label"], "description": result.get("description", "")}
+                    {"name": result["label"], "description": result.get("description", ""), "id": result["id"]}
                     for result in data.get("search", [])
                 ]
         except requests.RequestException:
@@ -46,17 +46,27 @@ class TagList(ListAPIView):
 
         # Fetch local tags
         queryset = self.filter_queryset(self.get_queryset())
-        local_tags = list(queryset.values_list("name", flat=True))
+
+        local_tags = []
+
+        for each in queryset:
+            local_tags.append(
+                {"name": each.name, "description": "", "id": str(each.id)} if not hasattr(each, "semantic_metadata") else
+                {"name": each.name.split("-wdata-")[0], "id": each.semantic_metadata.wikidata_id, "description": each.semantic_metadata.description}
+            )
+
+        local_ids = [x["id"] for x in local_tags if x["id"].startswith("Q")]
 
         # Fetch Wikidata tags
         wikidata_tags = self.fetch_wikidata_tags(search_param)
+        wikidata_tags = [x for x in wikidata_tags if x["id"] not in local_ids]
 
-        # Combine results
-        response = {
-            "local": local_tags if len(local_tags) else [search_param],
-            "wikidata": wikidata_tags,
-        }
-        return Response(response)
+        all_tags = local_tags + wikidata_tags
+
+        if not Tag.objects.filter(name=search_param).exists():
+            all_tags.append({"name": search_param, "id": "newlocal", "description": "Add new local tag"})
+
+        return Response(all_tags)
 
 
 class RecCommunitiesList(ListAPIView):

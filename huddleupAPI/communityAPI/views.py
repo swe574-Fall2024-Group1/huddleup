@@ -7,12 +7,14 @@ from django.db.models import Q,Count
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
 
 import json
 import datetime
+import re
+from taggit.models import Tag
 
 # Create a community with current user as owner
 @api_view(['POST'])
@@ -881,21 +883,31 @@ def get_template(request):
 def create_post(request):
 	if request.method == 'POST':
 		request_data = JSONParser().parse(request)
-		if request_data.get("tags"):
-			the_tags = [x.lower() for x in request_data.get("tags") if type(x) is str]
-		else:
-			the_tags = []
+		wikidata_tags = {}
+		all_tags = []
+		for each in request_data.get("tags"):
+			if each["id"].startswith("Q"):
+				wikidata_tags[each["id"]] = {"description": each["description"], "name": each["name"]}
+				all_tags.append("{}-wdata-{}".format(each["name"], each["id"]))
+			else:
+				all_tags.append(each["name"])
 
 		post_data = {
 				'createdBy': request.user.id,
 				'community': request_data['communityId'],
 				'template': request_data['templateId'],
 				'rowValues': request_data['rowValues'],
-				'tags': the_tags
+				'tags': all_tags
 		}
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():
 			post = post_serializer.save()
+			for eachkey, eachvalue in wikidata_tags.items():
+				tag = Tag.objects.get(name="{}-wdata-{}".format(eachvalue["name"], eachkey))
+				if not hasattr(tag, "semantic_metadata"):
+					tag_semantic = TagSemanticMetadata(tag=tag, description=eachvalue["description"],
+													   wikidata_id=eachkey)
+					tag_semantic.save()
 			check_and_award_badges(request.user, request_data['communityId'])
 
 			response_data = {
