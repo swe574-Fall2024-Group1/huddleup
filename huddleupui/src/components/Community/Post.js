@@ -297,7 +297,7 @@ const Post = ({ postData }) => {
 	  return (
 		<div>
 		  {tags.map((tag, index) => (
-			<Tag key={index}>{tag}</Tag>
+			<Tag key={tag.id}>{tag.name}</Tag>
 		  ))}
 		</div>
 	  );

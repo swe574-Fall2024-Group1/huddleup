@@ -704,7 +704,10 @@ def get_community_posts(request):
 				'liked': likedByUser,
 				'disliked': dislikedByUser,
 				'isFollowing': isFollowing,
-				'tags': [x.name for x in post.tags.all()]
+				'tags': [{"name": x.name if not hasattr(x, "semantic_metadata") else x.name.split("-wdata-")[0],
+						  "id": x.id if not hasattr(x, "semantic_metadata") else x.semantic_metadata.wikidata_id,
+						  "description": x.semantic_metadata.description if hasattr(x, "semantic_metadata") else ""
+			} for x in post.tags.all()]
 			})
 
 		# Sort the posts by createdAt in descending order
