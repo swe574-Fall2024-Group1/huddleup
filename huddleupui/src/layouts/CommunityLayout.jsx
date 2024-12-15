@@ -1,4 +1,4 @@
-import { Layout, Card, Avatar, Row, Col, Modal, Button, Spin, message, Drawer, Grid } from 'antd';
+import { Layout, Card, Avatar, Row, Col, Tooltip, Modal, Button, Spin, message, Drawer, Grid } from 'antd';
 import { useNavigate, Link } from "react-router-dom";
 import React, { useState } from 'react';
 import Navbar from "../components/MainLayout/Navbar";
@@ -7,7 +7,8 @@ import { useParams } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 import useCommunity from '../components/Community/useCommunity';
 import LeftSidebar from '../components/MainLayout/LeftSidebar';
-import { LockOutlined, UserOutlined, LoadingOutlined, ContactsFilled } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, LoadingOutlined, ContactsFilled, TrophyOutlined} from '@ant-design/icons';
+
 
 const { Header, Content, Footer, Sider } = Layout;
 const { useBreakpoint } = Grid;
@@ -27,6 +28,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	const [showMoreOwnersModal, setShowMoreOwnersModal] = useState(false);
 	const [showUserSettingsModal, setShowUserSettingsModal] = useState(false);
 	const [showModeratorSettingsModal, setShowModeratorSettingsModal] = useState(false);
+	const [showMoreBadges, setShowMoreBadges] = useState(false);
 	const [drawerVisible, setDrawerVisible] = useState(false);
 
 	const [activityFeed, setActivityFeed] = useState([]);
@@ -192,7 +194,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	if (communityInfo && communityInfo.name && canNotMembersSee && !communityInfo.isPrivate) {
 		allowedUserTypes.push('notMember');
 	}
-	
+
 	const screens = useBreakpoint();
 	return (
 		<Layout style={{ minHeight: '100vh' }}>
@@ -200,103 +202,103 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 			<Layout>
 				<LeftSidebar />
 				{communityInfo && !communityInfo.archived ? (
-				<Layout style={{ padding: screens.md ? '0 24px 24px' :  '44px 24px 24px' }}>
-					<div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 10, backgroundColor: 'white', padding: 10, borderRadius: 10, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
-						{Object.keys(communityInfo).length > 0 ? (
-							<>
-								{communityInfo && communityInfo.mainImage && (
-									<img
-										alt={communityInfo.name}
-										src={`${communityInfo.mainImage}`}
-										style={{
-											marginLeft: 10,
-											width: '100px',
-											height: '100px',
-											objectFit: 'cover',
-											borderRadius: 10,
-											boxShadow: "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px"
-										}}
-									/>
-								)}
-								<div style={{ marginLeft: 40, fontWeight: 500, color: '#626263' }}>
-									<h2>{communityInfo ? communityInfo.name : ''}</h2>
-									{communityInfo.isPrivate ? (
+					<Layout style={{ padding: screens.md ? '0 24px 24px' : '44px 24px 24px' }}>
+						<div style={{ display: 'flex', alignItems: 'center', marginTop: 20, marginBottom: 10, backgroundColor: 'white', padding: 10, borderRadius: 10, boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px" }}>
+							{Object.keys(communityInfo).length > 0 ? (
+								<>
+									{communityInfo && communityInfo.mainImage && (
+										<img
+											alt={communityInfo.name}
+											src={`${communityInfo.mainImage}`}
+											style={{
+												marginLeft: 10,
+												width: '100px',
+												height: '100px',
+												objectFit: 'cover',
+												borderRadius: 10,
+												boxShadow: "rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px"
+											}}
+										/>
+									)}
+									<div style={{ marginLeft: 40, fontWeight: 500, color: '#626263' }}>
+										<h2>{communityInfo ? communityInfo.name : ''}</h2>
+										{communityInfo.isPrivate ? (
+											<div>
+												{' '}
+												<LockOutlined style={{ marginRight: 5 }} />Private Community{' '}
+											</div>
+										) : (
+											<div>
+												{' '}
+												<UserOutlined style={{ marginRight: 5 }} />Public Community{' '}
+											</div>
+										)}
+										{communityInfo && communityInfo.memberType && communityInfo.memberType !== 'notMember' && (
+											<p>{`You are ${communityInfo.memberType} of this community`}</p>
+										)}
+										{communityInfo && !communityInfo.isPrivate && communityInfo.memberType !== 'banned' && (
+											<Button
+												style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
+												type="primary"
+												onClick={handleMembershipChange}
+												disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
+											>
+												{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
+											</Button>
+										)}
+										{communityInfo && communityInfo.isPrivate && ['member', 'moderator', 'owner'].includes(communityInfo.memberType) && (
+											<Button
+												style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
+												type="primary"
+												onClick={handleMembershipChange}
+												disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
+											>
+												{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
+											</Button>
+										)}
+
+										{communityInfo && communityInfo.isPrivate && communityInfo.memberType === 'notMember' && (
+											<div style={{ marginTop: 20, color: '#626263', fontSize: 12 }}>
+												This community is private. You need an invitation to join.
+											</div>
+										)}
+									</div>
+								</>
+							) : (
+								<div style={{ textAlign: 'center', margin: 'auto' }}>
+									<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
+								</div>
+							)}
+						</div>
+						<Layout>
+							<Content
+								className="site-layout-background"
+								style={{
+									marginTop: 10,
+									minHeight: 280,
+								}}
+							>
+								{allowedUserTypes.includes(communityInfo && communityInfo.memberType) ? (
+									children // Render children if allowed
+								) : (
+									communityInfo && communityInfo.memberType ? (
 										<div>
-											{' '}
-											<LockOutlined style={{ marginRight: 5 }} />Private Community{' '}
+											<Card>
+												<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You have to be a member to see posts of private communities.</p>
+												<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You don't have an invitation yet? Check your <a href='/invitations' style={{ color: "#7952CC", textDecoration: "none" }}>invitations</a>.</p>
+											</Card>
 										</div>
 									) : (
-										<div>
-											{' '}
-											<UserOutlined style={{ marginRight: 5 }} />Public Community{' '}
+										<div style={{ textAlign: 'center' }}>
+											<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
 										</div>
-									)}
-									{communityInfo && communityInfo.memberType && communityInfo.memberType !== 'notMember' && (
-										<p>{`You are ${communityInfo.memberType} of this community`}</p>
-									)}
-									{communityInfo && !communityInfo.isPrivate && communityInfo.memberType !== 'banned' && (
-										<Button
-											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
-											type="primary"
-											onClick={handleMembershipChange}
-											disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
-										>
-											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
-										</Button>
-									)}
-									{communityInfo && communityInfo.isPrivate && ['member', 'moderator', 'owner'].includes(communityInfo.memberType) && (
-										<Button
-											style={{ backgroundColor: '#7952CC', fontWeight: 700, marginTop: 10 }}
-											type="primary"
-											onClick={handleMembershipChange}
-											disabled={communityInfo.memberType === 'banned' || communityInfo.memberType === 'owner'}
-										>
-											{communityInfo.memberType === 'notMember' ? 'Join' : 'Leave'}
-										</Button>
-									)}
-
-									{communityInfo && communityInfo.isPrivate && communityInfo.memberType === 'notMember' && (
-										<div style={{ marginTop: 20, color: '#626263', fontSize: 12 }}>
-											This community is private. You need an invitation to join.
-										</div>
-									)}
-								</div>
-							</>
-						) : (
-							<div style={{ textAlign: 'center', margin: 'auto' }}>
-								<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
-							</div>
-						)}
-					</div>
-					<Layout>
-						<Content
-							className="site-layout-background"
-							style={{
-								marginTop: 10,
-								minHeight: 280,
-							}}
-						>
-							{allowedUserTypes.includes(communityInfo && communityInfo.memberType) ? (
-								children // Render children if allowed
-							) : (
-								communityInfo && communityInfo.memberType ? (
-									<div>
-										<Card>
-											<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You have to be a member to see posts of private communities.</p>
-											<p style={{ textAlign: 'center', color: '#626263', fontSize: 20, fontWeight: 500 }}>You don't have an invitation yet? Check your <a href='/invitations' style={{ color: "#7952CC", textDecoration: "none" }}>invitations</a>.</p>
-										</Card>
-									</div>
-								) : (
-									<div style={{ textAlign: 'center' }}>
-										<Spin size='large' indicator={<LoadingOutlined style={{ fontSize: 50, color: '#7952CC', margin: 50 }} spin />} />
-									</div>
-								)
-							)}
-						</Content>
+									)
+								)}
+							</Content>
+						</Layout>
+						<Footer className='logo' style={{ textAlign: 'center', fontWeight: 700, color: '#a1a1a1' }}>huddleup ©{new Date().getFullYear()}</Footer>
 					</Layout>
-					<Footer className='logo' style={{ textAlign: 'center', fontWeight: 700, color: '#a1a1a1' }}>huddleup ©{new Date().getFullYear()}</Footer>
-				</Layout>
-				): (
+				) : (
 					<div style={{ textAlign: 'center', margin: 'auto' }}>
 						<h1 style={{ color: '#626263', fontSize: 30, fontWeight: 500 }}>This community is archived.</h1>
 					</div>
@@ -668,6 +670,33 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 							</Col>
 						</Row>
 					))}
+				</div>
+			</Modal>
+			<Modal
+				title="All Badges"
+				visible={showMoreBadges}
+				onCancel={closeModal}
+				footer={null}
+			>
+				<div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+					<Row justify="center">
+						{communityInfo.badges && communityInfo.badges.length > 0 ? communityInfo.badges.map(badge => (
+							<Col key={badge.id} span={8} style={{ textAlign: 'center', marginBottom: 10 }}>
+								<Tooltip title={badge.description}>
+									<Avatar
+										src={badge.image}
+										shape="circle"
+										size={64}
+										icon={!badge.image && <TrophyOutlined />}
+										style={{ filter: badge.userHasBadge ? 'none' : 'blur(4px)' }}
+									/>
+									<div>{badge.name}</div>
+								</Tooltip>
+							</Col>
+						)) : (
+							<p>No badges available</p>
+					 	)}
+					</Row>
 				</div>
 			</Modal>
 		</Layout>
