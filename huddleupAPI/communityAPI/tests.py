@@ -191,7 +191,9 @@ class CommunityTests(TestCase):
 			'communityId': community.id,
 			'templateId': template.id,
 			'rowValues': ["title", "text"],
-			'tags': ["tag1", "tag2", "tag3"]
+			'tags': [{"name": "tag1", "id": "newlocal"}, {"name": "tag2", "id": "newlocal"},
+					 {"name":"tag3", "id":"newlocal"}
+					 ]
 		}
 
 		request = self.request_factory.post(url, data=post_data, format='json')
@@ -215,8 +217,10 @@ class CommunityTests(TestCase):
 		force_authenticate(request, user=self.user)
 		view = TagList.as_view()
 		response = view(request)
-		response_data = response.data
-		self.assertEqual(set(response_data), {"tag1", "tag2", "tag3"})
+		response_data = response.data[:3]
+		self.assertEqual(response_data, [{'name': 'tag1', 'description': '', 'id': '1'},
+										 {'name': 'tag2', 'description': '', 'id': '2'},
+										 {'name': 'tag3', 'description': '', 'id': '3'}])
 
 
 
