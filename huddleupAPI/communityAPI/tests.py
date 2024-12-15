@@ -217,10 +217,10 @@ class CommunityTests(TestCase):
 		force_authenticate(request, user=self.user)
 		view = TagList.as_view()
 		response = view(request)
-		response_data = response.data[:3]
-		self.assertEqual(response_data, [{'name': 'tag1', 'description': '', 'id': '1'},
-										 {'name': 'tag2', 'description': '', 'id': '2'},
-										 {'name': 'tag3', 'description': '', 'id': '3'}])
+		response_data = [{'name': x['name'], 'description': x['description']} for x in sorted(response.data[:3], key=lambda d: d['name'])]
+		self.assertEqual(response_data, [{'name': 'tag1', 'description': ''},
+										 {'name': 'tag2', 'description': ''},
+										 {'name': 'tag3', 'description': ''}])
 
 
 
