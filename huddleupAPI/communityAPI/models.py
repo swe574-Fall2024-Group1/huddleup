@@ -80,14 +80,14 @@ class Post(models.Model):
 			for each in added:
 				obj1, created1 = UserTagUsage.objects.get_or_create(
 					user=self.createdBy,
-					tag__name=each
+					tag_id=each
 				)
 				obj1.usage_count += 1
 				obj1.save(update_fields=['usage_count'])
 
 				obj2, created2 = CommunityTagUsage.objects.get_or_create(
 					community=self.community,
-					tag__name=each
+					tag_id=each
 				)
 				obj2.usage_count += 1
 				obj2.save(update_fields=['usage_count'])
@@ -95,14 +95,14 @@ class Post(models.Model):
 			for each in deleted:
 				obj1 = UserTagUsage.objects.get(
 					user=self.createdBy,
-					tag__id=each
+					tag_id=each
 				)
 				obj1.usage_count -= 1
 				obj1.save(update_fields=['usage_count'])
 
 				obj2 = CommunityTagUsage.objects.get(
 					community=self.community,
-					tag__id=each
+					tag_id=each
 				)
 				obj2.usage_count -= 1
 				obj2.save(update_fields=['usage_count'])

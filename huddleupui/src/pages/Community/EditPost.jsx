@@ -30,7 +30,7 @@ export default function EditPost() {
 			if (response && response.data) {
 				setPost(response.data.post);
 				setSelectedTemplate(response.data.template);
-				setTags(response.data.post.tags.map(tag => tag.toLowerCase()));
+				setTags(response.data.post.tags);
 				form.setFieldsValue({
 					...response.data.post.rowValues.reduce((acc, curr, index) => ({ ...acc, [index]: curr }), {}),
 				});
@@ -60,18 +60,23 @@ export default function EditPost() {
     debouncedFetchTags(tagInput);
   }, [tagInput, debouncedFetchTags]);
 
-  const handleAddTag = (tag) => {
-    const lowerCaseTag = tag.toLowerCase();
-    if (lowerCaseTag.length >= 3 && !tags.includes(lowerCaseTag)) {
-      setTags([...tags, lowerCaseTag]);
-    }
-    setTagInput("");
-    setSuggestedTags([]);
-  };
-
   const handleTagRemove = (removedTag) => {
-    setTags(tags.filter(tag => tag !== removedTag));
-  };
+	setTags(tags.filter(tag => tag.id !== removedTag));
+	};
+
+  	const handleAddTag = (value, option) => {
+	  	console.log(option);
+	  	// Find the selected tag using the unique `id`
+		const selectedTag = suggestedTags.find((item) => item.id === option.key);
+
+		// Prevent duplicates
+		if (selectedTag && !tags.find((tag) => tag.id === selectedTag.id)) {
+		  setTags([...tags, selectedTag]);
+		}
+
+		setTagInput(""); // Clear input after selection
+
+  	};
 
 	const onFormSubmit = async values => {
 		const rowValues = Object.values(values);
@@ -1061,25 +1066,31 @@ export default function EditPost() {
 					<Form form={form} layout="vertical" onFinish={onFormSubmit}>
 						{renderFormrows(selectedTemplate.rows)}
 						<AutoComplete
-						style={{ width: 200, marginBottom: "10px" }}
-						options={suggestedTags
-						  .filter(tag => !tags.includes(tag))
-						  .map(tag => ({ value: tag }))}
+						style={{ width: "100%", marginBottom: "10px" }}
+						options={suggestedTags.map((item) => ({
+								  value: item.id.toString(),
+								  label: (
+									<div>
+									  <strong>{item.name}</strong>
+									  <p style={{ margin: 0 }}>{item.description}</p>
+									</div>
+								  ),
+								  key: item.id,
+								}))}
 						value={tagInput}
-						onChange={(value) => setTagInput(value.toLowerCase())}
+						onSearch={(value) => setTagInput(value)}
 						onSelect={handleAddTag}
 						placeholder="Add a tag"
-						onBlur={() => handleAddTag(tagInput)}
 					  />
 
 					  <div>
 						{tags.map(tag => (
 						  <Tag
-							key={tag}
+							key={tag.id}
 							closable
-							onClose={() => handleTagRemove(tag)}
+							onClose={() => handleTagRemove(tag.id)}
 						  >
-							{tag}
+							{tag.name}
 						  </Tag>
 						))}
                         <link
