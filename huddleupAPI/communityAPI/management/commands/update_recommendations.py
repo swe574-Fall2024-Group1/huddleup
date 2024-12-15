@@ -1,12 +1,111 @@
 import numpy as np
+import requests
+import time
 from collections import defaultdict
 from django.core.management.base import BaseCommand
 from authAPI.models import User
-from communityAPI.models import Community, UserRecommendation, UserTagUsage, CommunityTagUsage, CommunityUserConnection
+from communityAPI.models import Post, Community, UserRecommendation, UserTagUsage, CommunityTagUsage, CommunityUserConnection, TagSemanticMetadata
+from taggit.models import Tag
+from django.core.cache import cache
 
 
 class Command(BaseCommand):
     help = 'Precompute community recommendations for active users'
+
+    wikidata_url = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids={}&format=json&props=claims"
+
+    def update_tag_metadata(self):
+        for each in Tag.objects.all():
+            if hasattr(each, "semantic_metadata"):
+                if not each.semantic_metadata.semantic_data:
+                    try:
+                        req = requests.get(self.wikidata_url.format(each.semantic_metadata.wikidata_id))
+                        time.sleep(1)
+                        if req.status_code == 200:
+                            each.semantic_metadata.semantic_data = req.json()["entities"][each.semantic_metadata.wikidata_id]["claims"]
+                            each.semantic_metadata.save()
+                    except Exception as e:
+                        print(str(e))
+
+    def get_all_ancestors(self, tag):
+        """
+        Return a set of all ancestor Q-IDs (including the tag's own Q-ID) for the given tag.
+        This function uses a recursive approach, with caching to prevent repeated database hits.
+        """
+
+        def recurse(qid):
+            # Given a Q-ID, find its ancestors
+            try:
+                tag_meta = TagSemanticMetadata.objects.select_related('tag').get(wikidata_id=qid)
+            except TagSemanticMetadata.DoesNotExist:
+                return  # no further ancestors
+
+            sem_data = tag_meta.semantic_data
+            if not sem_data or 'P279' not in sem_data:
+                return
+
+            for statement in sem_data['P279']:
+                mainsnak = statement.get('mainsnak', {})
+                datavalue = mainsnak.get('datavalue', {})
+                value = datavalue.get('value', {})
+                superclass_qid = value.get('id')
+                if superclass_qid and superclass_qid not in ancestors:
+                    ancestors.add(superclass_qid)
+                    recurse(superclass_qid)
+
+        cache_key = f"tag_ancestors_{tag.pk}"
+        ancestors = cache.get(cache_key)
+        if ancestors is not None:
+            return ancestors
+
+        ancestors = set()
+        # Include the tag's own Q-ID if it exists in TagSemanticMetadata
+        if hasattr(tag, 'semantic_metadata') and tag.semantic_metadata.wikidata_id:
+            ancestors.add(tag.semantic_metadata.wikidata_id)
+            qid = tag.semantic_metadata.wikidata_id
+            recurse(qid)
+
+        cache.set(cache_key, ancestors, 3600)  # Cache for an hour
+        return ancestors
+
+    def get_user_interest_profile(self, user):
+        user_tags = user.tags.all()
+        user_posts = Post.objects.filter(createdBy=user)
+        for post in user_posts:
+            user_tags = user_tags.union(post.tags.all())
+
+        interest = set()
+        for tag in user_tags:
+            interest.update(self.get_all_ancestors(tag))
+        return interest
+
+    def get_community_tag_profile(self, community):
+        community_posts = Post.objects.filter(community=community)
+        community_tags = set()
+        for post in community_posts:
+            community_tags.update(post.tags.all())
+
+        community_profile = set()
+        for tag in community_tags:
+            community_profile.update(self.get_all_ancestors(tag))
+        return community_profile
+
+    def get_non_member_communities(self, user):
+        member_community_ids = CommunityUserConnection.objects.filter(user=user).values_list('community_id', flat=True)
+        return Community.objects.exclude(id__in=member_community_ids)
+
+    def recommend_communities(self, user):
+        user_interest = self.get_user_interest_profile(user)
+        candidate_communities = self.get_non_member_communities(user)
+
+        recommendations = []
+        for community in candidate_communities:
+            community_profile = self.get_community_tag_profile(community)
+            if user_interest.intersection(community_profile):
+                # There is either a direct match or a semantic/ancestor match
+                recommendations.append(community)
+
+        return recommendations
 
     def calculate_recommendations(self, user):
         # Fetch user's post tags
@@ -46,12 +145,21 @@ class Command(BaseCommand):
         return recommendations[:10]  # Top 10 recommendations
 
     def handle(self, *args, **kwargs):
+        self.update_tag_metadata()
         active_users = User.objects.filter(is_active=True)
-        for user in active_users:
-            recommendations = self.calculate_recommendations(user)  # Get recommended communities
-            # Save recommendations to the database
-            UserRecommendation.objects.filter(user=user).delete()  # Clear old recommendations
+        for each in active_users:
+            comm_ids = set()
+            p279_comm_ids = set()
+            p279_recs = self.recommend_communities(each)
+            for eachrec in p279_recs:
+                p279_comm_ids.add(eachrec.id)
+
+            recommendations = self.calculate_recommendations(each)
+            UserRecommendation.objects.filter(user=each).delete()
             for community, score in recommendations:
                 if not np.isnan(score) and float(score) > 0:
-                    UserRecommendation.objects.create(user=user, community=community, score=score)
+                    comm_ids.add(community.id)
+            all_comm_ids = comm_ids.union(p279_comm_ids)
+            for eachid in list(all_comm_ids):
+                UserRecommendation.objects.create(user=each, community_id=eachid)
         self.stdout.write("Community recommendations updated successfully.")

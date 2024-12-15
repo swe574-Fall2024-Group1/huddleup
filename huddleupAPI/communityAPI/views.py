@@ -9,12 +9,14 @@ from django.utils import timezone
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge,CommunityActivity
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata, CommunityActivity
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
 
 import json
 import datetime
+import re
+from taggit.models import Tag
 
 # Create a community with current user as owner
 @api_view(['POST'])
@@ -723,7 +725,10 @@ def get_community_posts(request):
 				'liked': likedByUser,
 				'disliked': dislikedByUser,
 				'isFollowing': isFollowing,
-				'tags': [x.name for x in post.tags.all()]
+				'tags': [{"name": x.name if not hasattr(x, "semantic_metadata") else x.name.split("-wdata-")[0],
+						  "id": x.id if not hasattr(x, "semantic_metadata") else x.semantic_metadata.wikidata_id,
+						  "description": x.semantic_metadata.description if hasattr(x, "semantic_metadata") else ""
+			} for x in post.tags.all()]
 			})
 
 		# Sort the posts by createdAt in descending order
@@ -904,21 +909,31 @@ def get_template(request):
 def create_post(request):
 	if request.method == 'POST':
 		request_data = JSONParser().parse(request)
-		if request_data.get("tags"):
-			the_tags = [x.lower() for x in request_data.get("tags") if type(x) is str]
-		else:
-			the_tags = []
+		wikidata_tags = {}
+		all_tags = []
+		for each in request_data.get("tags"):
+			if each["id"].startswith("Q"):
+				wikidata_tags[each["id"]] = {"description": each["description"], "name": each["name"]}
+				all_tags.append("{}-wdata-{}".format(each["name"], each["id"]))
+			else:
+				all_tags.append(each["name"])
 
 		post_data = {
 				'createdBy': request.user.id,
 				'community': request_data['communityId'],
 				'template': request_data['templateId'],
 				'rowValues': request_data['rowValues'],
-				'tags': the_tags
+				'tags': all_tags
 		}
 		post_serializer = PostSerializer(data=post_data)
 		if post_serializer.is_valid():
 			post = post_serializer.save()
+			for eachkey, eachvalue in wikidata_tags.items():
+				tag = Tag.objects.get(name="{}-wdata-{}".format(eachvalue["name"], eachkey))
+				if not hasattr(tag, "semantic_metadata"):
+					tag_semantic = TagSemanticMetadata(tag=tag, description=eachvalue["description"],
+													   wikidata_id=eachkey)
+					tag_semantic.save()
 			check_and_award_badges(request.user, request_data['communityId'])
 			log_community_activity(request.user, request_data['communityId'], 'create_post', {'postId': post.id, 'Title': post.rowValues[0]})
 
@@ -1235,12 +1250,18 @@ def get_post_details(request):
 		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
 
 		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
+			tags = []
+			for each in post.tags.all():
+				tags.append({"name": each.name, "description": "", "id": str(each.id)} if
+				             not hasattr(each, "semantic_metadata") else
+				            {"name": each.name.split("-wdata-")[0], "id": each.semantic_metadata.wikidata_id,
+				             "description": each.semantic_metadata.description})
 			post_data = {
 				'id': post.id,
 				'createdBy': post.createdBy.username,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
-				'tags': list(post.tags.values_list("name", flat=True))
+				'tags': tags
 			}
 
 			template = Template.objects.get(id=post.template.id)
@@ -1274,9 +1295,23 @@ def edit_post(request):
 		if user_connection.type == 'owner' or user_connection.type == 'moderator' or post.createdBy == request.user:
 			post.rowValues = payload['rowValues']
 			post.isEdited = True
-			post.tags.set(payload.get("tags", []), clear=True)
+			wikidata_tags = {}
+			all_tags = []
+			for each in payload.get("tags"):
+				if each["id"].startswith("Q"):
+					wikidata_tags[each["id"]] = {"description": each["description"], "name": each["name"]}
+					all_tags.append("{}-wdata-{}".format(each["name"], each["id"]))
+				else:
+					all_tags.append(each["name"])
+			post.tags.set(all_tags, clear=True)
 			post.save()
 			post.refresh_from_db()
+			for eachkey, eachvalue in wikidata_tags.items():
+				tag = Tag.objects.get(name="{}-wdata-{}".format(eachvalue["name"], eachkey))
+				if not hasattr(tag, "semantic_metadata"):
+					tag_semantic = TagSemanticMetadata(tag=tag, description=eachvalue["description"],
+													   wikidata_id=eachkey)
+					tag_semantic.save()
 			all_tags = [x.id for x in post.tags.all()]
 			deleted_tags = set(existing_tags).difference(set(all_tags))
 			added_tags = set(all_tags).difference(set(existing_tags))

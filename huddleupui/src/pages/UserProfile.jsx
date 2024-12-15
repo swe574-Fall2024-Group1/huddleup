@@ -16,7 +16,7 @@ const UserProfile = () => {
         const response = await axios.post(`/api/auth/get-user-info`);
         const { about_me: userAboutMe, tags: userTags } = response.data.data;
         setAboutMe(userAboutMe);
-        setTags(userTags.map(tag => tag.toLowerCase())); // Initialize tags in lowercase
+        setTags(userTags);
       } catch (error) {
         console.error("Error fetching user profile data:", error);
       }
@@ -45,18 +45,23 @@ const UserProfile = () => {
     debouncedFetchTags(tagInput);
   }, [tagInput, debouncedFetchTags]);
 
-  const handleAddTag = (tag) => {
-    const lowerCaseTag = tag.toLowerCase();
-    if (lowerCaseTag.length >= 3 && !tags.includes(lowerCaseTag)) {
-      setTags([...tags, lowerCaseTag]);
-    }
-    setTagInput("");
-    setSuggestedTags([]);
-  };
-
   const handleTagRemove = (removedTag) => {
-    setTags(tags.filter(tag => tag !== removedTag));
-  };
+	setTags(tags.filter(tag => tag.id !== removedTag));
+	};
+
+  	const handleAddTag = (value, option) => {
+	  	console.log(option);
+	  	// Find the selected tag using the unique `id`
+		const selectedTag = suggestedTags.find((item) => item.id === option.key);
+
+		// Prevent duplicates
+		if (selectedTag && !tags.find((tag) => tag.id === selectedTag.id)) {
+		  setTags([...tags, selectedTag]);
+		}
+
+		setTagInput(""); // Clear input after selection
+
+  	};
 
   const handleSaveProfile = async () => {
     try {
@@ -84,25 +89,31 @@ const UserProfile = () => {
       <div style={{ marginBottom: "20px" }}>
         <h4>Tags of Interest</h4>
         <AutoComplete
-          style={{ width: 200, marginBottom: "10px" }}
-          options={suggestedTags
-            .filter(tag => !tags.includes(tag))
-            .map(tag => ({ value: tag }))}
+          style={{ width: "100%", marginBottom: "10px" }}
+          options={suggestedTags.map((item) => ({
+								  value: item.id.toString(),
+								  label: (
+									<div>
+									  <strong>{item.name}</strong>
+									  <p style={{ margin: 0 }}>{item.description}</p>
+									</div>
+								  ),
+								  key: item.id,
+								}))}
           value={tagInput}
-          onChange={(value) => setTagInput(value.toLowerCase())}
+          onSearch={(value) => setTagInput(value)}
           onSelect={handleAddTag}
           placeholder="Add a tag"
-          onBlur={() => handleAddTag(tagInput)}
         />
 
         <div>
           {tags.map(tag => (
             <Tag
-              key={tag}
+              key={tag.id}
               closable
-              onClose={() => handleTagRemove(tag)}
+              onClose={() => handleTagRemove(tag.id)}
             >
-              {tag}
+              {tag.name}
             </Tag>
           ))}
         </div>
