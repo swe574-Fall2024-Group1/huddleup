@@ -28,6 +28,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	const [showMoreOwnersModal, setShowMoreOwnersModal] = useState(false);
 	const [showUserSettingsModal, setShowUserSettingsModal] = useState(false);
 	const [showModeratorSettingsModal, setShowModeratorSettingsModal] = useState(false);
+	const [showMoreBadges, setShowMoreBadges] = useState(false);
 	const [drawerVisible, setDrawerVisible] = useState(false);
 
 	const toggleDrawer = () => setDrawerVisible(!drawerVisible);
@@ -614,6 +615,33 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 							</Col>
 						</Row>
 					))}
+				</div>
+			</Modal>
+			<Modal
+				title="All Badges"
+				visible={showMoreBadges}
+				onCancel={closeModal}
+				footer={null}
+			>
+				<div style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+					<Row justify="center">
+						{communityInfo.badges && communityInfo.badges.length > 0 ? communityInfo.badges.map(badge => (
+							<Col key={badge.id} span={8} style={{ textAlign: 'center', marginBottom: 10 }}>
+								<Tooltip title={badge.description}>
+									<Avatar
+										src={badge.image}
+										shape="circle"
+										size={64}
+										icon={!badge.image && <TrophyOutlined />}
+										style={{ filter: badge.userHasBadge ? 'none' : 'blur(4px)' }}
+									/>
+									<div>{badge.name}</div>
+								</Tooltip>
+							</Col>
+						)) : (
+							<p>No badges available</p>
+					 	)}
+					</Row>
 				</div>
 			</Modal>
 		</Layout>
