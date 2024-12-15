@@ -186,3 +186,28 @@ class TagSemanticMetadata(models.Model):
 
     def __str__(self):
         return f"Semantic Metadata for Tag: {self.tag.name}"
+
+
+class CommunityActivity(models.Model):
+    ACTION_CHOICES = [
+        ('create_post', 'Created a post'),
+        ('add_comment', 'Added a comment'),
+        ('create_template', 'Created a template'),
+        ('earn_badge', 'Earned a badge'),
+        ('like_post', 'Liked a post'),
+        ('like_comment', 'Liked a comment'),
+        ('follow_user', 'Followed a user'),
+        ('join_community', 'Joined a community'),
+		('create_community', 'Created a community'),
+		('create_badge', 'Created a badge'), 
+		('make_moderator', 'Assign a moderator'), 
+		('ban_user', 'Banned a user'), 
+		('make_owner', 'Assign an owner'), 
+    ]
+
+    user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
+    community = models.ForeignKey('Community', on_delete=models.CASCADE, null=True, blank=True)
+    action = models.CharField(max_length=50, choices=ACTION_CHOICES)
+    target = models.TextField(null=True, blank=True)  # Additional info (e.g., post id, comment id)
+    createdAt = models.DateTimeField(auto_now_add=True)
+

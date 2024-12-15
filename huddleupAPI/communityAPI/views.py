@@ -7,7 +7,7 @@ from django.db.models import Q,Count
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata, CommunityActivity
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
 
@@ -40,6 +40,7 @@ def create_community(request):
 
 				com = Community.objects.get(id=community_serializer.data['id'])
 				create_default_badges_for_community(com)
+				log_community_activity(request.user, community_serializer.data['id'], 'create_community', {'Community Name': community_serializer.data['name']})
 
 			# Create default template for the community
 			template_data = {
@@ -172,6 +173,8 @@ def assign_moderator(request):
 			connection.type = 'moderator'
 
 		connection.save()
+		log_community_activity(request.user, community.id, 'make_moderator', {'Username': user.username})
+
 		return JsonResponse({'success': True, 'message': 'Moderator assigned/unassigned successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
@@ -190,6 +193,8 @@ def change_ownership(request):
 		new_owner_connection = CommunityUserConnection.objects.get(user=new_owner.id, community=community.id)
 		new_owner_connection.type = 'owner'
 		new_owner_connection.save()
+		log_community_activity(request.user, community.id, 'make_owner', {'username': new_owner.username})
+
 
 		return JsonResponse({'success': True, 'message': 'Ownership changed successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
@@ -373,6 +378,7 @@ def join_community(request):
 		communityUserConnection_serializer = CommunityUserConnectionSerializer(data=communityUserConnection_data)
 		if communityUserConnection_serializer.is_valid():
 			communityUserConnection_serializer.save()
+			log_community_activity(request.user, community.id, 'join_community', {'Community Name': community.name})
 			return JsonResponse({'success': True, 'message': 'User added to the community successfully'}, status=201)
 		return JsonResponse(communityUserConnection_serializer.errors, status=400)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
@@ -823,7 +829,9 @@ def create_template(request):
 		}
 		template_serializer = TemplateSerializer(data=template_data)
 		if template_serializer.is_valid():
-			template_serializer.save()
+			template=template_serializer.save()
+			log_community_activity(request.user, request_data['communityId'], 'create_template', {'templateId': template.id, 'Template Name': template.templateName})
+
 
 			# Check for and award badges
 			check_and_award_badges(request.user, request_data['communityId'])
@@ -912,6 +920,7 @@ def create_post(request):
 													   wikidata_id=eachkey)
 					tag_semantic.save()
 			check_and_award_badges(request.user, request_data['communityId'])
+			log_community_activity(request.user, request_data['communityId'], 'create_post', {'postId': post.id, 'Title': post.rowValues[0]})
 
 			response_data = {
 				'success': True,
@@ -939,11 +948,14 @@ def add_comment(request):
 		}
 		comment_serializer = CommentSerializer(data=comment_data)
 		if comment_serializer.is_valid():
-			comment_serializer.save()
+			comment=comment_serializer.save()
+			
 
 			# Get the community from the post
 			post = Post.objects.get(id=request_data['postId'])
 			check_and_award_badges(request.user, post.community.id)
+			log_community_activity(request.user, post.community.id, 'add_comment', {'commentId': comment.id, 'postId': post.id, 'Content': comment.comment})
+
 
 			response_data = {
 				'success': True,
@@ -1036,6 +1048,8 @@ def like_post(request):
 
 				# Check for and award badges
 				check_and_award_badges(request.user, post.community.id)
+				log_community_activity(request.user, post.community.id, 'like_post', {'postId': post.id, 'Title': post.rowValues[0]})
+
 
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
@@ -1054,6 +1068,10 @@ def like_comment(request):
 			comment = Comment.objects.get(id=comment_id)
 		except Comment.DoesNotExist:
 			return JsonResponse({'error': 'Comment not found'}, status=404)
+		
+		post = Post.objects.get(id=comment.post.id)
+		community_id = post.community.id  # Access community ID from the post
+		
 
 		# Check if the user has already liked the comment
 		existing_like = CommentLike.objects.filter(comment=comment, createdBy=request.user).first()
@@ -1072,7 +1090,9 @@ def like_comment(request):
 			like_serializer = CommentLikeSerializer(data=like_data)
 
 			if like_serializer.is_valid():
-				like_serializer.save()
+				like=like_serializer.save()
+				log_community_activity(request.user, community_id, 'like_comment', {'commentId': like.comment.id, 'Content': comment.comment})
+
 				return JsonResponse({'success': True, 'message': 'Like added successfully'}, status=201)
 			else:
 				return JsonResponse(like_serializer.errors, status=400)
@@ -1098,7 +1118,7 @@ def follow_user(request):
 
 			if follow_serializer.is_valid():
 				follow_serializer.save()
-
+				log_community_activity(request.user, None, 'follow_user', {'followedUser': followee.username})
 				# Infer community where both follower and followee belong
 				community_connections = CommunityUserConnection.objects.filter(
 					user=request.user
@@ -1168,6 +1188,8 @@ def ban_user(request):
 			connection.type = 'banned'
 
 		connection.save()
+		log_community_activity(request.user, community.id, 'ban_user', {'Username': user.username})
+
 		return JsonResponse({'success': True, 'message': 'User banned/unbanned successfully'}, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
@@ -1483,7 +1505,8 @@ def badges(request):
 		}
 		badge_serializer = BadgeSerializer(data=badge_data)
 		if badge_serializer.is_valid():
-			badge_serializer.save()
+			badge=badge_serializer.save()
+			log_community_activity(request.user, payload['communityId'], 'create_badge', {'badgeId':badge.id,'Badge Name': badge_serializer.data['name'], 'Badge Description': badge_serializer.data['description']})
 			check_and_award_badges(request.user, payload['communityId'])
 			response_data = {
 				'success': True,
@@ -1664,6 +1687,8 @@ def check_and_award_badges(user, community_id):
 					'image': badge.image,
 					'awardedAt': user_badge.createdAt
 				})
+				log_community_activity(user=user, community_id=community.id, action='earn_badge', target={'badgeId': badge.id, 'Badge Name': badge.name, 'Badge Description': badge.description})
+
 			else:
 				print(f"User does not meet criteria for badge: {badge.name}")
 
@@ -1797,3 +1822,45 @@ def get_recommended_users(request):
 		return JsonResponse(response_data, status=200)
 
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
+
+
+def log_community_activity(user, community_id, action, target=None):
+	activity = CommunityActivity.objects.create(
+            user=user,
+            community_id=community_id,
+            action=action,
+            target=json.dumps(target) if target else None
+        )
+
+@api_view(['POST'])
+def get_community_activity_feed(request):
+    try:
+        # Parse community_id from request payload
+        payload = JSONParser().parse(request)
+        community_id = payload.get('community_id')
+
+        if not community_id:
+            return JsonResponse({'success': False, 'error': 'community_id is required'}, status=400)
+
+        # Fetch the last 10 actions for the given community
+        activities = CommunityActivity.objects.filter(community_id=community_id).order_by('-createdAt')[:10]
+
+        # Prepare response data
+        activity_data = [
+            {
+                'user': activity.user.username,
+                'action': activity.get_action_display(),
+                'target': json.loads(activity.target) if activity.target else None,
+				'createdAt': activity.createdAt.isoformat()  # Include the createdAt timestamp in ISO format
+            }
+            for activity in activities
+        ]
+
+        return JsonResponse({'success': True, 'data': activity_data}, status=200)
+
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
+
+
+
