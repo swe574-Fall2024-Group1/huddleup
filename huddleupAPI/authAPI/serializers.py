@@ -21,8 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = User
-		# add badges of user
-		fields = ['username', 'password', 'id', 'badges']
+		fields = ['username', 'password', 'id', 'badges', 'name', 'surname', 'birthday', 'profile_picture']
 
 
 class SessionSerializer(serializers.ModelSerializer):
@@ -31,10 +30,3 @@ class SessionSerializer(serializers.ModelSerializer):
 		model = Session
 		fields = ['userId', 'expiresAt', 'id']
 
-
-class UpdateUserSerializer(TaggitSerializer, serializers.ModelSerializer):
-	tags = TagListSerializerField(required=False)
-
-	class Meta:
-		model = User
-		fields = ['about_me', 'tags']

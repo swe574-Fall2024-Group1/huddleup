@@ -10,7 +10,8 @@ from authAPI.models import User
 from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge,CommunityActivity
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
-
+import base64
+from django.core.files.base import ContentFile
 import json
 import datetime
 
@@ -341,6 +342,10 @@ def get_user_profile(request):
 			'success': True,
 			'data': {
 				'username': user_serializer.data['username'],
+				'name': user.name,
+				'surname': user.surname,
+				'birthday': user.birthday.strftime('%Y-%m-%d') if user.birthday else None,
+				'profile_picture': user.profile_picture.url if user.profile_picture else None,
 				'isFollowing': isFollowing,
 				'about_me': user.about_me,
 				'tags': list(user.tags.values_list('name', flat=True)),
@@ -352,6 +357,37 @@ def get_user_profile(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+
+@api_view(['POST'])
+def update_user_profile(request):
+	if request.method == 'POST':
+		user_id = request.user.id
+		user = User.objects.get(id=user_id)
+		user_serializer = UserSerializer(user)
+
+		profile_picture_base64 = request.data.get('profile_picture')
+		if profile_picture_base64:
+			format, imgstr = profile_picture_base64.split(';base64,')
+			ext = format.split('/')[-1]
+			data = ContentFile(base64.b64decode(imgstr), name=f"profile_pic.{ext}")
+
+			user.profile_picture.save(data.name, data, save=True)
+
+		response_data = {
+			'success': True,
+			'data': {
+				'username': user_serializer.data['username'],
+				'name': user.name,
+				'surname': user.surname,
+				'birthday': user.birthday.strftime('%Y-%m-%d') if user.birthday else None,
+				'profile_picture': user.profile_picture.url if user.profile_picture else None,
+				'about_me': user.about_me,
+				'tags': list(user.tags.values_list('name', flat=True)),
+				'id': user_serializer.data['id'],
+				'badges': user_serializer.data['badges']
+			}
+		}
+		return JsonResponse(response_data, status=200)
 
 # If community is not private and user is not member of the community, add user to the community
 @api_view(['POST'])
