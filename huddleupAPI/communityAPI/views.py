@@ -9,7 +9,7 @@ from django.utils import timezone
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata, CommunityActivity
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata, CommunityActivity, UserUserRecommendation
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
 
@@ -1822,6 +1822,12 @@ def get_recommended_users(request):
 			UserFollowConnection.objects.filter(follower=request.user).values_list('followee', flat=True))
 
 		recommended_users = interacted_users - already_followed_users
+		recommended_users.discard(request.user)
+
+		tag_based_user_recommendations = UserUserRecommendation.objects.filter(user=request.user).values_list("recommended_user_id")
+
+		recommended_users = set(list(recommended_users) + list(tag_based_user_recommendations))
+
 		recommended_users_table = User.objects.filter(id__in=recommended_users)
 
 		users_list = []

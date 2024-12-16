@@ -171,12 +171,17 @@ class CommunityTagUsage(models.Model):
 		unique_together = ['community', 'tag']
 
 
-class UserRecommendation(models.Model):
+class UserCommunityRecommendation(models.Model):
 	user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE)
 	community = models.ForeignKey(Community, on_delete=models.CASCADE)
 	score = models.FloatField(default=0.0)
 	created_at = models.DateTimeField(auto_now_add=True)
 
+class UserUserRecommendation(models.Model):
+	user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE, related_name='user')
+	recommended_user = models.ForeignKey('authAPI.User', on_delete=models.CASCADE, related_name='recommended_user')
+	score = models.FloatField(default=0.0)
+	created_at = models.DateTimeField(auto_now_add=True)
 
 class TagSemanticMetadata(models.Model):
     tag = models.OneToOneField(Tag, on_delete=models.CASCADE, related_name="semantic_metadata")
