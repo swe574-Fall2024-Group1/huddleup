@@ -144,12 +144,74 @@ class Command(BaseCommand):
         recommendations = sorted(recommendations, key=lambda x: x[1], reverse=True)
         return recommendations[:10]  # Top 10 recommendations
 
+    def get_instance_of_qids(self, semantic_data):
+        """
+        Extract all 'instance of' (P31) Q-IDs from the tag's semantic_data.
+        """
+        instance_of_qids = set()
+        if not semantic_data or 'P31' not in semantic_data:
+            return instance_of_qids
+
+        for statement in semantic_data['P31']:
+            mainsnak = statement.get('mainsnak', {})
+            datavalue = mainsnak.get('datavalue', {})
+            value = datavalue.get('value', {})
+            qid = value.get('id')
+            if qid:
+                instance_of_qids.add(qid)
+
+        return instance_of_qids
+
+    def get_user_instance_of_profile(self, user):
+        user_tags = user.tags.all()
+        user_instance_of_set = set()
+
+        for tag in user_tags:
+            if hasattr(tag, 'semantic_metadata'):
+                sem_data = tag.semantic_metadata.semantic_data
+                user_instance_of_set.update(self.get_instance_of_qids(sem_data))
+        return user_instance_of_set
+
+    def get_community_instance_of_profile(self, community):
+        community_posts = Post.objects.filter(community=community)
+        community_tags = set()
+
+        for post in community_posts:
+            community_tags.update(post.tags.all())
+
+        community_instance_of_set = set()
+        for tag in community_tags:
+            if hasattr(tag, 'semantic_metadata'):
+                sem_data = tag.semantic_metadata.semantic_data
+                community_instance_of_set.update(self.get_instance_of_qids(sem_data))
+
+        return community_instance_of_set
+
+    def recommend_communities_based_on_instance_of(self, user):
+        user_instance_of = self.get_user_instance_of_profile(user)
+        candidate_communities = self.get_non_member_communities(user)
+
+        recommendations = []
+        for community in candidate_communities:
+            community_instance_of = self.get_community_instance_of_profile(community)
+            if user_instance_of.intersection(community_instance_of):
+                # If there's any overlap in instance_of Q-IDs, recommend this community
+                recommendations.append(community)
+
+        return recommendations
+
     def handle(self, *args, **kwargs):
         self.update_tag_metadata()
         active_users = User.objects.filter(is_active=True)
         for each in active_users:
             comm_ids = set()
             p279_comm_ids = set()
+            p31_comm_ids = set()
+
+            p31_recs = self.recommend_communities_based_on_instance_of(each)
+            for eachrec in p31_recs:
+                p31_comm_ids.add(eachrec.id)
+
             p279_recs = self.recommend_communities(each)
             for eachrec in p279_recs:
                 p279_comm_ids.add(eachrec.id)
@@ -159,7 +221,7 @@ class Command(BaseCommand):
             for community, score in recommendations:
                 if not np.isnan(score) and float(score) > 0:
                     comm_ids.add(community.id)
-            all_comm_ids = comm_ids.union(p279_comm_ids)
+            all_comm_ids = (comm_ids.union(p279_comm_ids)).union(p31_comm_ids)
             for eachid in list(all_comm_ids):
                 UserRecommendation.objects.create(user=each, community_id=eachid)
         self.stdout.write("Community recommendations updated successfully.")
