@@ -311,7 +311,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Community Activity Feed */}
 								{/* Community Activity Feed */}
 								{/* Community Activity Feed */}
-								<Card title="Community Activity Feed">
+								<Card title="Community Activity Feed"  style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 								    {activityLoading ? (
 								        <Spin />
 								    ) : activityFeed.length > 0 ? (
@@ -398,9 +398,9 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center">
+										<Row key={owner.username} justify="center" style={{ alignItems:"center" }}>
 											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{owner.username}</span>
+											<span style={{ marginLeft: "5px" }}>{owner.username}</span>
 										</Row>
 									))}
 									{owners.length > 10 && (
@@ -498,9 +498,9 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center">
+										<Row key={owner.username} justify="center" style={{ alignItems:"center" }}>
 											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{owner.username}</span>
+											<span style={{ marginLeft: "5px" }}>{owner.username}</span>
 										</Row>
 									))}
 									{owners.length > 10 && (
