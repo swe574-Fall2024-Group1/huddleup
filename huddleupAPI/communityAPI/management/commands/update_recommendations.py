@@ -69,13 +69,14 @@ class Command(BaseCommand):
 
     def get_user_interest_profile(self, user):
         user_tags = user.tags.all()
-        user_posts = Post.objects.filter(createdBy=user)
+        user_posts = Post.objects.filter(createdBy=user.id)
         for post in user_posts:
             user_tags = user_tags.union(post.tags.all())
 
         interest = set()
         for tag in user_tags:
-            interest.update(self.get_all_ancestors(tag))
+            ancestors = self.get_all_ancestors(tag)
+            interest.update(ancestors)
         return interest
 
     def get_community_tag_profile(self, community):
@@ -120,9 +121,7 @@ class Command(BaseCommand):
         candidate_users = User.objects.filter(id__in=candidate_users)
 
         current_user_combined_tags = self.calculate_weight_of_tags(user)
-        print(user_interest)
-        print(candidate_users)
-        print(current_user_combined_tags)
+
         user_recommendations = []
         for candidate_user in candidate_users:
             candidate_user_interest = self.get_user_interest_profile(candidate_user)
@@ -210,14 +209,21 @@ class Command(BaseCommand):
                 UserCommunityRecommendation.objects.create(user=active_user, community=community)
 
             # User Recommendation
+            p279_user_ids = set()
             user_recommendations = self.recommend_users(active_user)
+            for candidate_user in user_recommendations:
+                p279_user_ids.add(candidate_user)
+
             UserUserRecommendation.objects.filter(user=active_user).delete()
 
             candidate_ids = set()
             for candidate_user, score in user_recommendations:
                 if not np.isnan(score) and float(score) > 0:
                     candidate_ids.add(candidate_user.id)
-            for candidate_id in list(candidate_ids):
-                UserUserRecommendation.objects.create(user_id=active_user.id, recommended_user_id=candidate_id)
+            all_candidate_ids = candidate_ids.union(p279_user_ids)
+            for candidate_id in all_candidate_ids:
+                active_user = User.objects.get(id=active_user.id)
+                candidate_user = User.objects.get(id=candidate_id[0].id)
+                UserUserRecommendation.objects.create(user=active_user, recommended_user=candidate_user)
 
         self.stdout.write("Recommendations updated successfully.")
