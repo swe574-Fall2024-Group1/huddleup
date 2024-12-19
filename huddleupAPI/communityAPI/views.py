@@ -1062,7 +1062,7 @@ def like_post(request):
 				like_serializer.save()
 
 				# Check for and award badges
-				check_and_award_badges(request.user, post.community.id)
+				check_and_award_badges(post.createdBy, post.community.id)
 				log_community_activity(request.user, post.community.id, 'like_post', {'postId': post.id, 'Title': post.rowValues[0]})
 
 
