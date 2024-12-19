@@ -1823,7 +1823,7 @@ def get_recommended_users(request):
 			users_list.append({
 				'id': user.id,
 				'username': user.username,
-				'profile_pic': None
+				'profile_pic': user.profile_picture
 			})
 
 		response_data = {
