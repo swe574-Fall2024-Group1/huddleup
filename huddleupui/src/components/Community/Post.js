@@ -15,6 +15,7 @@ const { Option } = Select;
 
 const Post = ({ postData }) => {
 	const { communityInfo } = useCommunity();
+	console.log(communityInfo)
 
 	const [templateRows, setTemplateRows] = useState([]);
 	const [templateName, setTemplateName] = useState([]);
@@ -297,7 +298,7 @@ const Post = ({ postData }) => {
 	  return (
 		<div>
 		  {tags.map((tag, index) => (
-			<Tag key={index}>{tag}</Tag>
+			<Tag key={tag.id}>{tag.name}</Tag>
 		  ))}
 		</div>
 	  );
@@ -376,7 +377,7 @@ const Post = ({ postData }) => {
 							.filter(badge => badge.type === 'manual')
 							.map((badge) => (
 						<Option key={badge.id} value={badge.id}>
-							{badge.image && <img src={badge.image} alt={badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}
+							{badge.image && <img src={badge.image} alt={badge.name} style={{ maxWidth:32, maxHeight:32, marginRight: 8, borderRadius: '50%' }} />}
 							{badge.name}
 						</Option>
 						))}
@@ -419,7 +420,7 @@ const Post = ({ postData }) => {
 			</Modal>
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "rgba(180,177,186,0.2)" }} icon={postData?.profile_picture ? null : <UserOutlined />} src={postData?.profile_picture}  />}
-				title={<div style={{ color: "#7952CC" }}><a href={`/users/${postData.user_id}`}>{postData.username} </a> {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <span className={'badge'}>{badge.badge.image && <img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}{badge.badge.name}</span>)}</div></div>}
+				title={<div style={{ color: "#7952CC" }}><a href={`/users/${postData.user_id}`}>{postData.username} </a> {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <Tooltip title={badge.badge.name}><img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:32, maxHeight:32, marginRight: 8, borderRadius: '50%' }} /></Tooltip>)}</div></div>}
 				description={<div><div>{new Date(postData.createdAt).toLocaleString()}</div> {postData.isEdited ? <div>Edited</div> : null } </div>}
 			/>
 			<div style={{ marginTop: 20 }}>

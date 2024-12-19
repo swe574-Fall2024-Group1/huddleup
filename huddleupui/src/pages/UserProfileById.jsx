@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Tag, Avatar } from 'antd';
+import { Card, Avatar, Tag, List, Tooltip, Spin, Button, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import {useParams} from "react-router-dom";
+import useApi from '../hooks/useApi';
+import fetchApi from '../api/fetchApi';
+import { TrophyOutlined } from '@ant-design/icons';
 
 const UserProfileById = ({  }) => {
   const [username, setUsername] = useState("");
@@ -73,16 +76,70 @@ const UserProfileById = ({  }) => {
         <p>{aboutMe || "Not provided"}</p>
       </div>
 
-      <div style={{ marginBottom: "20px" }}>
-        <h4>Tags of Interest</h4>
-        <div>
-          {tags.length > 0 ? tags.map(tag => (
-            <Tag key={tag}>{tag}</Tag>
-          )) : <p>No tags added</p>}
-        </div>
-      </div>
-    </div>
-  );
+	console.log(userInfo)
+
+
+	return (
+		<div style={{ maxWidth: 800, margin: '50px auto', padding: '20px' }}>
+			<Card title={`Profile: ${username}`} bordered>
+				<Button type="primary" onClick={() => handleFollow(userInfo.username, userInfo.isFollowing)}>
+					{isFollowing ? 'Unfollow' : 'Follow'}
+				</Button>
+				<p><strong>About Me:</strong> {about_me}</p>
+
+				<p><strong>Tags:</strong> {tags.length > 0 ? tags.map(tag => <Tag key={tag}>{tag}</Tag>) : 'No tags'}</p>
+
+				<div style={{ marginTop: 20 }}>
+					<strong>Badges:</strong>
+					{badges.length > 0 ? (
+						<List
+							grid={{ gutter: 16, column: 3 }}
+							dataSource={badges}
+							renderItem={({ badge }) => (
+								<List.Item>
+									<Tooltip title={badge.description}>
+										<Card
+											hoverable
+											cover={badge.image ? <Avatar src={badge.image} size={64} style={{ margin: '10px auto', borderRadius: '50%' }} /> : <TrophyOutlined style={{ fontSize: '64px', margin: '10px auto' }} />}
+										>
+											<Card.Meta title={badge.name} description={`Type: ${badge.type}`} />
+											<p>{badge.description}</p>
+											<p>Earned in <span style={{ color: '#7952CC' }}>{badge.community}</span> community</p>
+										</Card>
+									</Tooltip>
+								</List.Item>
+							)}
+						/>
+					) : (
+						<p>No badges assigned.</p>
+					)}
+				</div>
+
+				<div style={{ marginTop: 20 }}>
+					<strong>Communities:</strong>
+					{userInfo.communities.length > 0 ? (
+						<List
+							grid={{ gutter: 16, column: 3 }}
+							dataSource={userInfo.communities}
+							renderItem={(community) => (
+								<List.Item>
+									<Card
+										hoverable
+										onClick={() => window.location.href = `/communities/${community.id}`}
+										cover={<Avatar src={community.mainImage} size={64} style={{ margin: '10px auto' }} />}
+									>
+										<Card.Meta title={community.name} description={community.description} />
+									</Card>
+								</List.Item>
+							)}
+						/>
+					) : (
+						<p>No communities joined.</p>
+					)}
+				</div>
+			</Card>
+		</div>
+	);
 };
 
 export default UserProfileById;

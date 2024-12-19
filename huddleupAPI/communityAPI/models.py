@@ -80,14 +80,14 @@ class Post(models.Model):
 			for each in added:
 				obj1, created1 = UserTagUsage.objects.get_or_create(
 					user=self.createdBy,
-					tag__name=each
+					tag_id=each
 				)
 				obj1.usage_count += 1
 				obj1.save(update_fields=['usage_count'])
 
 				obj2, created2 = CommunityTagUsage.objects.get_or_create(
 					community=self.community,
-					tag__name=each
+					tag_id=each
 				)
 				obj2.usage_count += 1
 				obj2.save(update_fields=['usage_count'])
@@ -95,14 +95,14 @@ class Post(models.Model):
 			for each in deleted:
 				obj1 = UserTagUsage.objects.get(
 					user=self.createdBy,
-					tag__id=each
+					tag_id=each
 				)
 				obj1.usage_count -= 1
 				obj1.save(update_fields=['usage_count'])
 
 				obj2 = CommunityTagUsage.objects.get(
 					community=self.community,
-					tag__id=each
+					tag_id=each
 				)
 				obj2.usage_count -= 1
 				obj2.save(update_fields=['usage_count'])
@@ -178,6 +178,15 @@ class UserRecommendation(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 
 
+class TagSemanticMetadata(models.Model):
+    tag = models.OneToOneField(Tag, on_delete=models.CASCADE, related_name="semantic_metadata")
+    description = models.TextField(blank=True)
+    wikidata_id = models.CharField(max_length=50, null=True, blank=True)
+    semantic_data = models.JSONField(null=True, blank=True)
+
+    def __str__(self):
+        return f"Semantic Metadata for Tag: {self.tag.name}"
+
 
 class CommunityActivity(models.Model):
     ACTION_CHOICES = [
@@ -202,4 +211,3 @@ class CommunityActivity(models.Model):
     target = models.TextField(null=True, blank=True)  # Additional info (e.g., post id, comment id)
     createdAt = models.DateTimeField(auto_now_add=True)
 
-    

@@ -124,29 +124,35 @@ export default function CreatePost() {
 	  };
 
 	const fetchTags = async (query) => {
-    if (query.length >= 3) { // Only fetch if input is at least 3 characters
-      try {
-        const response = await axios.get(`/api/communities/tags?search=${query}`);
-        setSuggestedTags(response.data); // Assumes the API returns an array of tag strings
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-      }
-    } else {
-      setSuggestedTags([]);
-    }
-  };
+		if (query.length >= 3) { // Only fetch if input is at least 3 characters
+		  try {
+			const response = await axios.get(`/api/communities/tags?search=${query}`);
+			setSuggestedTags(response.data);
+		  } catch (error) {
+			console.error("Error fetching tags:", error);
+		  }
+		} else {
+		  setSuggestedTags([]);
+		}
+	  };
 
 	const handleTagRemove = (removedTag) => {
-    setTags(tags.filter(tag => tag !== removedTag));
-  };
-	  const handleAddTag = (tag) => {
-    const lowerCaseTag = tag.toLowerCase();
-    if (lowerCaseTag.length >= 3 && !tags.includes(lowerCaseTag)) {
-      setTags([...tags, lowerCaseTag]);
-    }
-    setTagInput("");
-    setSuggestedTags([]);
-  };
+    	setTags(tags.filter(tag => tag.id !== removedTag));
+  	};
+
+  	const handleAddTag = (value, option) => {
+	  	console.log(option);
+	  	// Find the selected tag using the unique `id`
+		const selectedTag = suggestedTags.find((item) => item.id === option.key);
+
+		// Prevent duplicates
+		if (selectedTag && !tags.find((tag) => tag.id === selectedTag.id)) {
+		  setTags([...tags, selectedTag]);
+		}
+
+		setTagInput(""); // Clear input after selection
+
+  	};
 
 	const debouncedFetchTags = useCallback(debounce(fetchTags, 300), []);
 
@@ -1130,24 +1136,31 @@ const RecenterAutomatically = ({lat,lng}) => {
 						<Form form={form} layout="vertical" onFinish={onFormSubmit} onFinishFailed={onFinishFailed}>
 							{renderFormrows(selectedTemplate.rows)}
 							<AutoComplete
-								style={{width: 200, marginBottom: "10px"}}
-								options={suggestedTags
-									.filter(tag => !tags.includes(tag))
-									.map(tag => ({value: tag}))}
-								value={tagInput}
-								onChange={(value) => setTagInput(value.toLowerCase())} // Convert to lowercase on input
+								style={{width: "100%", marginBottom: "10px"}}
+								options={suggestedTags.map((item) => ({
+								  value: item.id.toString(),
+								  label: (
+									<div>
+									  <strong>{item.name}</strong>
+									  <p style={{ margin: 0 }}>{item.description}</p>
+									</div>
+								  ),
+								  key: item.id,
+								}))}
+								value={tagInput} // Bind input to tagInput state
 								onSelect={handleAddTag}
+								onSearch={(value) => setTagInput(value)}
 								placeholder="Add a tag"
-								onBlur={() => handleAddTag(tagInput)} // Create new tag if it doesn't exist
+
 							/>
 							<div>
 								{tags.map(tag => (
 									<Tag
-										key={tag}
+										key={tag.id}
 										closable
-										onClose={() => handleTagRemove(tag)}
+										onClose={() => handleTagRemove(tag.id)}
 									>
-										{tag}
+										{tag.name}
 									</Tag>
 								))}
 								<link
