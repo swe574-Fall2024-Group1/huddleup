@@ -70,6 +70,9 @@ const Navbar = () => {
 		if (option.type === 'community') {
 			navigate(`/communities/${option.id}`);
 		}
+		else if (option.type === 'user') {
+		    navigate(`/users/${option.id}`);
+		}
 	};
 
 	const screens = useBreakpoint();

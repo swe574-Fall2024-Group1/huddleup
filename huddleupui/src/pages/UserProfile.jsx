@@ -5,7 +5,7 @@ import axios from 'axios';
 import debounce from 'lodash/debounce';
 
 const UserProfile = () => {
-    const [username, setUsername] = useState("");
+  const [username, setUsername] = useState("");
   const [aboutMe, setAboutMe] = useState("");
   const [tags, setTags] = useState([]);
   const [suggestedTags, setSuggestedTags] = useState([]);
