@@ -18,12 +18,14 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
 	badges = UserBadgeSerializer(source='userbadge_set', many=True)
+	birthday = serializers.SerializerMethodField()
 
 	class Meta:
 		model = User
-		# add badges of user
-		fields = ['username', 'password', 'id', 'badges']
+		fields = ['username', 'password', 'id', 'badges', 'name', 'surname', 'birthday', 'profile_picture']
 
+	def get_birthday(self, obj):
+		return obj.birthday.strftime('%Y-%m-%d') if obj.birthday else None
 
 class SessionSerializer(serializers.ModelSerializer):
 
@@ -31,10 +33,3 @@ class SessionSerializer(serializers.ModelSerializer):
 		model = Session
 		fields = ['userId', 'expiresAt', 'id']
 
-
-class UpdateUserSerializer(TaggitSerializer, serializers.ModelSerializer):
-	tags = TagListSerializerField(required=False)
-
-	class Meta:
-		model = User
-		fields = ['about_me', 'tags']

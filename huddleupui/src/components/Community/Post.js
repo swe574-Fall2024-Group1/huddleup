@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Form, Select, Tag } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
@@ -44,6 +45,11 @@ const Post = ({ postData }) => {
 		}
 	});
 	const { userInfo } = useAuth();
+
+	const [imgModalVisible, setImgModalVisible] = useState(false);
+	const toggleImgModal = () => {
+		setImgModalVisible(!imgModalVisible);
+	};
 
 	template_result.then((response) => {
 		if (response && !response.loading && loadingTemplate) {
@@ -109,7 +115,19 @@ const Post = ({ postData }) => {
 			case 'language':
 				return <Text>{getRowValue(row.title)}</Text>;
 			case 'image':
-				return <img src={getRowValue(row.title)} alt={row.title} style={{ maxWidth: '100%', maxHeight: '100px' }} />;
+				const img = getRowValue(row.title)
+				return <>
+					<Button type="link" onClick={toggleImgModal}>
+						<img src={img} alt={row.type} style={{ maxWidth: '100%', maxHeight: '100px' }} />
+						</Button>
+						<Modal
+							title={postData.username}
+							visible={imgModalVisible}
+							onCancel={toggleImgModal}
+							footer={null}>
+								<img src={img} alt={img} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+						</Modal>
+				</>;
 
 			case 'Boolean':
 				return <Text>{getRowValue(row.title) ? 'Yes' : 'No'}</Text>;
@@ -117,9 +135,19 @@ const Post = ({ postData }) => {
 			case 'geolocation':
 				const [longitude, latitude] = getRowValue(row.title) || [];
 				return (
+					<>
 					<Text>
 						{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
 					</Text>
+					<MapContainer center={[longitude, latitude]} zoom={14} scrollWheelZoom={false} style={{height: 250 ,width: "100%", marginBottom: "1rem"}}>
+						<TileLayer
+							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+						<Marker position={[longitude, latitude]}>
+							<Popup>Selected Location</Popup>
+						</Marker>
+					</MapContainer>
+				</>
 				);
 
 			default:
@@ -390,8 +418,8 @@ const Post = ({ postData }) => {
 				/>
 			</Modal>
 			<Card.Meta
-				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
-				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <span className={'badge'}>{badge.badge.image && <img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}{badge.badge.name}</span>)}</div></div>}
+				avatar={<Avatar style={{ backgroundColor: "rgba(180,177,186,0.2)" }} icon={postData?.profile_picture ? null : <UserOutlined />} src={postData?.profile_picture}  />}
+				title={<div style={{ color: "#7952CC" }}><a href={`/users/${postData.user_id}`}>{postData.username} </a> {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <span className={'badge'}>{badge.badge.image && <img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}{badge.badge.name}</span>)}</div></div>}
 				description={<div><div>{new Date(postData.createdAt).toLocaleString()}</div> {postData.isEdited ? <div>Edited</div> : null } </div>}
 			/>
 			<div style={{ marginTop: 20 }}>

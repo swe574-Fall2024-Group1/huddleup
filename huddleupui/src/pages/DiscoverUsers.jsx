@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 import fetchApi from '../api/fetchApi';
 
@@ -98,7 +99,13 @@ const DiscoverUsers = () => {
 									}}
 								/>
 							</div>
-							<Meta title={user.username} />
+							<Meta
+								title={
+									<Link to={`/users/${user.id}`}>
+										{user.username}
+									</Link>
+								}
+							/>
 						</Card>
 					))}
 			</div>

@@ -184,7 +184,7 @@ class CreateBadge extends Component {
 
     return (
       <div>
-        <Button type="primary" onClick={this.showModal}>
+        <Button type="primary" size="large" onClick={this.showModal} style={{ backgroundColor: '#7952CC', fontWeight: 700 }}>
           Create Badge
         </Button>
         <Modal

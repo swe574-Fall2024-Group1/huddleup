@@ -21,6 +21,7 @@ import CommunitySettings from "./pages/Community/CommunitySettings";
 import EditPost from "./pages/Community/EditPost";
 import DiscoverUsers from "./pages/DiscoverUsers";
 import UserProfile from "./pages/UserProfile";
+import UserProfileById from "./pages/UserProfileById";
 
 function App() {
 
@@ -53,6 +54,14 @@ function App() {
 							<ProtectedRoute>
 								<AppLayout>
 									<UserProfile />
+								</AppLayout>
+							</ProtectedRoute>
+						}
+						/>
+						<Route path="/users/:userId" element={
+							<ProtectedRoute>
+								<AppLayout>
+									<UserProfileById />
 								</AppLayout>
 							</ProtectedRoute>
 						}
