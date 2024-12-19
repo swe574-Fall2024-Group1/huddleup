@@ -3,7 +3,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from taggit.models import Tag
 from rest_framework.response import Response
-from .models import UserRecommendation
+from .models import UserCommunityRecommendation
 
 
 class TagList(ListAPIView):
@@ -73,7 +73,7 @@ class RecCommunitiesList(ListAPIView):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return UserRecommendation.objects.filter(user=self.request.user)
+        return UserCommunityRecommendation.objects.filter(user=self.request.user)
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

@@ -9,7 +9,7 @@ from django.utils import timezone
 
 
 from authAPI.models import User
-from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata, CommunityActivity
+from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata, CommunityActivity, UserUserRecommendation
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
 
@@ -1814,14 +1814,18 @@ def get_recommended_users(request):
 		# The users who comment on posts of the current user
 		authors_of_comments_in_current_user_posts = Comment.objects.filter(id__in=current_user_posts).values_list('createdBy', flat=True)
 
+		tag_based_user_recommendations = UserUserRecommendation.objects.filter(user_id=request.user.id).values_list("recommended_user_id", flat=True)
+
 		# Add all interacted users into a set class
 		interacted_users = set(
-			list(users_who_like_posts_of_the_current_user) + list(users_who_like_comments_of_the_current_user) + list(authors_of_posts_that_current_user_likes) + list(authors_of_comments_that_current_user_likes) + list(authors_of_posts_that_current_user_comments) + list(authors_of_comments_in_current_user_posts))
+			list(users_who_like_posts_of_the_current_user) + list(users_who_like_comments_of_the_current_user) + list(authors_of_posts_that_current_user_likes) + list(authors_of_comments_that_current_user_likes) + list(authors_of_posts_that_current_user_comments) + list(authors_of_comments_in_current_user_posts) + list(tag_based_user_recommendations))
 
 		already_followed_users = set(
 			UserFollowConnection.objects.filter(follower=request.user).values_list('followee', flat=True))
 
 		recommended_users = interacted_users - already_followed_users
+		recommended_users.discard(request.user)
+
 		recommended_users_table = User.objects.filter(id__in=recommended_users)
 
 		users_list = []
