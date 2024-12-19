@@ -91,7 +91,7 @@ const DiscoverUsers = () => {
 							>
 								<img
 									alt={user.username}
-									src={user.profile_pic || 'https://via.placeholder.com/80'} // Default profile image
+									src={user.profile_pic || 'https://via.placeholder.com/80'}
 									style={{
 										width: '100%',
 										height: '100%',
@@ -100,11 +100,13 @@ const DiscoverUsers = () => {
 								/>
 							</div>
 							<Meta
-								title={
-									<Link to={`/users/${user.id}`}>
-										{user.username}
-									</Link>
-								}
+                                title={
+                                  <div style={{ marginBottom: 'auto', textAlign: 'center', paddingBottom: 0 }}>
+                                    <Link to={`/users/${user.id}`}>
+                                      {user.username}
+                                    </Link>
+                                  </div>
+                                }
 							/>
 						</Card>
 					))}

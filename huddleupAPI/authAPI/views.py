@@ -89,6 +89,10 @@ def get_user_info(request):
 				'about_me': user.about_me,
 				'tags': tags,
 				'id': user_serializer.data['id'],
+				'name': user_serializer.data['name'],
+				'surname': user_serializer.data['surname'],
+				'birthday': user_serializer.data['birthday'],
+				'profile_picture': user_serializer.data['profile_picture'],
 				'badges': user_serializer.data['badges']
 			}
 		}

@@ -52,3 +52,7 @@ code {
   margin-left: 8px;
 }
 
+.ant-upload.ant-upload-select:hover {
+  filter: brightness(0.5) !important;
+}
+

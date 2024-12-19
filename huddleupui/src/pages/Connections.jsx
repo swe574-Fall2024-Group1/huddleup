@@ -40,7 +40,7 @@ const Connections = () => {
 					renderItem={user => (
 						<List.Item actions={[<Button onClick={() => handleUnfollowUser(user.username)}>{'Unfollow'}</Button>]}>
 							<List.Item.Meta
-								avatar={<Avatar>{getInitials(user.username)}</Avatar>}  // Add Avatar with first letter of username
+								avatar={ <Avatar src={user.profile_picture} /> }
 								title={<Link to={`/users/${user.userId}`}>{user.username}</Link>}
 							/>
 						</List.Item>
@@ -54,7 +54,7 @@ const Connections = () => {
 					renderItem={user => (
 						<List.Item>
 							<List.Item.Meta
-								avatar={<Avatar>{getInitials(user.username)}</Avatar>}  // Add Avatar with first letter of username
+								avatar={<Avatar src={user.profile_picture} />}
 								title={<Link to={`/users/${user.userId}`}>{user.username}</Link>}
 							/>
 						</List.Item>
