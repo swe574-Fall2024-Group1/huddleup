@@ -350,8 +350,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{members.slice(0, 10).map(member => (
 										<Row key={member.username} justify="start">
-											<Avatar size={35} src={member.profile_picture} />
-											<span>{member.username}</span>
+											<Avatar src={member.profile_picture} />
+											{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 										</Row>
 									))}
 									{members.length > 10 && (
@@ -375,8 +375,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{moderators.slice(0, 10).map(moderator => (
 										<Row key={moderator.username} justify="start">
-											<Avatar size={35} src={moderator.profile_picture} />
-											<span>{moderator.username}</span>
+											<Avatar src={moderator.profile_picture} />
+											{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 										</Row>
 									))}
 									{moderators.length > 10 && (
@@ -395,8 +395,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
 										<Row key={owner.username} justify="start">
-                                        <Avatar size={35} src={owner.profile_picture} />
-											<span>{owner.username}</span>
+                                        <Avatar src={owner.profile_picture} />
+											{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
 									{owners.length > 10 && (
@@ -450,8 +450,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 									<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{members.slice(0, 10).map(member => (
 										<Row key={member.username} justify="start">
-											<Avatar size={35} src={member.profile_picture} />
-											<span>{member.username}</span>
+											<Avatar src={member.profile_picture} />
+											{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 										</Row>
 									))}
 									{members.length > 10 && (
@@ -475,8 +475,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{moderators.slice(0, 10).map(moderator => (
 										<Row key={moderator.username} justify="start">
-											<Avatar size={35} src={moderator.profile_picture} />
-											<span>{moderator.username}</span>
+											<Avatar src={moderator.profile_picture} />
+											{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 										</Row>
 									))}
 									{moderators.length > 10 && (
@@ -495,8 +495,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
 										<Row key={owner.username} justify="start">
-											<Avatar size={35} src={owner.profile_picture} />
-											<span>{owner.username}</span>
+											<Avatar src={owner.profile_picture} />
+											{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
 									{owners.length > 10 && (
@@ -543,10 +543,10 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 						<Row key={member.username}>
 							<Col span={24}>
 								<Row justify="start">
-									<Avatar size={35} src={member.profile_picture} />
+									<Avatar src={member.profile_picture} />
 								</Row>
 								<Row justify="start">
-									<span>{member.username}</span>
+									{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 								</Row>
 							</Col>
 						</Row>
@@ -564,10 +564,10 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 						<Row key={member.username}>
 							<Col span={8}>
 								<Row justify="start">
-									<Avatar size={35} src={member.profile_picture} />
+									<Avatar src={member.profile_picture} />
 								</Row>
 								<Row justify="start">
-									<span>{member.username}</span>
+									{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 								</Row>
 							</Col>
 							<Col span={2}>
@@ -586,10 +586,10 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 						<Row key={member.username}>
 							<Col span={12}>
 								<Row justify="start">
-									<Avatar size={35} src={member.profile_picture} />
+									<Avatar src={member.profile_picture} />
 								</Row>
 								<Row justify="start">
-									<span>{member.username}</span>
+									{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 								</Row>
 							</Col>
 							<Col span={12}>
@@ -611,10 +611,10 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 						<Row key={moderator.username}>
 							<Col span={24}>
 								<Row justify="start">
-									<Avatar size={35} src={moderator.profile_picture} />
+									<Avatar src={moderator.profile_picture} />
 								</Row>
 								<Row justify="start">
-									<span>{moderator.username}</span>
+									{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 								</Row>
 							</Col>
 						</Row>
@@ -632,10 +632,10 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 						<Row key={moderator.username}>
 							<Col span={12}>
 								<Row justify="start">
-									<Avatar size={35} src={moderator.profile_picture} />
+									<Avatar src={moderator.profile_picture} />
 								</Row>
 								<Row justify="start">
-									<span>{moderator.username}</span>
+									{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 								</Row>
 							</Col>
 							<Col span={12}>
@@ -656,10 +656,10 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 						<Row key={owner.username}>
 							<Col span={24}>
 								<Row justify="start">
-									<Avatar size={35} src={owner.profile_picture} />
+									<Avatar src={owner.profile_picture} />
 								</Row>
 								<Row justify="start">
-									<span>{owner.username}</span>
+									{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 								</Row>
 							</Col>
 						</Row>
