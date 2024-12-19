@@ -345,7 +345,7 @@ def get_user_profile(request):
 				'name': user.name,
 				'surname': user.surname,
 				'birthday': user.birthday.strftime('%Y-%m-%d') if user.birthday else None,
-				'profile_picture': user.profile_picture.url if user.profile_picture else None,
+				'profile_picture': user.profile_picture if user.profile_picture else None,
 				'isFollowing': isFollowing,
 				'about_me': user.about_me,
 				'tags': list(user.tags.values_list('name', flat=True)),
@@ -363,31 +363,32 @@ def update_user_profile(request):
 	if request.method == 'POST':
 		user_id = request.user.id
 		user = User.objects.get(id=user_id)
-		user_serializer = UserSerializer(user)
+		data = JSONParser().parse(request)
+		existing_tags = list(user.tags.values_list('name', flat=True))
 
-		profile_picture_base64 = request.data.get('profile_picture')
-		if profile_picture_base64:
-			format, imgstr = profile_picture_base64.split(';base64,')
-			ext = format.split('/')[-1]
-			data = ContentFile(base64.b64decode(imgstr), name=f"profile_pic.{ext}")
+		if 'about_me' in data:
+			user.about_me = data['about_me']
+		if 'tags' in data:
+			print(data['tags'])
+			tags = data['tags']
+			for tag in tags:
+				if tag not in existing_tags:
+					user.tags.add(tag)
+			for tag in existing_tags:
+				if tag not in tags:
+					user.tags.remove(tag)
+		if 'name' in data:
+			user.name = data['name']
+		if 'surname' in data:
+			user.surname = data['surname']
+		if 'birthday' in data:
+			user.birthday = data['birthday']
+		if 'profile_picture' in data:
+			user.profile_picture = data['profile_picture']
 
-			user.profile_picture.save(data.name, data, save=True)
-
-		response_data = {
-			'success': True,
-			'data': {
-				'username': user_serializer.data['username'],
-				'name': user.name,
-				'surname': user.surname,
-				'birthday': user.birthday.strftime('%Y-%m-%d') if user.birthday else None,
-				'profile_picture': user.profile_picture.url if user.profile_picture else None,
-				'about_me': user.about_me,
-				'tags': list(user.tags.values_list('name', flat=True)),
-				'id': user_serializer.data['id'],
-				'badges': user_serializer.data['badges']
-			}
-		}
-		return JsonResponse(response_data, status=200)
+		user.save()
+		return JsonResponse({'success': True, 'message': 'Profile updated successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # If community is not private and user is not member of the community, add user to the community
 @api_view(['POST'])
@@ -735,6 +736,7 @@ def get_community_posts(request):
 				'username': post.createdBy.username,
 				'user_badges': user_badges_data,
 				'user_id': post.createdBy.id,
+				'profile_picture': post.createdBy.profile_picture,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
@@ -1170,6 +1172,7 @@ def get_user_connections(request):
 		for follower in followers:
 			followers_data.append({
 				'username': follower.follower.username,
+				'profile_picture': follower.follower.profile_picture,
 				'userId': follower.follower.id
 			})
 
@@ -1178,6 +1181,7 @@ def get_user_connections(request):
 		for followee in following:
 			following_data.append({
 				'username': followee.followee.username,
+				'profile_picture': followee.followee.profile_picture,
 				'userId': followee.followee.id
 			})
 

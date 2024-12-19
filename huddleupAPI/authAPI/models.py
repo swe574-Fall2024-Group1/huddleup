@@ -5,10 +5,10 @@ from taggit.managers import TaggableManager
 
 class User(AbstractUser):
 	about_me = models.TextField(blank=True, default="")
-	profile_picture = models.CharField(max_length=5000000)
+	profile_picture = models.CharField(max_length=5000000, blank=True, default="")
 	name = models.TextField(blank=True, default="")
 	surname = models.TextField(blank=True, default="")
-	birthday = models.DateTimeField()
+	birthday = models.DateTimeField(null=True, blank=True)
 	tags = TaggableManager(blank=True)
 
 

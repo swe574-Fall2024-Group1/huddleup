@@ -418,8 +418,8 @@ const Post = ({ postData }) => {
 				/>
 			</Modal>
 			<Card.Meta
-				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
-				title={<div style={{ color: "#7952CC" }}>{postData.username} {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <span className={'badge'}>{badge.badge.image && <img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}{badge.badge.name}</span>)}</div></div>}
+				avatar={<Avatar style={{ backgroundColor: "rgba(180,177,186,0.2)" }} icon={postData?.profile_picture ? null : <UserOutlined />} src={postData?.profile_picture}  />}
+				title={<div style={{ color: "#7952CC" }}><a href={`/users/${postData.user_id}`}>{postData.username} </a> {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <span className={'badge'}>{badge.badge.image && <img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:24, maxHeight:24, marginRight: 8 }} />}{badge.badge.name}</span>)}</div></div>}
 				description={<div><div>{new Date(postData.createdAt).toLocaleString()}</div> {postData.isEdited ? <div>Edited</div> : null } </div>}
 			/>
 			<div style={{ marginTop: 20 }}>

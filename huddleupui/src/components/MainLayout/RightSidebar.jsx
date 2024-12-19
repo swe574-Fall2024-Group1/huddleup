@@ -88,12 +88,14 @@ const RightSidebar = () => {
                     <Row gutter={[16, 16]}>
                         {connections.map(connection => (
                             <Col span={10} key={connection.id}>
-                                <Row justify="center">
-                                    <Avatar>{connection.username.charAt(0).toUpperCase()}</Avatar>
-                                </Row>
-                                <Row justify="center">
-								<Link to={`/users/${connection.userId}`}><span>{connection.username}</span></Link>
-                                </Row>
+								<Link to={`/users/${connection.userId}`}>
+									<Row justify="center">
+										<Avatar src={connection.profile_picture}>{connection.profile_picture ?? connection.username.charAt(0).toUpperCase()}</Avatar>
+									</Row>
+									<Row justify="center">
+										<span>{connection.username}</span>
+									</Row>
+								</Link>
                             </Col>
                         ))}
                     </Row>
