@@ -85,7 +85,8 @@ def get_community_members(request):
 		for connection in connections:
 			members_data.append({
 				'username': connection.user.username,
-				'type': connection.type
+				'type': connection.type,
+				'profile_picture': connection.user.profile_picture if connection.user.profile_picture else None
 			})
 		response_data = {
 			'success': True,
@@ -125,7 +126,8 @@ def get_community_moderators(request):
 		for connection in connections:
 			moderators_data.append({
 				'username': connection.user.username,
-				'type': connection.type
+				'type': connection.type,
+				'profile_picture': connection.user.profile_picture if connection.user.profile_picture else None
 			})
 		response_data = {
 			'success': True,
@@ -145,7 +147,8 @@ def get_community_owners(request):
 		for connection in connections:
 			owners_data.append({
 				'username': connection.user.username,
-				'type': connection.type
+				'type': connection.type,
+				'profile_picture': connection.user.profile_picture if connection.user.profile_picture else None
 			})
 		response_data = {
 			'success': True,

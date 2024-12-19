@@ -12,7 +12,7 @@ const UserProfileById = ({  }) => {
   const [surname, setSurname] = useState("");
   const [birthday, setBirthday] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
-    const { userId } = useParams();
+  const { userId } = useParams();
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
