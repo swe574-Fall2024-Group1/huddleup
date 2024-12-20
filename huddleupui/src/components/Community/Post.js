@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal, Form, Select, Tag } from 'antd';
 import { Comment } from '@ant-design/compatible';
@@ -33,6 +33,7 @@ const Post = ({ postData }) => {
 	const [disliked, setDisliked] = useState(postData.disliked); // Track whether the user has disliked the post or not
 
 	const [showBadgeModal, setShowBadgeModal] = useState(false); // State to control delete confirmation modal
+	const [userBadges, setUserBadges] = useState([]); // State to manage the user badges
 	const [showDeleteModal, setShowDeleteModal] = useState(false); // State to control delete confirmation modal
 	const [editingComment, setEditingComment] = useState(null); // State to manage the comment being edited
 	const [editedCommentText, setEditedCommentText] = useState(''); // State to store the edited comment text
@@ -46,6 +47,10 @@ const Post = ({ postData }) => {
 		}
 	});
 	const { userInfo } = useAuth();
+	// set userBadges via useEffect
+	useEffect(() => {
+		setUserBadges(postData.user_badges)
+	}, [postData.user_badges])
 
 	const [imgModalVisible, setImgModalVisible] = useState(false);
 	const toggleImgModal = () => {
@@ -420,7 +425,7 @@ const Post = ({ postData }) => {
 			</Modal>
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "rgba(180,177,186,0.2)" }} icon={postData?.profile_picture ? null : <UserOutlined />} src={postData?.profile_picture}  />}
-				title={<div style={{ color: "#7952CC" }}><a href={`/users/${postData.user_id}`}>{postData.username} </a> {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{postData.user_badges && postData.user_badges.map(badge => <Tooltip title={badge.badge.name}><img src={badge.badge.image} alt={badge.badge.name} style={{ maxWidth:32, maxHeight:32, marginRight: 8, borderRadius: '50%' }} /></Tooltip>)}</div></div>}
+				title={<div style={{ color: "#7952CC" }}><a href={`/users/${postData.user_id}`}>{postData.username} </a> {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{userBadges && userBadges.map(badge => <Tooltip title={badge.badge.name}><img src={badge.badge.image ?? 'https://cdn.pixabay.com/photo/2013/07/12/16/01/badge-150755_1280.png'} alt={badge.badge.name} style={{ maxWidth:32, maxHeight:32, marginRight: 8, borderRadius: '50%' }} /></Tooltip>)}</div></div>}
 				description={<div><div>{new Date(postData.createdAt).toLocaleString()}</div> {postData.isEdited ? <div>Edited</div> : null } </div>}
 			/>
 			<div style={{ marginTop: 20 }}>
