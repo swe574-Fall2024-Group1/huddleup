@@ -360,6 +360,9 @@ def get_user_profile(request):
 				},
 				'badgeAssignedAt': user_badge.createdAt,
 			})
+		tags = []
+		for each in user.tags.all():
+			tags.append(each.name if not hasattr(each, "semantic_metadata") else each.name.split("-wdata-")[0])
 
 		response_data = {
 			'success': True,
@@ -371,7 +374,7 @@ def get_user_profile(request):
 				'profile_picture': user.profile_picture if user.profile_picture else None,
 				'isFollowing': isFollowing,
 				'about_me': user.about_me,
-				'tags': list(user.tags.values_list('name', flat=True)),
+				'tags': tags,
 				'id': user_serializer.data['id'],
 				'badges': user_badges_data,
 				'communities': communities_data
