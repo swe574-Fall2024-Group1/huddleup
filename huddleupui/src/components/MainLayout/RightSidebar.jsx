@@ -176,7 +176,7 @@ const RightSidebar = () => {
 							{connections.map(connection => (
 								<Col span={10} key={connection.id}>
 									<Row justify="center">
-										<Avatar>{connection.username.charAt(0).toUpperCase()}</Avatar>
+									<Avatar src={connection.profile_picture}>{connection.profile_picture ?? connection.username.charAt(0).toUpperCase()}</Avatar>
 									</Row>
 									<Row justify="center">
 										<span>{connection.username}</span>
