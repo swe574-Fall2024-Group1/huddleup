@@ -1783,35 +1783,35 @@ def create_default_badges_for_community(com):
 	default_badges = [
 		{
 			'name': f"{com.name} - Post Master",
-			'description': 'Awarded for creating a specific number of posts.',
+			'description': 'Awarded for creating 5 posts in the community',
 			'type': 'automatic',
 			'criteria': {'post_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Commentator",
-			'description': 'Awarded for creating a specific number of comments.',
+			'description': 'Awarded for creating 5 comments in the community',
 			'type': 'automatic',
 			'criteria': {'comment_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Social Butterfly",
-			'description': 'Awarded for gaining a specific number of followers.',
+			'description': 'Awarded for gaining 5 followers from the community.',
 			'type': 'automatic',
 			'criteria': {'follower_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Template Creator",
-			'description': 'Awarded for creating a specific number of templates.',
+			'description': 'Awarded for creating 5 different community specific templates.',
 			'type': 'automatic',
 			'criteria': {'template_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Appreciated",
-			'description': 'Awarded for receiving a specific number of likes.',
+			'description': 'Awarded for receiving 5 post likes in the community.',
 			'type': 'automatic',
 			'criteria': {'like_count': 5},
 			'community': com.id
