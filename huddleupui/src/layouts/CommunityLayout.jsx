@@ -398,8 +398,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="start">
-                                        <Avatar src={owner.profile_picture} />
+										<Row key={owner.username} justify="start" style={{ alignItems:"center" }}>
+                                        <Avatar src={owner.profile_picture} style={{ marginRight: "5px" }}/>
 											{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
@@ -498,8 +498,8 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="start">
-											<Avatar src={owner.profile_picture} />
+										<Row key={owner.username} justify="start" style={{ alignItems:"center" }}>
+											<Avatar src={owner.profile_picture} style={{ marginRight: "5px" }}/>
 											{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
