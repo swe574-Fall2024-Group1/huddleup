@@ -398,9 +398,9 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center" style={{ alignItems:"center" }}>
-											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span style={{ marginLeft: "5px" }}>{owner.username}</span>
+										<Row key={owner.username} justify="start">
+                                        <Avatar src={owner.profile_picture} />
+											{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
 									{owners.length > 10 && (
@@ -498,9 +498,9 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center" style={{ alignItems:"center" }}>
-											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span style={{ marginLeft: "5px" }}>{owner.username}</span>
+										<Row key={owner.username} justify="start">
+										<Avatar src={owner.profile_picture} />
+										{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
 									{owners.length > 10 && (
