@@ -34,10 +34,6 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	const [activityFeed, setActivityFeed] = useState([]);
 	const [activityLoading, setActivityLoading] = useState(true);
 
-	
-
-	
-
 	const toggleDrawer = () => setDrawerVisible(!drawerVisible);
 
 	const navigate = useNavigate();
@@ -355,13 +351,13 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Members */}
 								<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{members.slice(0, 10).map(member => (
-										<Row key={member.username} justify="center">
-											<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{member.username}</span>
+										<Row key={member.username} justify="start">
+											<Avatar src={member.profile_picture} />
+											{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 										</Row>
 									))}
 									{members.length > 10 && (
-										<Row justify="center">
+										<Row justify="start">
 											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
 										</Row>
 									)}
@@ -380,13 +376,13 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Moderators */}
 								<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{moderators.slice(0, 10).map(moderator => (
-										<Row key={moderator.username} justify="center">
-											<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{moderator.username}</span>
+										<Row key={moderator.username} justify="start">
+											<Avatar src={moderator.profile_picture} />
+											{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 										</Row>
 									))}
 									{moderators.length > 10 && (
-										<Row justify="center">
+										<Row justify="start">
 											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreModerators}>Show More Moderators</span>
 										</Row>
 									)}
@@ -400,13 +396,13 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center">
-											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{owner.username}</span>
+										<Row key={owner.username} justify="start">
+                                        <Avatar src={owner.profile_picture} />
+											{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
 									{owners.length > 10 && (
-										<Row justify="center">
+										<Row justify="start">
 											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreOwners}>Show More Owners</span>
 										</Row>
 									)}
@@ -423,7 +419,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 							</div>
 						) : (
 							<Card title="Users" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-								<Row justify="center">
+								<Row justify="start">
 									<span>
 										You have to be a member to see users.
 										You don't have an invitation yet?
@@ -455,13 +451,13 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 
 									<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{members.slice(0, 10).map(member => (
-										<Row key={member.username} justify="center">
-											<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{member.username}</span>
+										<Row key={member.username} justify="start">
+											<Avatar src={member.profile_picture} />
+											{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 										</Row>
 									))}
 									{members.length > 10 && (
-										<Row justify="center">
+										<Row justify="start">
 											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreMembers}>Show More Members</span>
 										</Row>
 									)}
@@ -480,13 +476,13 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Moderators */}
 								<Card title="Moderators" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{moderators.slice(0, 10).map(moderator => (
-										<Row key={moderator.username} justify="center">
-											<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{moderator.username}</span>
+										<Row key={moderator.username} justify="start">
+											<Avatar src={moderator.profile_picture} />
+											{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 										</Row>
 									))}
 									{moderators.length > 10 && (
-										<Row justify="center">
+										<Row justify="start">
 											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreModerators}>Show More Moderators</span>
 										</Row>
 									)}
@@ -500,13 +496,13 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Owners */}
 								<Card title="Owners" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									{owners.slice(0, 10).map(owner => (
-										<Row key={owner.username} justify="center">
-											<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
-											<span>{owner.username}</span>
+										<Row key={owner.username} justify="start">
+											<Avatar src={owner.profile_picture} />
+											{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 										</Row>
 									))}
 									{owners.length > 10 && (
-										<Row justify="center">
+										<Row justify="start">
 											<span style={{ color: 'blue', cursor: 'pointer' }} onClick={handleShowMoreOwners}>Show More Owners</span>
 										</Row>
 									)}
@@ -523,7 +519,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								</div>
 							) : (
 								<Card title="Users" style={{ marginBottom: 15 }}>
-									<Row justify="center">
+									<Row justify="start">
 										<span>
 											You have to be a member to see users.
 											You don't have an invitation yet?
@@ -548,11 +544,11 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					{members.map(member => (
 						<Row key={member.username}>
 							<Col span={24}>
-								<Row justify="center">
-									<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
+								<Row justify="start">
+									<Avatar src={member.profile_picture} />
 								</Row>
-								<Row justify="center">
-									<span>{member.username}</span>
+								<Row justify="start">
+									{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 								</Row>
 							</Col>
 						</Row>
@@ -569,11 +565,11 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					{members.map(member => (
 						<Row key={member.username}>
 							<Col span={8}>
-								<Row justify="center">
-									<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
+								<Row justify="start">
+									<Avatar src={member.profile_picture} />
 								</Row>
-								<Row justify="center">
-									<span>{member.username}</span>
+								<Row justify="start">
+									{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 								</Row>
 							</Col>
 							<Col span={2}>
@@ -591,11 +587,11 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					{bannedMembers && bannedMembers.length > 0 && bannedMembers.map(member => (
 						<Row key={member.username}>
 							<Col span={12}>
-								<Row justify="center">
-									<Avatar>{member.username.charAt(0).toUpperCase()}</Avatar>
+								<Row justify="start">
+									<Avatar src={member.profile_picture} />
 								</Row>
-								<Row justify="center">
-									<span>{member.username}</span>
+								<Row justify="start">
+									{<Link to={`/users/${member.user_id}`}>{member.username}</Link>}
 								</Row>
 							</Col>
 							<Col span={12}>
@@ -616,11 +612,11 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					{moderators.map(moderator => (
 						<Row key={moderator.username}>
 							<Col span={24}>
-								<Row justify="center">
-									<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
+								<Row justify="start">
+									<Avatar src={moderator.profile_picture} />
 								</Row>
-								<Row justify="center">
-									<span>{moderator.username}</span>
+								<Row justify="start">
+									{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 								</Row>
 							</Col>
 						</Row>
@@ -637,11 +633,11 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					{moderators.map(moderator => (
 						<Row key={moderator.username}>
 							<Col span={12}>
-								<Row justify="center">
-									<Avatar>{moderator.username.charAt(0).toUpperCase()}</Avatar>
+								<Row justify="start">
+									<Avatar src={moderator.profile_picture} />
 								</Row>
-								<Row justify="center">
-									<span>{moderator.username}</span>
+								<Row justify="start">
+									{<Link to={`/users/${moderator.user_id}`}>{moderator.username}</Link>}
 								</Row>
 							</Col>
 							<Col span={12}>
@@ -661,11 +657,11 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 					{owners.map(owner => (
 						<Row key={owner.username}>
 							<Col span={24}>
-								<Row justify="center">
-									<Avatar>{owner.username.charAt(0).toUpperCase()}</Avatar>
+								<Row justify="start">
+									<Avatar src={owner.profile_picture} />
 								</Row>
-								<Row justify="center">
-									<span>{owner.username}</span>
+								<Row justify="start">
+									{<Link to={`/users/${owner.user_id}`}>{owner.username}</Link>}
 								</Row>
 							</Col>
 						</Row>

@@ -57,6 +57,6 @@ urlpatterns = [
 	url(r'rec-communities', class_views.RecCommunitiesList.as_view(), name='rec_communities'),
 	url(r'get-recommended-users', views.get_recommended_users, name='get_recommended_users'),
     url(r'community-activity-feed', views.get_community_activity_feed, name='community_activity_feed'),
-
+	url(r'update-user-profile', views.update_user_profile, name='update_user_profile'),
 ]
 

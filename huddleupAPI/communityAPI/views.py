@@ -12,7 +12,8 @@ from authAPI.models import User
 from communityAPI.models import Community, CommunityUserConnection, Template, Post, Comment, PostLike, CommentLike, CommunityInvitation, UserFollowConnection, Badge, UserBadge, TagSemanticMetadata, CommunityActivity, UserUserRecommendation
 from communityAPI.serializers import CommunitySerializer, CommunityUserConnectionSerializer, TemplateSerializer, PostSerializer, CommentSerializer, PostLikeSerializer, CommentLikeSerializer, CommunityInvitationSerializer, UserFollowConnectionSerializer, BadgeSerializer, UserBadgeSerializer
 from authAPI.serializers import UserSerializer
-
+import base64
+from django.core.files.base import ContentFile
 import json
 import datetime
 import re
@@ -88,7 +89,9 @@ def get_community_members(request):
 		for connection in connections:
 			members_data.append({
 				'username': connection.user.username,
-				'type': connection.type
+				'type': connection.type,
+				'profile_picture': connection.user.profile_picture if connection.user.profile_picture else None,
+				'user_id': connection.user.id
 			})
 		response_data = {
 			'success': True,
@@ -128,7 +131,9 @@ def get_community_moderators(request):
 		for connection in connections:
 			moderators_data.append({
 				'username': connection.user.username,
-				'type': connection.type
+				'type': connection.type,
+				'profile_picture': connection.user.profile_picture if connection.user.profile_picture else None,
+				'user_id': connection.user.id
 			})
 		response_data = {
 			'success': True,
@@ -148,7 +153,9 @@ def get_community_owners(request):
 		for connection in connections:
 			owners_data.append({
 				'username': connection.user.username,
-				'type': connection.type
+				'type': connection.type,
+				'profile_picture': connection.user.profile_picture if connection.user.profile_picture else None,
+				'user_id': connection.user.id
 			})
 		response_data = {
 			'success': True,
@@ -358,6 +365,10 @@ def get_user_profile(request):
 			'success': True,
 			'data': {
 				'username': user_serializer.data['username'],
+				'name': user.name,
+				'surname': user.surname,
+				'birthday': user.birthday.strftime('%Y-%m-%d') if user.birthday else None,
+				'profile_picture': user.profile_picture if user.profile_picture else None,
 				'isFollowing': isFollowing,
 				'about_me': user.about_me,
 				'tags': list(user.tags.values_list('name', flat=True)),
@@ -369,6 +380,38 @@ def get_user_profile(request):
 		return JsonResponse(response_data, status=200)
 	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
+
+@api_view(['POST'])
+def update_user_profile(request):
+	if request.method == 'POST':
+		user_id = request.user.id
+		user = User.objects.get(id=user_id)
+		data = JSONParser().parse(request)
+		existing_tags = list(user.tags.values_list('name', flat=True))
+
+		if 'about_me' in data:
+			user.about_me = data['about_me']
+		if 'tags' in data:
+			print(data['tags'])
+			tags = data['tags']
+			for tag in tags:
+				if tag not in existing_tags:
+					user.tags.add(tag)
+			for tag in existing_tags:
+				if tag not in tags:
+					user.tags.remove(tag)
+		if 'name' in data:
+			user.name = data['name']
+		if 'surname' in data:
+			user.surname = data['surname']
+		if 'birthday' in data:
+			user.birthday = data['birthday']
+		if 'profile_picture' in data:
+			user.profile_picture = data['profile_picture']
+
+		user.save()
+		return JsonResponse({'success': True, 'message': 'Profile updated successfully'}, status=200)
+	return JsonResponse({'error': 'Method Not Allowed'}, status=405)
 
 # If community is not private and user is not member of the community, add user to the community
 @api_view(['POST'])
@@ -716,6 +759,7 @@ def get_community_posts(request):
 				'username': post.createdBy.username,
 				'user_badges': user_badges_data,
 				'user_id': post.createdBy.id,
+				'profile_picture': post.createdBy.profile_picture,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
 				'templateId': post.template.id,
@@ -1164,6 +1208,7 @@ def get_user_connections(request):
 		for follower in followers:
 			followers_data.append({
 				'username': follower.follower.username,
+				'profile_picture': follower.follower.profile_picture,
 				'userId': follower.follower.id
 			})
 
@@ -1172,6 +1217,7 @@ def get_user_connections(request):
 		for followee in following:
 			following_data.append({
 				'username': followee.followee.username,
+				'profile_picture': followee.followee.profile_picture,
 				'userId': followee.followee.id
 			})
 
@@ -1834,7 +1880,7 @@ def get_recommended_users(request):
 			users_list.append({
 				'id': user.id,
 				'username': user.username,
-				'profile_pic': None
+				'profile_pic': user.profile_picture
 			})
 
 		response_data = {
