@@ -387,19 +387,25 @@ def update_user_profile(request):
 		user_id = request.user.id
 		user = User.objects.get(id=user_id)
 		data = JSONParser().parse(request)
-		existing_tags = list(user.tags.values_list('name', flat=True))
 
 		if 'about_me' in data:
 			user.about_me = data['about_me']
 		if 'tags' in data:
-			print(data['tags'])
-			tags = data['tags']
-			for tag in tags:
-				if tag not in existing_tags:
-					user.tags.add(tag)
-			for tag in existing_tags:
-				if tag not in tags:
-					user.tags.remove(tag)
+			wikidata_tags = {}
+			all_tags = []
+			for each in data['tags']:
+				if each["id"].startswith("Q"):
+					wikidata_tags[each["id"]] = {"description": each["description"], "name": each["name"]}
+					all_tags.append("{}-wdata-{}".format(each["name"], each["id"]))
+				else:
+					all_tags.append(each["name"])
+			user.tags.set(all_tags, clear=True)
+			for eachkey, eachvalue in wikidata_tags.items():
+				tag = Tag.objects.get(name="{}-wdata-{}".format(eachvalue["name"], eachkey))
+				if not hasattr(tag, "semantic_metadata"):
+					tag_semantic = TagSemanticMetadata(tag=tag, description=eachvalue["description"],
+													   wikidata_id=eachkey)
+					tag_semantic.save()
 		if 'name' in data:
 			user.name = data['name']
 		if 'surname' in data:
