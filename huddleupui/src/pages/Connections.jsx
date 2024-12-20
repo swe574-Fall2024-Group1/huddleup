@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { List, Button, Card, Avatar } from 'antd';
+import {UserOutlined } from '@ant-design/icons';
+
 import { Link } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 import fetchApi from '../api/fetchApi';
@@ -40,7 +42,7 @@ const Connections = () => {
 					renderItem={user => (
 						<List.Item actions={[<Button onClick={() => handleUnfollowUser(user.username)}>{'Unfollow'}</Button>]}>
 							<List.Item.Meta
-								avatar={ <Avatar src={user.profile_picture} /> }
+								avatar={ <Avatar src={user?.profile_picture || undefined} icon={user?.profile_picture ? undefined : <UserOutlined />} />}
 								title={<Link to={`/users/${user.userId}`}>{user.username}</Link>}
 							/>
 						</List.Item>
@@ -54,7 +56,7 @@ const Connections = () => {
 					renderItem={user => (
 						<List.Item>
 							<List.Item.Meta
-								avatar={<Avatar src={user.profile_picture} />}
+								avatar={ <Avatar src={user?.profile_picture || undefined} icon={user?.profile_picture ? undefined : <UserOutlined />} />}
 								title={<Link to={`/users/${user.userId}`}>{user.username}</Link>}
 							/>
 						</List.Item>

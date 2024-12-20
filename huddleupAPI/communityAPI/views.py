@@ -824,6 +824,7 @@ def get_user_feed(request):
 			likes = PostLike.objects.filter(post=post.id)
 			like_count = 0
 			dislike_count = 0
+			author = User.objects.get(id=post.createdBy_id)
 			for like in likes:
 				if like.direction:
 					like_count += 1
@@ -862,7 +863,8 @@ def get_user_feed(request):
 				'isFollowing': isFollowing,
 				'feedType': feedType,
 				'communityName': post.community.name,
-				'communityId': post.community.id
+				'communityId': post.community.id,
+				'profile_picture': author.profile_picture
 			})
 
 		# Filter that user is member, moderator or owner of and not owned by current user
@@ -1301,6 +1303,7 @@ def get_post_details(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
 		post = Post.objects.get(id=payload['postId'])
+		author = User.objects.get(id=post.createdBy_id)
 		community = Community.objects.get(id=post.community.id)
 		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
 
@@ -1316,7 +1319,8 @@ def get_post_details(request):
 				'createdBy': post.createdBy.username,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
-				'tags': tags
+				'tags': tags,
+				'profile_picture': author.profile_picture
 			}
 
 			template = Template.objects.get(id=post.template.id)

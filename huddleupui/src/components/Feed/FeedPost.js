@@ -36,6 +36,7 @@ const FeedPost = ({ postData }) => {
 
 	const { userInfo } = useAuth();
 
+
 	const [imgModalVisible, setImgModalVisible] = useState(false);
 	const toggleImgModal = () => {
 		setImgModalVisible(!imgModalVisible);
@@ -314,7 +315,7 @@ const FeedPost = ({ postData }) => {
 				/>
 			</Modal>
 			<Card.Meta
-				avatar={<Avatar src={userInfo?.profile_picture || undefined} icon={userInfo?.profile_picture ? undefined : <UserOutlined />} />}
+				avatar={<Avatar src={postData?.profile_picture || undefined} icon={postData?.profile_picture ? undefined : <UserOutlined />} />}
 				title={<div>
 					<span style={{ position: 'absolute', top: 5, right: 5, color: '#bdbdbd', fontWeight: 300, fontSize: 12, marginLeft: 'auto' }}>
 						{postData.feedType === 'communityMembership' ? (
