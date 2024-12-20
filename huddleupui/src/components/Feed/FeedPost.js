@@ -314,7 +314,7 @@ const FeedPost = ({ postData }) => {
 				/>
 			</Modal>
 			<Card.Meta
-				avatar={<Avatar src={userInfo?.profile_picture}/>}
+				avatar={<Avatar src={userInfo?.profile_picture || undefined} icon={userInfo?.profile_picture ? undefined : <UserOutlined />} />}
 				title={<div>
 					<span style={{ position: 'absolute', top: 5, right: 5, color: '#bdbdbd', fontWeight: 300, fontSize: 12, marginLeft: 'auto' }}>
 						{postData.feedType === 'communityMembership' ? (

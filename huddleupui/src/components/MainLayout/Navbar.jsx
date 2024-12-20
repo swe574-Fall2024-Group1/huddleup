@@ -111,7 +111,11 @@ const Navbar = () => {
                 <Dropdown overlay={menu} trigger={['click']}>
                     <a onClick={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', color: '#5c5b5b', fontWeight: 600 }}>
                         <span style={{ marginRight: screens.sm ? 5 : 0 }}>{userInfo?.username}</span>
-                        <Avatar icon={<UserOutlined />} style={{ marginLeft: 8, marginRight: screens.sm ? 8 : 0 }} />
+                        <Avatar
+                          src={userInfo?.profile_picture || undefined}
+                          icon={userInfo?.profile_picture ? undefined : <UserOutlined />}
+                          style={{ marginLeft: 8, marginRight: screens.sm ? 8 : 0 }}
+                        />
                     </a>
                 </Dropdown>
             </div>

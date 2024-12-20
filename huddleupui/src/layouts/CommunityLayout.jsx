@@ -347,35 +347,61 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								<Card title="Description" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									<span>{communityInfo ? communityInfo.description : ''}</span>
 								</Card>
-								<Card title="Badges" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
-										{communityInfo.badges && communityInfo.badges.length > 0 ? (
-											<>
-												<Row justify="center">
-													{communityInfo.badges.slice(0, 10).map(badge => (
-														<Col key={badge.id} span={8} style={{ textAlign: 'center', marginBottom: 10 }}>
-															<Tooltip title={badge.description}>
-																<Avatar
-																	src={badge.image}
-																	shape="circle"
-																	size={64}
-																	icon={!badge.image && <TrophyOutlined />}
-																	style={{ filter: badge.userHasBadge ? 'none' : 'blur(4px)' }}
-																/>
-																<div>{badge.name}</div>
-															</Tooltip>
-														</Col>
-													))}
-												</Row>
-												{communityInfo.badges.length > 10 && (
-													<Row justify="center">
-														<span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setShowMoreBadges(true)}>Show More Badges</span>
-													</Row>
-												)}
-											</>
-										) : (
-											<span>No badges available</span>
-										)}
-									</Card>
+                                <Card title="Badges" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+                                  {communityInfo.badges && communityInfo.badges.length > 0 ? (
+                                    <>
+                                      <Row justify="center">
+                                        {communityInfo.badges.slice(0, 10).map(badge => {
+                                          let badgeImage;
+                                          let badgeName = badge.name;
+                                          switch (badge.name) {
+                                            case communityInfo.name + " - Post Master":
+                                              badgeImage = "https://cdn-icons-png.flaticon.com/512/1154/1154968.png";
+                                              break;
+                                            case communityInfo.name + " - Commentator":
+                                              badgeImage = "https://cdn-icons-png.freepik.com/512/2684/2684707.png";
+                                              break;
+                                            case communityInfo.name + " - Social Butterfly":
+                                              badgeImage = "https://cdn0.iconfinder.com/data/icons/movie-flat-3/340/movie_film_actor_star_famous_popular_person_man-512.png";
+                                              break;
+                                            case communityInfo.name + " - Template Creator":
+                                              badgeImage = "https://cdn-icons-png.flaticon.com/512/10438/10438743.png";
+                                              break;
+                                            case communityInfo.name + " - Appreciated":
+                                              badgeImage = "https://png.pngtree.com/png-clipart/20210309/original/pngtree-five-stars-rating-shiny-golden-like-thumb-png-image_5808435.jpg";
+                                              break;
+                                            default:
+                                              badgeImage = badge.image;
+                                          }
+
+                                          return (
+                                            <Col key={badge.id} span={8} style={{ textAlign: 'center', marginBottom: 10 }}>
+                                              <Tooltip title={badge.description}>
+                                                <Avatar
+                                                  src={badgeImage}
+                                                  shape="circle"
+                                                  size={64}
+                                                  icon={!badgeImage && <TrophyOutlined />}
+                                                  style={{ filter: badge.userHasBadge ? 'none' : 'blur(4px)' }}
+                                                />
+                                                <div>{badgeName}</div>
+                                              </Tooltip>
+                                            </Col>
+                                          );
+                                        })}
+                                      </Row>
+                                      {communityInfo.badges.length > 10 && (
+                                        <Row justify="center">
+                                          <span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setShowMoreBadges(true)}>
+                                            Show More Badges
+                                          </span>
+                                        </Row>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <span>No badges available</span>
+                                  )}
+                                </Card>
 
 								{/* Members */}
 								<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
