@@ -22,18 +22,15 @@ const RecommendedCommunitiesCard = () => {
     fetchRecommendedCommunities();
   }, []);
 
-  // Don't render anything if data is empty and not loading
-  if (!loading && communities.length === 0) {
-    return null;
-  }
-
   return (
       <Card title="Recommended Communities" style={{ marginBottom: 16 }} bordered={false}>
         {loading ? (
           <Spin />
         ) : (
             <Row gutter={[20, 20]}>
-            {communities.map((community) => (
+            {/* Informs users if the list is empty. Otherwise, maps the list to render children */}
+            { communities.length > 0 ?
+            communities.map((community) => (
                  <Link to={`/communities/${community.comm_id}`} key={community.comm_id}>
                       <Col span={30} justify="center">
                             <Row justify="center">
@@ -44,7 +41,7 @@ const RecommendedCommunitiesCard = () => {
                         </Row>
                     </Col>
                 </Link>
-            ))}
+            )) : <span>Found no recommendations for now.<br />Check out discover section to build your taste.</span>}
             </Row>
         )}
       </Card>

@@ -309,7 +309,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								{/* Community Activity Feed */}
 								{/* Community Activity Feed */}
 								{/* Community Activity Feed */}
-								<Card title="Community Activity Feed">
+								<Card title="Community Activity Feed"  style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 								    {activityLoading ? (
 								        <Spin />
 								    ) : activityFeed.length > 0 ? (

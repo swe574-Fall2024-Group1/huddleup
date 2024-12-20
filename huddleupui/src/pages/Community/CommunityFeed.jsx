@@ -8,9 +8,12 @@ import { LoadingOutlined, SearchOutlined, DownOutlined } from '@ant-design/icons
 import Post from '../../components/Community/Post';
 import CreateBadge from '../../pages/Community/CreateBadge.jsx';
 import useCommunity from '../../components/Community/useCommunity';
-import { Button, Card, Spin, Input, InputNumber, DatePicker, Select, Form, Checkbox } from 'antd';
+import { Button, Card, Spin, Input, InputNumber, DatePicker, Select, Form, Checkbox, Grid } from 'antd';
+
+const { useBreakpoint } = Grid;
 
 export default function CommunityFeed() {
+	const screens = useBreakpoint();
 	const { communityInfo } = useCommunity();
 	const navigate = useNavigate()
 	const [posts, setPosts] = useState([]);
@@ -355,25 +358,26 @@ export default function CommunityFeed() {
 	return (
 		<div>
 
-			<div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10 }}>
-				
+			<div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 10, flexDirection: screens.md ? "" : "column-reverse" }}>
 				<Button
 					type="primary"
 					size="large"
-					style={{ backgroundColor: 'white', color: 'black', fontWeight: 500, marginRight: 20 }}
+					style={{ backgroundColor: 'white', color: 'black', fontWeight: 500, marginRight: screens.md ? 20 : 0, marginTop: screens.md ? 0 : 20 }}
 					onClick={() => setSearchOpen(!searchOpen)}
 				>
 					<SearchOutlined /> Search in community
 				</Button>
-				<Button
-					type="primary"
-					size="large"
-					style={{ backgroundColor: '#7952CC', fontWeight: 700, marginRight: 20 }}
-					onClick={() => navigate('create-post')}
-				>
-					+ Add Post
-				</Button>
-				{communityInfo.memberType === 'owner' && <CreateBadge badges={badges} communityInfo={communityInfo} />}
+				<div style={{ display: 'flex', justifyContent: "center" }}>
+					<Button
+						type="primary"
+						size="large"
+						style={{ backgroundColor: '#7952CC', fontWeight: 700, marginRight: 20 }}
+						onClick={() => navigate('create-post')}
+					>
+						+ Add Post
+					</Button>
+					{communityInfo.memberType === 'owner' && <CreateBadge badges={badges} communityInfo={communityInfo} />}
+				</div>
 			</div>
 
 			{searchOpen && (
