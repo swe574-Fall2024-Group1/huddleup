@@ -651,17 +651,17 @@ def get_community_posts(request):
 						min_value = advanced_search.get(f"{row_title}_min")
 						max_value = advanced_search.get(f"{row_title}_max")
 						actual_value = row_values.get(row_title)
-						if min_value is not None and (actual_value is None or int(actual_value) < int(min_value)):
+						if min_value is not None and str(min_value) and (actual_value is None or actual_value == "" or int(actual_value) < int(min_value)):
 							return False
-						if max_value is not None and (actual_value is None or int(actual_value) > int(max_value)):
+						if max_value is not None and str(max_value) and (actual_value is None or actual_value == "" or int(actual_value) > int(max_value)):
 							return False
 					elif row_type in ['float', 'double']:
 						min_value = advanced_search.get(f"{row_title}_min")
 						max_value = advanced_search.get(f"{row_title}_max")
 						actual_value = row_values.get(row_title)
-						if min_value is not None and (actual_value is None or float(actual_value) < float(min_value)):
+						if min_value is not None and str(min_value) and (actual_value is None or actual_value == "" or float(actual_value) < float(min_value)):
 							return False
-						if max_value is not None and (actual_value is None or float(actual_value) > float(max_value)):
+						if max_value is not None and str(max_value) and (actual_value is None or actual_value == "" or float(actual_value) > float(max_value)):
 							return False
 					elif row_type == 'Boolean':
 						value = advanced_search.get(row_title)
@@ -685,9 +685,9 @@ def get_community_posts(request):
 						actual_value = row_values.get(row_title)
 						if actual_value:
 							actual_datetime = datetime.datetime.strptime(actual_value, "%Y-%m-%dT%H:%M:%S")
-							if min_value and actual_datetime < datetime.datetime.strptime(min_value, "%Y-%m-%dT%H:%M:%S.000Z"):
+							if min_value and actual_datetime < datetime.datetime.strptime(min_value, "%Y-%m-%dT%H:%M:%S.%fZ"):
 								return False
-							if max_value and actual_datetime > datetime.datetime.strptime(max_value, "%Y-%m-%dT%H:%M:%S.000Z"):
+							if max_value and actual_datetime > datetime.datetime.strptime(max_value, "%Y-%m-%dT%H:%M:%S.%fZ"):
 								return False
 						else:
 							return False
