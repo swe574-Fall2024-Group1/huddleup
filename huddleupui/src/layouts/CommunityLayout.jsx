@@ -29,6 +29,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 	const [showUserSettingsModal, setShowUserSettingsModal] = useState(false);
 	const [showModeratorSettingsModal, setShowModeratorSettingsModal] = useState(false);
 	const [showMoreBadges, setShowMoreBadges] = useState(false);
+	const [showMoreBadgesModal, setShowMoreBadgesModal] = useState(false);
 	const [drawerVisible, setDrawerVisible] = useState(false);
 
 	const [activityFeed, setActivityFeed] = useState([]);
@@ -166,6 +167,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 		setShowMoreOwnersModal(false);
 		setShowUserSettingsModal(false);
 		setShowModeratorSettingsModal(false);
+		setShowMoreBadges(false);
 	};
 
 	const handleMakeModerator = async (username, status) => {
@@ -342,11 +344,38 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 								        <p>No recent activity.</p>
 								    )}
 								</Card>
-
-
 								<Card title="Description" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
 									<span>{communityInfo ? communityInfo.description : ''}</span>
 								</Card>
+								<Card title="Badges" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
+										{communityInfo.badges && communityInfo.badges.length > 0 ? (
+											<>
+												<Row justify="center">
+													{communityInfo.badges.slice(0, 10).map(badge => (
+														<Col key={badge.id} span={8} style={{ textAlign: 'center', marginBottom: 10 }}>
+															<Tooltip title={badge.description}>
+																<Avatar
+																	src={badge.image}
+																	shape="circle"
+																	size={64}
+																	icon={!badge.image && <TrophyOutlined />}
+																	style={{ filter: badge.userHasBadge ? 'none' : 'blur(4px)' }}
+																/>
+																<div>{badge.name}</div>
+															</Tooltip>
+														</Col>
+													))}
+												</Row>
+												{communityInfo.badges.length > 10 && (
+													<Row justify="center">
+														<span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => setShowMoreBadges(true)}>Show More Badges</span>
+													</Row>
+												)}
+											</>
+										) : (
+											<span>No badges available</span>
+										)}
+									</Card>
 
 								{/* Members */}
 								<Card title="Members" style={{ boxShadow: "rgba(0, 0, 0, 0.1) 0px 4px 12px", marginBottom: 15 }}>
@@ -682,7 +711,7 @@ export default function CommunityLayout({ children, allowedUserTypes, canNotMemb
 									<Avatar
 										src={badge.image}
 										shape="circle"
-										size={64}
+										size={32}
 										icon={!badge.image && <TrophyOutlined />}
 										style={{ filter: badge.userHasBadge ? 'none' : 'blur(4px)' }}
 									/>
