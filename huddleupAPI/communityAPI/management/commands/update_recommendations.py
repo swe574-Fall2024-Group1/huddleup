@@ -272,13 +272,17 @@ class Command(BaseCommand):
 
             # User Recommendation
             UserUserRecommendation.objects.filter(user=active_user).delete()
+            p279_user_ids = set()
             user_recommendations = self.recommend_users(active_user)
+            for candidate_user, score in user_recommendations:
+                p279_user_ids.add(candidate_user.id)
 
             candidate_ids = set()
             for candidate_user, score in user_recommendations:
                 if not np.isnan(score) and float(score) > 0:
                     candidate_ids.add(candidate_user.id)
-            for candidate_id in candidate_ids:
+            all_candidate_ids = candidate_ids.union(p279_user_ids)
+            for candidate_id in all_candidate_ids:
                 active_user = User.objects.get(id=active_user.id)
                 candidate_user = User.objects.get(id=candidate_id)
                 UserUserRecommendation.objects.create(user=active_user, recommended_user=candidate_user)
