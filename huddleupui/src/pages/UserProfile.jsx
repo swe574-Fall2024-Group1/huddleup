@@ -3,6 +3,7 @@ import { Input, Button, Tag, AutoComplete, DatePicker, message, Upload, Avatar }
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import debounce from 'lodash/debounce';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 const UserProfile = () => {
   const [username, setUsername] = useState("");
@@ -15,13 +16,16 @@ const UserProfile = () => {
   const [birthday, setBirthday] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
 
+  const navigate = useNavigate(); // Initialize useNavigate hook
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const response = await axios.post(`/api/auth/get-user-info/`);
-        const { username, about_me, tags, name, surname, birthday, profile_picture } = response.data.data;
+        const { username, about_me, tags, id, name, surname, birthday, profile_picture } = response.data.data;
         setAboutMe(about_me);
         setTags(tags);
+        setUserId(id);
         setName(name);
         setSurname(surname);
         setBirthday(birthday ? birthday : null);
@@ -34,13 +38,15 @@ const UserProfile = () => {
     fetchUserProfile();
   }, []);
 
+  const [userId, setUserId] = useState(null);
+
   const handleImageChange = (info) => {
     if (info.file) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setProfilePicture(reader.result);
       };
-        reader.readAsDataURL(info.file)
+      reader.readAsDataURL(info.file);
     }
   };
 
@@ -64,22 +70,21 @@ const UserProfile = () => {
   }, [tagInput, debouncedFetchTags]);
 
   const handleTagRemove = (removedTag) => {
-	setTags(tags.filter(tag => tag.id !== removedTag));
-	};
+    setTags(tags.filter(tag => tag.id !== removedTag));
+  };
 
-  	const handleAddTag = (value, option) => {
-	  	console.log(option);
-	  	// Find the selected tag using the unique `id`
-		const selectedTag = suggestedTags.find((item) => item.id === option.key);
+  const handleAddTag = (value, option) => {
+    console.log(option);
+    // Find the selected tag using the unique `id`
+    const selectedTag = suggestedTags.find((item) => item.id === option.key);
 
-		// Prevent duplicates
-		if (selectedTag && !tags.find((tag) => tag.id === selectedTag.id)) {
-		  setTags([...tags, selectedTag]);
-		}
+    // Prevent duplicates
+    if (selectedTag && !tags.find((tag) => tag.id === selectedTag.id)) {
+      setTags([...tags, selectedTag]);
+    }
 
-		setTagInput(""); // Clear input after selection
-
-  	};
+    setTagInput(""); // Clear input after selection
+  };
 
   const handleSaveProfile = async () => {
     try {
@@ -95,7 +100,7 @@ const UserProfile = () => {
       const response = await axios.post(`/api/communities/update-user-profile`, payload);
 
       if (response.data.success) {
-        message.success("Profile saved successfully!");
+        navigate(`/users/${userId}`);
       }
     } catch (error) {
       console.error("Error saving profile:", error);
