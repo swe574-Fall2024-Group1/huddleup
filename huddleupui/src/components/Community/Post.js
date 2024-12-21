@@ -425,7 +425,49 @@ const Post = ({ postData }) => {
 			</Modal>
 			<Card.Meta
 				avatar={<Avatar style={{ backgroundColor: "rgba(180,177,186,0.2)" }} icon={postData?.profile_picture ? null : <UserOutlined />} src={postData?.profile_picture}  />}
-				title={<div style={{ color: "#7952CC" }}><a href={`/users/${postData.user_id}`}>{postData.username} </a> {postData.username !== userInfo.username ? <Button size='small' onClick={() => { handleFollowUser(postData.username) }}> {isFollowing ? 'Unfollow' : 'Follow'} </Button> : null} <div className={'badges'}>{userBadges && userBadges.map(badge => <Tooltip title={badge.badge.name}><img src={badge.badge.image ?? 'https://cdn.pixabay.com/photo/2013/07/12/16/01/badge-150755_1280.png'} alt={badge.badge.name} style={{ maxWidth:32, maxHeight:32, marginRight: 8, borderRadius: '50%' }} /></Tooltip>)}</div></div>}
+                title={<div style={{ color: "#7952CC" }}>
+                  <a href={`/users/${postData.user_id}`}>{postData.username}</a>
+                  {postData.username !== userInfo.username ? (
+                    <Button size='small' onClick={() => { handleFollowUser(postData.username); }}>
+                      {isFollowing ? 'Unfollow' : 'Follow'}
+                    </Button>
+                  ) : null}
+                  <div className={'badges'}>
+                    {userBadges && userBadges.map(badge => {
+                      let badgeImage;
+                      let badgeName = badge.badge.name;
+                      switch (badge.badge.name) {
+                        case communityInfo.name + " - Post Master":
+                          badgeImage = "https://cdn-icons-png.flaticon.com/512/1154/1154968.png";
+                          break;
+                        case communityInfo.name + " - Commentator":
+                          badgeImage = "https://cdn-icons-png.freepik.com/512/2684/2684707.png";
+                          break;
+                        case communityInfo.name + " - Social Butterfly":
+                          badgeImage = "https://cdn0.iconfinder.com/data/icons/movie-flat-3/340/movie_film_actor_star_famous_popular_person_man-512.png";
+                          break;
+                        case communityInfo.name + " - Template Creator":
+                          badgeImage = "https://cdn-icons-png.flaticon.com/512/10438/10438743.png";
+                          break;
+                        case communityInfo.name + " - Appreciated":
+                          badgeImage = "https://png.pngtree.com/png-clipart/20210309/original/pngtree-five-stars-rating-shiny-golden-like-thumb-png-image_5808435.jpg";
+                          break;
+                        default:
+                          badgeImage = badge.badge.image;
+                      }
+                      return (
+                        <Tooltip title={badgeName} key={badgeName}>
+                          <img
+                            src={badgeImage}
+                            alt={badgeName}
+                            style={{ maxWidth: 32, maxHeight: 32, marginRight: 8, borderRadius: '50%' }}
+                          />
+                        </Tooltip>
+                      );
+                    })}
+                  </div>
+                </div>}
+
 				description={<div><div>{new Date(postData.createdAt).toLocaleString()}</div> {postData.isEdited ? <div>Edited</div> : null } </div>}
 			/>
 			<div style={{ marginTop: 20 }}>

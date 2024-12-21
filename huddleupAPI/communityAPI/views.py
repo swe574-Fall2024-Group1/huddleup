@@ -824,6 +824,7 @@ def get_user_feed(request):
 			likes = PostLike.objects.filter(post=post.id)
 			like_count = 0
 			dislike_count = 0
+			author = User.objects.get(id=post.createdBy_id)
 			for like in likes:
 				if like.direction:
 					like_count += 1
@@ -862,7 +863,8 @@ def get_user_feed(request):
 				'isFollowing': isFollowing,
 				'feedType': feedType,
 				'communityName': post.community.name,
-				'communityId': post.community.id
+				'communityId': post.community.id,
+				'profile_picture': author.profile_picture
 			})
 
 		# Filter that user is member, moderator or owner of and not owned by current user
@@ -1301,6 +1303,7 @@ def get_post_details(request):
 	if request.method == 'POST':
 		payload = JSONParser().parse(request)
 		post = Post.objects.get(id=payload['postId'])
+		author = User.objects.get(id=post.createdBy_id)
 		community = Community.objects.get(id=post.community.id)
 		user_connection = CommunityUserConnection.objects.get(user=request.user.id, community=community.id)
 
@@ -1316,7 +1319,8 @@ def get_post_details(request):
 				'createdBy': post.createdBy.username,
 				'createdAt': post.createdAt,
 				'rowValues': post.rowValues,
-				'tags': tags
+				'tags': tags,
+				'profile_picture': author.profile_picture
 			}
 
 			template = Template.objects.get(id=post.template.id)
@@ -1783,35 +1787,35 @@ def create_default_badges_for_community(com):
 	default_badges = [
 		{
 			'name': f"{com.name} - Post Master",
-			'description': 'Awarded for creating a specific number of posts.',
+			'description': 'Awarded for creating 5 posts in the community',
 			'type': 'automatic',
 			'criteria': {'post_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Commentator",
-			'description': 'Awarded for creating a specific number of comments.',
+			'description': 'Awarded for creating 5 comments in the community',
 			'type': 'automatic',
 			'criteria': {'comment_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Social Butterfly",
-			'description': 'Awarded for gaining a specific number of followers.',
+			'description': 'Awarded for gaining 5 followers from the community.',
 			'type': 'automatic',
 			'criteria': {'follower_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Template Creator",
-			'description': 'Awarded for creating a specific number of templates.',
+			'description': 'Awarded for creating 5 different community specific templates.',
 			'type': 'automatic',
 			'criteria': {'template_count': 5},
 			'community': com.id
 		},
 		{
 			'name': f"{com.name} - Appreciated",
-			'description': 'Awarded for receiving a specific number of likes.',
+			'description': 'Awarded for receiving 5 post likes in the community.',
 			'type': 'automatic',
 			'criteria': {'like_count': 5},
 			'community': com.id

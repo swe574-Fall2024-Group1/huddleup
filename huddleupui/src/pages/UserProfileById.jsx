@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Avatar, Tag, List, Tooltip, Spin, Button, message } from 'antd';
+import { Card, Avatar, Tag, List, Tooltip, Spin, Button, message, Row, Col } from 'antd';
 import { UserOutlined, TrophyOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -59,22 +59,32 @@ const UserProfile = () => {
   const { username, about_me, tags, badges, communities, name, surname, birthday, profile_picture } = userInfo;
 
   return (
-    <div style={{ maxWidth: 800, margin: '50px auto', padding: '20px' }}>
-      <Card title={`Profile: ${username}`} bordered>
-        <div style={{ textAlign: 'center', marginBottom: 20 }}>
-          <Avatar size={100} icon={!profile_picture ? <UserOutlined /> : null} src={profile_picture} alt="Profile Picture" />
+    <div style={{ maxWidth: 1000, margin: '50px auto', padding: '20px' }}>
+      <Card bordered={false}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <h2 style={{ margin: 0, marginRight: '10px' }}>Profile: {username}</h2>
+          <Button type="primary" onClick={() => handleFollow(username, isFollowing)} style={{ marginLeft: '10px' }}>
+            {isFollowing ? 'Unfollow' : 'Follow'}
+          </Button>
         </div>
-        <Button type="primary" onClick={() => handleFollow(username, isFollowing)}>
-          {isFollowing ? 'Unfollow' : 'Follow'}
-        </Button>
-        <p><strong>Name:</strong> {name || "Not provided"}</p>
-        <p><strong>Surname:</strong> {surname || "Not provided"}</p>
-        <p><strong>Birthday:</strong> {birthday || "Not provided"}</p>
-        <p><strong>About Me:</strong> {about_me || "Not provided"}</p>
 
-        <div style={{ marginBottom: '20px' }}>
-          <strong>Tags:</strong>
-          {tags.length > 0 ? tags.map(tag => <Tag key={tag}>{tag}</Tag>) : 'No tags'}
+        <div style={{ marginTop: '20px' }}>
+          <Row gutter={16}>
+            <Col span={6}>
+              <Avatar size={150} icon={!profile_picture ? <UserOutlined /> : null} src={profile_picture} alt="Profile Picture" />
+            </Col>
+            <Col span={18}>
+              <p><strong>Name:</strong> {name || "Not provided"}</p>
+              <p><strong>Surname:</strong> {surname || "Not provided"}</p>
+              <p><strong>Birthday:</strong> {birthday || "Not provided"}</p>
+              <p><strong>About Me:</strong> {about_me || "Not provided"}</p>
+
+              <div style={{ marginBottom: '20px' }}>
+                <strong>Tags:</strong>
+                {tags.length > 0 ? tags.map(tag => <Tag key={tag}>{tag}</Tag>) : 'No tags'}
+              </div>
+            </Col>
+          </Row>
         </div>
 
         <div style={{ marginTop: 20 }}>
@@ -83,17 +93,42 @@ const UserProfile = () => {
             <List
               grid={{ gutter: 16, column: 3 }}
               dataSource={badges}
-              renderItem={({ badge }) => (
-                <List.Item>
-                  <Tooltip title={badge.description}>
-                    <Card hoverable cover={badge.image ? <Avatar src={badge.image} size={64} style={{ margin: '10px auto', borderRadius: '50%' }} /> : <TrophyOutlined style={{ fontSize: '64px', margin: '10px auto' }} />}>
-                      <Card.Meta title={badge.name} description={`Type: ${badge.type}`} />
-                      <p>{badge.description}</p>
-                      <p>Earned in <span style={{ color: '#7952CC' }}>{badge.community}</span> community</p>
-                    </Card>
-                  </Tooltip>
-                </List.Item>
-              )}
+              renderItem={({ badge }) => {
+                let badgeImage;
+                let badgeName = badge.name;
+
+                switch (badgeName) {
+                  case badge.community + " - Post Master":
+                    badgeImage = "https://cdn-icons-png.flaticon.com/512/1154/1154968.png";
+                    break;
+                  case badge.community + " - Commentator":
+                    badgeImage = "https://cdn-icons-png.freepik.com/512/2684/2684707.png";
+                    break;
+                  case badge.community + " - Social Butterfly":
+                    badgeImage = "https://cdn0.iconfinder.com/data/icons/movie-flat-3/340/movie_film_actor_star_famous_popular_person_man-512.png";
+                    break;
+                  case badge.community + " - Template Creator":
+                    badgeImage = "https://cdn-icons-png.flaticon.com/512/10438/10438743.png";
+                    break;
+                  case badge.community + " - Appreciated":
+                    badgeImage = "https://png.pngtree.com/png-clipart/20210309/original/pngtree-five-stars-rating-shiny-golden-like-thumb-png-image_5808435.jpg";
+                    break;
+                  default:
+                    badgeImage = badge.image;
+                }
+
+                return (
+                  <List.Item>
+                    <Tooltip title={badge.description}>
+                      <Card hoverable cover={badgeImage ? <Avatar src={badgeImage} size={64} style={{ margin: '10px auto', borderRadius: '50%' }} /> : <TrophyOutlined style={{ fontSize: '64px', margin: '10px auto' }} />}>
+                        <Card.Meta title={badge.name} description={`Type: ${badge.type}`} />
+                        <p>{badge.description}</p>
+                        <p>Earned in <span style={{ color: '#7952CC' }}>{badge.community}</span> community</p>
+                      </Card>
+                    </Tooltip>
+                  </List.Item>
+                );
+              }}
             />
           ) : (
             <p>No badges assigned.</p>
