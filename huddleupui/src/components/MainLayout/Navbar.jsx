@@ -1,11 +1,9 @@
 import { Layout, Avatar, Input, Menu, Dropdown, AutoComplete, Spin, Grid } from 'antd';
 import { useState, useEffect } from 'react';
 import { UserOutlined, SearchOutlined, LogoutOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuth from "../Auth/useAuth";
 import useApi from '../../hooks/useApi';
-import { useNavigate } from "react-router-dom";
-
 
 const { Header } = Layout;
 const { useBreakpoint } = Grid;
@@ -22,9 +20,12 @@ const Navbar = () => {
 	// Menu for the dropdown
 	const menu = (
 		<Menu>
-			<Menu.Item key="profile">
-        <Link to="/profile">Profile</Link>
-      </Menu.Item>
+			<Menu.Item key="myProfile" onClick={() => navigate(`/users/${userInfo?.id}`)}>
+				My Profile
+			</Menu.Item>
+			<Menu.Item key="editProfile">
+				<Link to="/profile">Edit Profile</Link>
+			</Menu.Item>
 			<Menu.Item key="logout" icon={<LogoutOutlined />} onClick={onLogout}>
 				Log Out
 			</Menu.Item>
@@ -58,8 +59,8 @@ const Navbar = () => {
 		);
 
 		const results = [
-			...communities.map(item => ({ value: `Community: ${item.name}`, label: `Community: ${item.name}`, id: item.id, type: 'community'})),
-			...users.map(item => ({ value: `User: ${item.username}`, label: `User: ${item.username}`, id: item.id, type: 'user'}))
+			...communities.map(item => ({ value: `Community: ${item.name}`, label: `Community: ${item.name}`, id: item.id, type: 'community' })),
+			...users.map(item => ({ value: `User: ${item.username}`, label: `User: ${item.username}`, id: item.id, type: 'user' }))
 		];
 
 		setSearchResults(results);
@@ -69,6 +70,8 @@ const Navbar = () => {
 	const handleSelect = (value, option) => {
 		if (option.type === 'community') {
 			navigate(`/communities/${option.id}`);
+		} else if (option.type === 'user') {
+			navigate(`/users/${option.id}`);
 		}
 	};
 
@@ -76,43 +79,47 @@ const Navbar = () => {
 
 	return (
 		<Header style={{
-            background: '#fff',
-            padding: '0 20px',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: screens.sm ? 'center' : 'flex-start',
-            justifyContent: 'space-between',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.09)',
-            borderBottom: '3px solid #f0f0f0',
-            textAlign: screens.sm ? 'left' : 'center',
-        }}>
-            <div className='logo' style={{ margin: screens.sm ? '10px 40px' : '0px', fontWeight: 800, fontSize: screens.sm ? 35 : 25 }}>
-                <Link to="/feed" style={{ color: 'inherit', textDecoration: 'none' }}>huddleup</Link>
-            </div>
+			background: '#fff',
+			padding: '0 20px',
+			display: 'flex',
+			flexDirection: 'row',
+			alignItems: screens.sm ? 'center' : 'flex-start',
+			justifyContent: 'space-between',
+			boxShadow: '0 2px 8px rgba(0, 0, 0, 0.09)',
+			borderBottom: '3px solid #f0f0f0',
+			textAlign: screens.sm ? 'left' : 'center',
+		}}>
+			<div className='logo' style={{ margin: screens.sm ? '10px 40px' : '0px', fontWeight: 800, fontSize: screens.sm ? 35 : 25 }}>
+				<Link to="/feed" style={{ color: 'inherit', textDecoration: 'none' }}>huddleup</Link>
+			</div>
 
-            {screens.md && (
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <AutoComplete
-                        style={{ width: screens.md ? 300 : '100%' }}
-                        options={searchResults}
-                        onSearch={handleSearch}
-                        onSelect={handleSelect}
-                        notFoundContent={searchLoading ? <Spin size="small" /> : null}
-                    >
-                        <Input addonBefore={<SearchOutlined />} placeholder="Search for communities and users" />
-                    </AutoComplete>
-                </div>
-            )}
+			{screens.md && (
+				<div style={{ display: 'flex', alignItems: 'center' }}>
+					<AutoComplete
+						style={{ width: screens.md ? 300 : '100%' }}
+						options={searchResults}
+						onSearch={handleSearch}
+						onSelect={handleSelect}
+						notFoundContent={searchLoading ? <Spin size="small" /> : null}
+					>
+						<Input addonBefore={<SearchOutlined />} placeholder="Search for communities and users" />
+					</AutoComplete>
+				</div>
+			)}
 
-            <div style={{ display: 'flex', alignItems: 'center', margin: screens.sm ? '0 20px' : '0px' }}>
-                <Dropdown overlay={menu} trigger={['click']}>
-                    <a onClick={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', color: '#5c5b5b', fontWeight: 600 }}>
-                        <span style={{ marginRight: screens.sm ? 5 : 0 }}>{userInfo?.username}</span>
-                        <Avatar icon={<UserOutlined />} style={{ marginLeft: 8, marginRight: screens.sm ? 8 : 0 }} />
-                    </a>
-                </Dropdown>
-            </div>
-        </Header>
+			<div style={{ display: 'flex', alignItems: 'center', margin: screens.sm ? '0 20px' : '0px' }}>
+				<Dropdown overlay={menu} trigger={['click']}>
+					<a onClick={e => e.preventDefault()} style={{ display: 'flex', alignItems: 'center', color: '#5c5b5b', fontWeight: 600 }}>
+						<span style={{ marginRight: screens.sm ? 5 : 0 }}>{userInfo?.username}</span>
+						<Avatar
+							src={userInfo?.profile_picture || undefined}
+							icon={userInfo?.profile_picture ? undefined : <UserOutlined />}
+							style={{ marginLeft: 8, marginRight: screens.sm ? 8 : 0 }}
+						/>
+					</a>
+				</Dropdown>
+			</div>
+		</Header>
 	);
 };
 

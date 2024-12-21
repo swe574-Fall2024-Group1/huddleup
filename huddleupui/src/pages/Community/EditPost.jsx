@@ -1,5 +1,7 @@
 /* global BigInt */
 import React, { useState, useEffect, useCallback } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { AimOutlined, CloseOutlined } from '@ant-design/icons';
 import { Form, Button, Input, InputNumber, DatePicker, message, Checkbox, Card, Select, AutoComplete, Tag } from 'antd';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import fetchApi from '../../api/fetchApi';
@@ -19,13 +21,16 @@ export default function EditPost() {
   	const [suggestedTags, setSuggestedTags] = useState([]); // For tags from backend
   	const [tagInput, setTagInput] = useState("");
 
+	const [longitude, setLongitude] = useState(28.994504653991893);
+	const [latitude, setLatitude] = useState(41.039040946957925);
+
 	useEffect(() => {
 		async function fetchPostAndTemplate() {
 			const response = await fetchApi(`/api/communities/get-post-details`, { postId });
 			if (response && response.data) {
 				setPost(response.data.post);
 				setSelectedTemplate(response.data.template);
-				setTags(response.data.post.tags.map(tag => tag.toLowerCase()));
+				setTags(response.data.post.tags);
 				form.setFieldsValue({
 					...response.data.post.rowValues.reduce((acc, curr, index) => ({ ...acc, [index]: curr }), {}),
 				});
@@ -55,18 +60,23 @@ export default function EditPost() {
     debouncedFetchTags(tagInput);
   }, [tagInput, debouncedFetchTags]);
 
-  const handleAddTag = (tag) => {
-    const lowerCaseTag = tag.toLowerCase();
-    if (lowerCaseTag.length >= 3 && !tags.includes(lowerCaseTag)) {
-      setTags([...tags, lowerCaseTag]);
-    }
-    setTagInput("");
-    setSuggestedTags([]);
-  };
-
   const handleTagRemove = (removedTag) => {
-    setTags(tags.filter(tag => tag !== removedTag));
-  };
+	setTags(tags.filter(tag => tag.id !== removedTag));
+	};
+
+  	const handleAddTag = (value, option) => {
+	  	console.log(option);
+	  	// Find the selected tag using the unique `id`
+		const selectedTag = suggestedTags.find((item) => item.id === option.key);
+
+		// Prevent duplicates
+		if (selectedTag && !tags.find((tag) => tag.id === selectedTag.id)) {
+		  setTags([...tags, selectedTag]);
+		}
+
+		setTagInput(""); // Clear input after selection
+
+  	};
 
 	const onFormSubmit = async values => {
 		const rowValues = Object.values(values);
@@ -86,6 +96,58 @@ export default function EditPost() {
 			message.error('Failed to update post. Please try again.');
 		}
 	};
+
+    const renderGeolocationField = () => {
+      const handleMapClick = ({ latlng }) => {
+        setLatitude(latlng.lat);
+        setLongitude(latlng.lng);
+        form.setFieldsValue({ geolocation: [latlng.lat, latlng.lng] });
+    };
+
+  const LocationMarker = () => {
+    const map = useMapEvents({
+      click: handleMapClick,
+    });
+        return (
+          <Marker position={[latitude, longitude]}>
+            <Popup>Selected Location</Popup>
+          </Marker>
+        );
+      };
+
+    return (
+        <div>
+          <MapContainer
+            center={[latitude, longitude]}
+            zoom={14}
+            style={{ height: 400, width: "100%", marginBottom: "1rem" }}
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <LocationMarker />
+          </MapContainer>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
+            <span>
+              Latitude: {latitude.toFixed(6)}, Longitude: {longitude.toFixed(6)}
+            </span>
+            <Button
+              icon={<AimOutlined />}
+              onClick={() => {
+                navigator.geolocation.getCurrentPosition(({ coords }) => {
+                  setLatitude(coords.latitude);
+                  setLongitude(coords.longitude);
+                  form.setFieldsValue({ geolocation: [coords.latitude, coords.longitude] });
+                });
+              }}
+            >
+              Use Current Location
+            </Button>
+          </div>
+        </div>
+      );
+    };
 
 	const typeOptions = [
 		{ key: "string", value: "Text" },
@@ -964,106 +1026,16 @@ export default function EditPost() {
 							</Form.Item>
 						);
 					case 'geolocation':
-						const handleLongitude = (e) => {
-							const longitude = e.target.valueAsNumber;
-							const errors = form.getFieldError(index);
-							if (Number.isFinite(longitude) && longitude >= -180 && longitude <= 180) {
-								const currentValue = form.getFieldValue(index) || [];
-								form.setFieldsValue({ [index]: [longitude, currentValue[1]] });
-
-								if (errors.length > 0) {
-									// Remove longitude error from errors array
-									const newErrors = errors.filter(e => e !== 'Longitude must be a valid number between -180 and 180')
-
-									form.setFields([
-										{
-											name: index,
-											errors: newErrors,
-										},
-									]);
-								}
-							} else {
-								// Display error message for invalid latitude
-
-								let newErrors = [...errors]
-								if (!errors.includes('Longitude must be a valid number between -180 and 180')) {
-									newErrors.push('Longitude must be a valid number between -180 and 180')
-								}
-
-								form.setFields([
-									{
-										name: index,
-										errors: newErrors,
-									},
-								]);
-							}
-						};
-
-						const handleLatitude = (e) => {
-							const latitude = e.target.valueAsNumber;
-							const errors = form.getFieldError(index);
-
-							if (Number.isFinite(latitude) && latitude >= -90 && latitude <= 90) {
-								const currentValue = form.getFieldValue(index) || [];
-								form.setFieldsValue({ [index]: [currentValue[0], latitude] });
-								if (errors.length > 0) {
-									// Remove longitude error from errors array
-									const newErrors = errors.filter(e => e !== 'Latitude must be a valid number between -90 and 90')
-									form.setFields([
-										{
-											name: index,
-											errors: newErrors,
-										},
-									]);
-								}
-							} else {
-								// Display error message for invalid latitude
-								const errors = form.getFieldError(index);
-								let newErrors = [...errors]
-								if (!errors.includes('Latitude must be a valid number between -90 and 90')) {
-									newErrors.push('Latitude must be a valid number between -90 and 90')
-								}
-
-								form.setFields([
-									{
-										name: index,
-										errors: newErrors,
-									},
-								]);
-							}
-						};
-
-						return (
-							<Form.Item
-								key={index}
-								name={index}
-								label={row.title + `  (${labelValue})`}
-								validateStatus={form.getFieldError(index).length > 0 ? 'error' : 'success'}
-								help={form.getFieldError(index).length > 0 ? form.getFieldError(index) : null}
-							>
-								<Input.Group>
-									<Input
-										key='longitude'
-										name='longitude'
-										style={{ width: '15%' }}
-										addonBefore="LON"
-										type="number"
-										onChange={(e) => { handleLongitude(e) }}
-										required={row.required}
-									/>
-									<Input
-										key='latitude'
-										name='latitude'
-										style={{ width: '15%' }}
-										addonBefore="LAT"
-										type="number"
-										onChange={(e) => { handleLatitude(e) }}
-										required={row.required}
-									/>
-
-								</Input.Group>
-							</Form.Item>
-						);
+                        return (
+                            <Form.Item
+                              key={index}
+                              name="geolocation"
+                              label={row.title}
+                              rules={[{ required: row.required, message: "Please select a location on the map!" }]}
+                            >
+                              {renderGeolocationField()}
+                            </Form.Item>
+                        );
 					default:
 						return null;
 				}
@@ -1094,30 +1066,42 @@ export default function EditPost() {
 					<Form form={form} layout="vertical" onFinish={onFormSubmit}>
 						{renderFormrows(selectedTemplate.rows)}
 						<AutoComplete
-						style={{ width: 200, marginBottom: "10px" }}
-						options={suggestedTags
-						  .filter(tag => !tags.includes(tag))
-						  .map(tag => ({ value: tag }))}
+						style={{ width: "100%", marginBottom: "10px" }}
+						options={suggestedTags.map((item) => ({
+								  value: item.id.toString(),
+								  label: (
+									<div>
+									  <strong>{item.name}</strong>
+									  <p style={{ margin: 0 }}>{item.description}</p>
+									</div>
+								  ),
+								  key: item.id,
+								}))}
 						value={tagInput}
-						onChange={(value) => setTagInput(value.toLowerCase())}
+						onSearch={(value) => setTagInput(value)}
 						onSelect={handleAddTag}
 						placeholder="Add a tag"
-						onBlur={() => handleAddTag(tagInput)}
 					  />
 
 					  <div>
 						{tags.map(tag => (
 						  <Tag
-							key={tag}
+							key={tag.id}
 							closable
-							onClose={() => handleTagRemove(tag)}
+							onClose={() => handleTagRemove(tag.id)}
 						  >
-							{tag}
+							{tag.name}
 						  </Tag>
 						))}
+                        <link
+                          rel="stylesheet"
+                          href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+                          integrity="sha512-xodZBNTC5n17Xt2vOTI4g9E74pI1IzRIcOa2fTUmJa65Df9acm0o7K4w5p1u7n5V6hk6K3szr5P5u7Oo1X3Mxg=="
+                          crossorigin=""
+                        />
 					  </div>
 						<Form.Item style={{ marginTop: 20 }}>
-							<Button type="primary" size="large" htmlType="submit">
+							<Button type="primary" size="large" htmlType="submit" style={{ backgroundColor: '#7952CC', fontWeight: 700 }}>
 								Update Post
 							</Button>
 						</Form.Item>

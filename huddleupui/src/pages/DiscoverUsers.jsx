@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button, message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import useApi from '../hooks/useApi';
 import fetchApi from '../api/fetchApi';
 
@@ -90,7 +91,7 @@ const DiscoverUsers = () => {
 							>
 								<img
 									alt={user.username}
-									src={user.profile_pic || 'https://via.placeholder.com/80'} // Default profile image
+									src={user.profile_pic || 'https://via.placeholder.com/80'}
 									style={{
 										width: '100%',
 										height: '100%',
@@ -98,7 +99,15 @@ const DiscoverUsers = () => {
 									}}
 								/>
 							</div>
-							<Meta title={user.username} />
+							<Meta
+                                title={
+                                  <div style={{ marginBottom: 'auto', textAlign: 'center', paddingBottom: 0 }}>
+                                    <Link to={`/users/${user.id}`}>
+                                      {user.username}
+                                    </Link>
+                                  </div>
+                                }
+							/>
 						</Card>
 					))}
 			</div>

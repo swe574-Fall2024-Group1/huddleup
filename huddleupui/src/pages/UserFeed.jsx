@@ -120,7 +120,7 @@ export default function UserFeed() {
 										actions={[
 											<Link to={`/communities/${community.id}`} key="visit">
 												<Button
-													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800, padding: screens.md ? "0px" : "0px 10px"}}
+													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800, padding: screens.md ? "0px 5px" : "0px 10px"}}
 													size="middle"
 												>
 													Visit the community
@@ -190,7 +190,7 @@ export default function UserFeed() {
 										actions={[
 											<Link to={`/communities/${community.id}`} key="visit">
 												<Button
-													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800, padding: screens.md ? "0px" : "0px 10px" }}
+													style={{ borderColor: '#7952CC', color: '#7952CC', fontWeight: 800, padding: screens.md ? "0px 5px" : "0px 10px" }}
 													size="middle"
 												>
 													Visit the community

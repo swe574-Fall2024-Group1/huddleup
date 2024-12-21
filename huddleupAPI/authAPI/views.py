@@ -76,13 +76,23 @@ def get_user_info(request):
 		user_id = request.user.id
 		user = User.objects.get(id=user_id)
 		user_serializer = UserSerializer(user)
+		tags = []
+		for each in user.tags.all():
+			tags.append({"name": each.name, "description": "", "id": str(each.id)} if
+						not hasattr(each, "semantic_metadata") else
+						{"name": each.name.split("-wdata-")[0], "id": each.semantic_metadata.wikidata_id,
+						 "description": each.semantic_metadata.description})
 		response_data = {
 			'success': True,
 			'data': {
 				'username': user_serializer.data['username'],
 				'about_me': user.about_me,
-				'tags': list(user.tags.values_list('name', flat=True)),
+				'tags': tags,
 				'id': user_serializer.data['id'],
+				'name': user_serializer.data['name'],
+				'surname': user_serializer.data['surname'],
+				'birthday': user_serializer.data['birthday'],
+				'profile_picture': user_serializer.data['profile_picture'],
 				'badges': user_serializer.data['badges']
 			}
 		}

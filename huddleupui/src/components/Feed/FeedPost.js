@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { Card, Avatar, Space, Typography, Divider, Button, Input, Tooltip, Flex, message, Modal } from 'antd';
 import { Comment } from '@ant-design/compatible';
 import { CommentOutlined, LikeOutlined, DislikeOutlined, LoadingOutlined, UserOutlined } from '@ant-design/icons';
+import { Link } from 'react-router-dom';
 import useApi from '../../hooks/useApi';
 import fetchApi from '../../api/fetchApi';
 import { Spin } from 'antd';
@@ -33,6 +35,12 @@ const FeedPost = ({ postData }) => {
 	const comments_result = useApi('/api/communities/get-post-comments', { postId: postData.id });
 
 	const { userInfo } = useAuth();
+
+
+	const [imgModalVisible, setImgModalVisible] = useState(false);
+	const toggleImgModal = () => {
+		setImgModalVisible(!imgModalVisible);
+	};
 
 	template_result.then((response) => {
 		if (response && !response.loading && loadingTemplate) {
@@ -92,7 +100,19 @@ const FeedPost = ({ postData }) => {
 			case 'language':
 				return <Text>{getRowValue(row.title)}</Text>;
 			case 'image':
-				return <img src={getRowValue(row.title)} alt={row.title} style={{ maxWidth: '100%', maxHeight: '100px' }} />;
+				const img = getRowValue(row.title)
+				return <>
+					<Button type="link" onClick={toggleImgModal}>
+						<img src={img} alt={img} style={{ maxWidth: '100%', maxHeight: '100px' }} />
+						</Button>
+						<Modal
+							title="Post Image"
+							visible={imgModalVisible}
+							onCancel={toggleImgModal}
+							footer={null}>
+								<img src={img} alt={img} style={{ maxWidth: '100%', maxHeight: '100%' }} />
+						</Modal>
+				</>;
 
 			case 'Boolean':
 				return <Text>{getRowValue(row.title) ? 'Yes' : 'No'}</Text>;
@@ -100,9 +120,19 @@ const FeedPost = ({ postData }) => {
 			case 'geolocation':
 				const [longitude, latitude] = getRowValue(row.title) || [];
 				return (
+					<>
 					<Text>
 						{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
 					</Text>
+					<MapContainer center={[longitude, latitude]} zoom={14} scrollWheelZoom={false} style={{height: 250 ,width: "100%", marginBottom: "1rem"}}>
+						<TileLayer
+							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
+						<Marker position={[longitude, latitude]}>
+							<Popup>Selected Location</Popup>
+						</Marker>
+					</MapContainer>
+				</>
 				);
 
 			default:
@@ -285,7 +315,7 @@ const FeedPost = ({ postData }) => {
 				/>
 			</Modal>
 			<Card.Meta
-				avatar={<Avatar style={{ backgroundColor: "#b4b1ba" }} icon={<UserOutlined />} />}
+				avatar={<Avatar src={postData?.profile_picture || undefined} icon={postData?.profile_picture ? undefined : <UserOutlined />} />}
 				title={<div>
 					<span style={{ position: 'absolute', top: 5, right: 5, color: '#bdbdbd', fontWeight: 300, fontSize: 12, marginLeft: 'auto' }}>
 						{postData.feedType === 'communityMembership' ? (
@@ -298,7 +328,7 @@ const FeedPost = ({ postData }) => {
 						)}
 					</span>
 					<div style={{ color: "#7952CC" }}>
-						{postData?.username} {postData?.username !== userInfo?.username ? (
+						<Link to={`/users/${postData.userId}`}>{postData?.username}</Link> {postData?.username !== userInfo?.username ? (
 							<Button size='small' onClick={() => { handleFollowUser(postData?.username) }}>
 								{isFollowing ? 'Unfollow' : 'Follow'}
 							</Button>
@@ -351,7 +381,7 @@ const FeedPost = ({ postData }) => {
 						<div key={index}>
 							<Comment
 								actions={renderCommentActions(comment)} // Pass the comment object to renderCommentActions function
-								author={comment.username}
+								author={<Link to={`/users/${comment.userId}`}>{comment.username}</Link>}
 								content={comment.comment  + (comment.isEdited  ? ' (edited)' : '')}
 								datetime={new Date(comment.createdAt).toLocaleString('tr-TR', {
 									day: '2-digit',
