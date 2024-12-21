@@ -373,3 +373,334 @@ The platform shall support two types of badges, default badges and community spe
 | **14: Assign Badge**     | 1. Login as community owner.<br>2. Navigate to community feed.<br>3. On any post create “Assign Badge”.<br>4. Select Badge.<br>5. Click "Assign".            | Badge will be assigned to the owner of the post.                                                     | True      |          | Assigned badge will appear on post and user profile.   |
 | **15: Edit Profile**     | 1. Login as an existing user.<br>2. Navigate to /profile.<br>3. Enter new details.<br>4. Click “Save Profile”.                                               | User profile will be updated.                                                                        | True      |          | New profile info will appear on “my profile” page.     |
 
+## User Manual
+
+### Login/Registration
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdbzdGE-Ahqi9dgC2cQ9G8W_gw7ZmpsCpYzOV769bS0mYWYOoY64dIfkVhZTsU_hQ8bK7xusk7DmSAj4wNGtycggT4wHqL0F7NZxNU2BX0ypFWmRSBb59AL_MXHFb40ntOHsRnZGg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+On the Login Page, If the user has an account, he/she can log in by entering his/her username and password. If he/she does not have an account, he/she can go to the registration page by clicking the Sign Up button.
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXctsedmMB41YF5kS_DaxTlY4Pvae_pP-M-261mtjNkNFkGWpVM3tKrma0_UCTfkA1y9n3j_MLuv7EJUrNGWglXseytRflopbHDn5i_dPebZO2KmUJcN28TQ6jitK11Vl9Q2Nqh9eQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+On the Register Page, User can register by entering username and password.
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfpi3WBOJ6QXwxvtx6Z5Kpw1CbQCCUVdhJ_cToxRp85nkTvD44239SvQ582IhBzAG5oECEt9v-kHBJOViAtncl9HZkPXq6jAfFElawUyYHbjWMi1--XGy43o66Kcuw41DvQQaim?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+After Registration, On the Login page User can enter username and password to enter application.
+
+### Main page
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdU5ZqmMK_UtvVAZIEr_prR5JTop91y6G5jKm0cbZl4lLbEXPOfDulzNyrl3ylk99gp40rFQ0U__8P7tl8LPd8gfQbL4AVXnpFsgyLlsbjdysTt-ZcNROpoP-TMDFfSy0B-c8wi?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+After login user will see the most active and some promoted communities in his/her feed if there is no post yet.
+
+User can use the left-side menu to navigate:
+
+- Click Feed to view posts from communities and connections.
+- Click Connections to manage his friends and followers.
+- Click Communities to explore or manage his communities.
+- Click Invitations to view pending invitations.
+- Click Discover Users to find and connect with new users.
+
+User can use the search bar at the top of the page to search for specific users or communities.
+
+### Create Community
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdlgU-lbrUMpZ7uhQzXMw3H2jPPJY34BjYppqPiJ8TbzUKYZXjLoZjNL8ogIwgmOW_1avkl1OSEShhOYIAsUyqpuIZ6JA6bsdN9TqZ9hbC1VsHj7UuiCR-1yzPA9xgpIJrU1BA1SA?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+User can click Start Community from the left-side menu.
+
+Fill in the required fields:
+
+- Enter a Name for your community.
+- Add a brief Description about the purpose of the community.
+- Upload an image for the community by clicking Choose File.
+- (Optional) Toggle the Make this community private switch if user want the community to be private.
+
+User can click the Create Community button to finalize the setup.
+
+Community Page![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXc9i7Fgvbrq4KF-ZMuaesi98I0yjI77edJby8yOsfALER6rCK4LqSgYV8n1VZtIybZ2bv5_OgzM24n2s6auTSbKUKEO97OhS5DSt3L1R5RE8xA5MVHyLO3c3LzkjFYgwBoO2s-w?key=dx79Gw4fEyrn_YTVtN9O-U8a)![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdMASQkbgacT_NQUy3exdC81voSHiIazAweHYyuJtHun54nHrXKNKVBx-bEDxKC349BCELzJbVG3Y90Vtpp4GYp-MfB0zE7qcOijdxw05lhC8lOuLX32B72bIZM6YUdhimHKKw17Q?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+On the community page, user can:
+
+- Click Add Post to share content.
+- Click Create Badge to design and assign badges for members.
+- View the Community Activity Feed to see recent actions within the group.
+- Check the Description section for details about the community.
+- Explore the Badges section to see all available badges.
+
+### Community Setting
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXecFQLeFFrnUPNShC4nkcMjwXmTpvMSoj4JEsHoBVlj_HP9oHsO-BOoPQorJPc8bpFnkQNM6QiuO8eSvxNIyaEMJc143HFONZc6-huFidoIiVR_BEE1mcL3oNyVss7ATY8OFFyH?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+Within the community page, click Community Settings in the right-hand menu.
+
+User uses the following options:
+
+- Click + Add Template to create a new template for organizing data submissions.
+- Click Delete next to any existing template to remove it.
+- Click Archive Community to deactivate the community if needed.
+
+### Adding Template
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXc4T8vP6hMg88JBdHuDAJ1Rqvb7lj637y0vS3RPmBndBs37V_eF6Cig0CBw_4l-09XoQeHnLdv-Anusaoa5P5e9ChI0RNoOZU3MEY-k5Jl8gde97_dL1A3dSdr4ao5Cp59-p1qG?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+In the Community Settings, click + Add Template.
+
+Enter a Template Name (e.g., “Exchange Books”).
+
+Add data rows:
+
+- For each row, select a data type (e.g., Text, Geographic Location) from the dropdown.
+- Mark fields as Required if applicable.
+
+Click Create to save the template.
+
+### Add post
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcom8yQceyEzmujvcFnAkYQ2XLx1VC0Cq-ww8OiH6VgOpM5h2_kVwAQ67_TE05iK-FIX8lNtqtFP9kKo1-8LJIK9oU2lSNBsQ_nJTJmwTNLpF5q7KjT_QzgWdiSRwWcXetVLRTDcQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfAeOlbOwbhlJ-8b72m8XmqYRmM5HCITxXIsM57NYCNbBx7WxbSMHAyiuuOuuaUwk3_Qgq2HRMA4P6qB8xpa6zHxTCiKcYmZDP1X2zT8PmLRQ25zoLMQAVBvLiDPwYXBiGF2Ebo?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeVg8PhYCvhkKww2e4lfIfB4YhtjIYG2sxurgP60j4P7uXyl92kOV07znuMERBtYs1Lf-C_dIN_6JdqsxhVOP-3EQ9PJLCl9AeidXvUNFFWrrqPrHR3eXo66tLkvaEMkaD-JViYEQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+Start Adding a Post
+
+- On the community page, click the + Add Post button.
+- Select a template from the dropdown list (e.g., "Exchange Books").
+- Click Next to proceed.
+
+Fill in Post Details
+
+- Enter the required details in the template fields (e.g., Place Name, Genre, and Location).
+- Use the map to pin a geographic location:
+
+- Drag and drop the pin.
+- Or, click Use Current Location to auto-fill your coordinates.
+
+- Click Submit to publish the post.
+
+### Editing a Post
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcBWwMpJ7aXsUL9uMh8KH6ZJefzQ0Ce52Z5Q7Zq2FgDJN9KwhPk94Zgr1tnS9j2K6l5sqE21n_UeBPASNvjfrqC_f0w-Dd7GVfbFQMKbuaJax_OwGfO7uNQlvjlryJX5dUGmV1CVw?key=dx79Gw4fEyrn_YTVtN9O-U8a)![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXd39U48GfQh6rsZYMtTmHBb3CiXNc2REKeZQTbiI4cM6WAHXpGudRcgwWfD21v4Vwu9a8g5zwrQdsvtSRoXfOk3q4xTwqXLpjNK-x2QQ_KnVApdTLLsK6qWGTD4yPwjC9mjtYx9?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+Start Editing
+
+- Click the Edit Post button associated with the post.
+- Update any fields, including text or location:
+
+- Adjust the map pin for a new location if needed.
+- Modify other details like the title or description.
+
+Save Changes
+
+- Click Update Post to save your edits.
+- Verify the updated content on the community page.
+
+### Adding a Comment
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcjIcNFHzRhQDqRgCqxAlbDzT4hMe3JVC6IzSquOPzMyAv6GSdhz02ouCsKGuziW6gXSr7PxuTSnASeo9tjBrVBtLwR8adG2jlBXMw5AtHUraRGNy8Lbf3Bu_EuQsD8G2aQtTahcQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcdHu1Uy8lHOVkGyVOpGOhiDdc69retf16634eU5Zq2qMJgnnCN523d-J-hTLKNbbmecSittFP3Wtpqg9hjSbgx5YflhR6F1xM3QDs78GWQ0ApV2GhxAbuX80xM-pFf0Dr0H5_S?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Scroll to the comments section of a post.
+- Type your comment and click Add Comment.
+
+- Click the Edit Comment button next to your comment.
+- Update the text in the popup box (e.g., "I will bring Dune books (edited)").
+- Click Save to confirm the changes.
+
+### Editing Comments
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcOAnZhQole0QeYZX2rEd_l7jscoNj3sMG8BQRkRnKIuoBtjvHCMMnCtJNtrZRODy4tP-Tw1MdtpkeS_gXCXV6dQ83yXXmJOZUXCcvAMqG_lvggP8pdRm-tIKfHNJtlKMq6VZv61g?key=dx79Gw4fEyrn_YTVtN9O-U8a)![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXe7XH8jHDx6xhwPphNM3xK0ZNa2J_j7zrr-VhE4oBEQYCxWbnroAKsjBIel9HHQV79YRBx6VUxakbkMJfv7IvhoVMrznWId0FGsbPlyMs6TO8FszDlLTkJcAzb2nZauO9zCCI2qLA?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click the Edit Comment button below the comment.
+- A dialog box will appear with the current comment text.
+- Modify the text as desired.
+- Click the Save button to update the comment.
+- A confirmation message, such as "Comment edited successfully," will appear, indicating the update was successful.
+- Update the text in the popup box (e.g., "I will bring Dune books (edited)").
+
+### Upvoting/Downvoting a Comment or Post
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXe5mRpvWwDeDaTKsK_jK5E_5W0Ss05akhyxrHg9-mFu60ioElFlaq9Z_0KyGXDhWSOUxaPl7lpoJEUJQFLw3ZS9oH-nStjNvzI7YxZMG3j31NmqRaSRwq_qEn8CcayqTl5FuR_2?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Navigate to the post or comment you want to interact with.
+- To upvote, click the thumbs-up icon.
+- To downvote, click the thumbs-down icon.
+- The vote count will update immediately after your action.
+
+###  Managing User Settings
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXepXAaIW2V33cPEXxwCHZCYHLtI2RELvIm52N833zFBprJiWSUvazBEcDyCGavg0eVL_GedbxnWntDkXkK1hNnWjOMx7yj1gC4W0m1Pyf_tWOHw1xTzXfCipD1WWMusEt8DZ8LbXw?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Go to the User Settings section.
+- Click the user for whom you want to manage settings.
+- Available actions include:
+
+- Ban: Restrict the user from participating in the community.
+- Make Moderator: Grant moderator privileges to the user.
+- Make Owner: Transfer ownership of the community to the user.
+
+### Managing Moderator Settings
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeGy8e93X2YG4wfo2TAAzp1optvZ_MOg-YdZaZMHZTD6unxDe_lpRU60PkWnnCiku6i4lkDYTNhftxNz5Klgp67Ha-QCTyC1v9Vq3_Z6GretNT1U0SwKADvxV-dZqQQvYKr9Nkrwg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Navigate to the Moderator Settings section.
+- Select the moderator you want to manage.
+- Click the Remove Moderator button to revoke their privileges.
+
+### Creating a Manual Badge
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcG62eFIOxFS1jHvS5C-BZxZeXhhn2N7gWsheTgmDyIhU0uWFFy0tGJtOLf2SLuXZ9HLUtIK2VUVaa3Bvw8WgfScQQIbtTwIRLpWpSSqsq1lE-ffWWGc_LQ0eEbVVS-ACBQbiUBlg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click the Create Badge button.
+- In the dialog box:
+
+- Enter the badge name in the Badge Name field.
+- Set the badge type to Manual.
+- Write a description in the Badge Description field.
+- Upload an image for the badge using the Upload button.
+
+- Click the OK button to create the badge.
+- The new badge will appear in the list of existing badges.
+
+### Assigning a Badge
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXe8rBGlSaR57bAAT8W9WKpn8-kE7NZRpLcTaoof4bnLkF4CwBxdqCx81Hw5cQe0Fk-MbMe11YINv9mT2HkXN5qhvJ7ELXhS4NW0YdQaPvbaT0mEuaCangfsQKZNnMW0b6xHt3QSgA?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeEA-3ii_jRija5n0EkNeFIBYJENucUn8rkKRgNRt8F8oOvmM6cgz7ZrDMuL67fJztQFqtIU6-95QH6pDwRgBi_xWzje9JY1IdTZg2TVE_O08uS-y-8D6yjRVNtZBTNpzZKoACrZw?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXct9hGIAkcdmeabEXW4ptNChUcAD5NeJACoamnVy438NFdYSaaz8HuvL6cO749AVrJV82PVUBATXMyk0Vdj-9UZZyPaJNzwQdXyA9Z5vRC4yve9vUPydp9RvhreAoVvSYJ6LiMhcA?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click the Assign Badge button next to the relevant post or user.
+- In the dialog box:
+
+- Select a badge from the dropdown menu.
+- Optionally, add a message in the Message field.
+
+- Click the Assign button.
+- A confirmation will appear, and the badge will be displayed with the user’s profile and post.
+### Creating an Automatic Badge
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXf-pgAZ8km-OT1Gs0n4MDo0A0Q2S3MZJbgTkiM3G4kjvA2odjewKc3s46V3Kpd_uKtARhLJR_vxrVSroUY-pDtgyj1GncVbLwqgl_x5BEkiZY0nnf_1-qEGtaABqiJOy1b2-ufs?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click the Create Badge button.
+- In the dialog box:
+
+- Enter the badge name in the Badge Name field.
+- Set the badge type to Automatic.
+- Configure criteria such as Template Count, Post Count, Follower Count, Comment Count, and Like Count.
+- Add a description in the Badge Description field.
+- Upload an image for the badge using the Upload button.
+
+- Click the OK button to save the badge.
+- The system will automatically assign the badge when users meet the defined criteria.
+
+###  Seeing Recommending Users and Connecting with Them
+
+- Click the Discover Users in left sidebar
+- The recommended users based on interests are listed
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdGy2CJFfPVx9MIpYCHZIIRPoG836fChjaOe9v91VByerc87FUOlG_9r32bZ29XKqiUoXaaj5Y0fXgE6TKG2Oal8tEvz_VJZxbwHuT1d_62nGgJ8GL27ziygb1mtIAqcwLLpuD8gw?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Follow the user via clicking the Follow button
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfp1t4gOsvlIViS5N0CrIfLM9gnFFgE6nEyH9wSobZWpSgoz5kfMqU_5cvX5_bBl1_RqLrCovNmFXOgqTIY1ByorshPD3qx7RUvLiknrk4jTflc9zr5fn1RDhKxE7KGX_iqalF8Dg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- The followed user is now in the Connections section in the right Sidebar and it is not recommended anymore.
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcI7Wjk2DXajPWJVddlfqJJcqXuyVrXfFK0ykNa2b-7s0ZktILq5JhHVwY46znBFfFqbD3goDwrRbsG4fTRHVUH3nWobpxuR-4OyRQB3TgggyWUCi5Vhl4h8yPcUYaf-1JusO30lQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click the profile of the user in the Connections tab
+- The full profile of the followed user show up.
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfijiRbQh2guLIrvzq_XKbi-a0-ANRFr9OXNmTy3UGNl79nRRhSq0xYLaxIVlddKBmE4skNVyqNwLml15K7ryh_CCI0hj6xq4puawuAuQEfjyqTrkGz3luB97m4A8WuTOy10qGv?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+### Editing Profile and Setting Tags
+
+- Click on the avatar icon on top right
+- Click the Edit Profile
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeLXMrPq5K7ODYk-kqyab8q43OF272yv8MopsYf-tgfJSEw-UGI4rdHvp-Zud3jbFCDS_LyHMPdPrY4CuGfhrkF-C1lwWcefVGuPWc_Cj8g6NyNjrLhPSOFPbwrzofKXStxaebStg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Fill your profile information, such as name, surname and about.
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeLfXVD9NhFBQDrkmvFWVDIs7X-Bclw8Hzj3KL3jlYKjaJ-XVWw2lCmo4mpq2i3JKtrsTWOnaAzy01yjwW8677Z4NoMoT45Ryw0Q4JwU4eBCrmG0FT8s46MErK4dIKcBD9fIed5NQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Set the tags based on your interests
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXflbJoX3ZTidrfvwlIR1GEMxoWCi0lgygzgLVdS0bEvggwHOHIpj2Q1-1fiNJIs6wra8u-DKpDywpKg0QONXpcG86INpcLLAW8e7n_BDQkcAcQuAje7ZPrx6Dr6UzyQXvZQt2xFoQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click Save Profile
+
+### Seeing Recommended Communities and Interacting with Them
+
+- The recommended communities are listed in the right sidebar, based on the user’s interests
+
+### ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXf80Xe5NYBmvciqLdJBO7TR8jtHwZLzxLoCG-LdXkM_83X7urJV5Ljw9MQj1HFztSEjOYlle_9oFuU3nIqR-R8QUxEfQ1QimqDi3KW7tir5S0ZcDyXxxVICDMcb8xrGJWT8ipFDwg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click one of the Recommended Communities and Click Join
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeFRn-V8_GJjtE8Nl1nO1mbOmEnNzJ1Ryn92EUtf97BJQ-kpJA6Z4sJgBR2DTyBryJYxC7Cy1rMI3EANznDoN0Q6OB9TbDy4OVxdc1bzBp_jyr-sX0mDHOFKhjYosygYVxVryybuQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- The user is in the community right now, and his/her name and activities show up in the activity field
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfPb3DYCaV9tcJocpnZ0PJJ7aR_zFOWTVssuRDc26iJLWKowOeZ39BRkW0LofvMqY0PjP8lGMEYrRvbkxqgu_KgihtCMxUCgqpLJyAEGNNd110hDoWy3rljA-d1j9JXtWSaLC5b?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+### Basic Search and Advanced Search
+
+#### Basic Search
+
+- Click the top search bar
+- Start to type any keyword
+- The System will show the results and categorize as the type, such as users and communities
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdmCZv3VaMApQiEnVOJqp7BiNDD_MgSrSb1yMMI9iuamRWusfq1T-uu0TKyspVUg0ueUk8jSm2XfM1tBW8D9doSV3gTEt0aQWQNk5OwflvlKfil3JJDPdm4hMBCZjtdaRm_wEfVyg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfd5S_Uk5TWnezC7PtdbXatIjin8L1a5yNq7RArEadt1XAqyPiANlb_ui8dbXwwF7OIs_-LI5-iw-mKVqlW0GfWN0-N9iBUpqxp83NzldO6a_6Cf5bUbWPCCyKY-PinN3ZFoX-lPw?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+#### Advanced Search
+
+- Navigate to a community
+- Click Search in Community button
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfB-r4k3ZVFOYfLisRCMi7GqJKZ5iL1mKvykjmzUNZA1UszlgUFthHHYELvOepETY9uFqR4IkEvU_TOhThDPWqN_IZTlzstCa5f4h0BRSQPgkYrFKsZRngSYBxrr9C3L-29iyyo?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click on Advanced Search to search in a detailed way
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeGrLPF2eOOxoKqpsoxm_vsqXSDu36XrgJwSIa8zhcyJz_a02jEKi7D2riCGm7KeOXcmx-HBX4LZ2W4Shrp0UUuRYd6fiCov6OECLr2qQ5vq2_ienNn-roZ4y9hq2_esD0LGgvBgQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Select a template to search
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeCqcNhX9VEPIW9zotzZhwky88yG_oLhQvbRzdzyLaio414MC8tnunvJ_wpO41xAt4HKxgJQgifI06hu7YJ0pzF_TKgIhE5MT2J9zeI-quputj4xA49aGAqf2QdRFkcxTZKP8r0fw?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Type the text and click Search button
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXfN1g0yy9gcYecaibSWWsd3EJXexF08naqo67sgLPtIa90fml6pgqo6fkVhHJgHbuZVZcy24zAbkvytMeZn9xDTG3yYa0AKSA-npW6wbAQrsPvd5bN_xECHZ4tHxAjmkr4kfAlp?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+### Downloading the Mobile and Desktop App
+
+#### For Desktop:
+
+- In desktop browser, click the Monitor icon in the URL bar
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdIIAaUWRDyQGDmsdr_RCayWPcRTnXvfoYHASZKu2JmlCEf181A8QH63BRqIdNckbsoEFdHceWxiDyq-vVIG9qouaypippaRM032b7qfAGOP-wI0Xfz-15eGY9IKtiZJ03jsRShmQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- Click the “Install”, or “Yükle” button
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXcDEvt_bMXIGdBi91WSYsePUDAaNlV9qMavJZaZYwenIArq2qxnWZEhdZhUQBrTKCulqxcG1JQ_93920nFcr47-f1G5kMgPVsb8vtwBF2RZ9yL1Vs7cpaIq7J84lMCmadfw1B1yXw?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+- After that you can feel the native experience in your desktop pc, a start button should be created in your system.
+
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXebWZZVbWK_Mv_s3Urpq60-BEn6059-50nKpb-DV2tcQAfa_SKL1MIy2fDjNQrhNjSKpHRNF9uYneBiCoElfqYMTyqihR9dkK8rhI3myRMW5_15HoQXckX-HlcxnB5DwzB5Cr1P4w?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+#### For Mobile:
+
+- Click Add to Home Screen in your mobile browser settings
+- Click Install in the bottom drawer and again in the modal
+- Then you can feel the native mobile experience
+<div align="center">
+<img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdORRICYbwhcihrtod3A-4bQ4IZq_Q9wxTM-FgNJbI_M5O3ubx32c_mvHNodQat7SSgMmvgwNeUX_kgtRmgxvm0Xsr7jTP_F0JW-jY1AO6FDoF9ZMhccoOwNS-eQvd-OqmytBI-0w?key=dx79Gw4fEyrn_YTVtN9O-U8a" width="250" />
+<img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdxwFoE8yW5LpACEEODNNJHUKvFhR0q14HmPfjopiin4qJ16GVDNH93gLDLv0RI-bvX_v4Fm-hG2QKlSXChwHevja7413RFDuqRFGBwF78qsWnjMkLvmmp5udfFCPk2g5bqeh5ePQ?key=dx79Gw4fEyrn_YTVtN9O-U8a" width="250" />
+<img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXcrRYCLHqmH4n_DrJihEZMKB1y1r4srop3xvhs6ZNdSj4OxtI2lFTGv1MxuNfhpQLG5w9dMZ5CxtBbliKLgnNGqvL8lP33HlOKOFu6JUMSgPLrM7AQVuxKvT1WO5z-zhib0rvn_?key=dx79Gw4fEyrn_YTVtN9O-U8a" width="250" />
+</div>
