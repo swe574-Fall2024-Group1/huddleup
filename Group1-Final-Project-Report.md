@@ -1059,7 +1059,7 @@ This structured table provides a clear overview of the **major issues** I create
 
 #### **3. Geolocation Map Implementation**
 - **Related Requirements:** F31
-- **Description:** Co-implemented location picker and map view feature with Övünç to posts. Created the UI in mobile sections. Leaflet for React is used to implement map view into the frontend. OpenStreetView is used to get the map tiles to display a world map. 
+- **Description:** Implemented location picker and map view feature to post creation section in both mobile and web. Leaflet for React is used to implement map view into the frontend. OpenStreetView is used to get the map tiles to display a world map. 
 - **Relevant Content:** #88
 
 #### Executive Summary  
