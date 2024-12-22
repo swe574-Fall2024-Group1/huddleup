@@ -1047,3 +1047,46 @@ This structured table provides a clear overview of the **major issues** I create
 ---
 
 
+### Erkin Gönültaş
+
+#### **1. Mobile Version Creation**
+- **Description:** Created a PWA version for the project and migrated all of the UI elements to make them suitable for smaller screens. 
+- **Relevant Content:** #55
+
+#### **2. UI Enhancements**
+- **Description:** Improved UI elements in web and mobile to match the quality requirements. 
+- **Relevant Content:** #116,  #88
+
+#### **3. Geolocation Map Implementation**
+- **Related Requirements:** F31
+- **Description:** Co-implemented location picker and map view feature with Övünç to posts. Created the UI in mobile sections. Leaflet for React is used to implement map view into the frontend. OpenStreetView is used to get the map tiles to display a world map. 
+- **Relevant Content:** #88
+
+#### Executive Summary  
+In this project, I contributed mainly to frontend on mobile and web versions. I created PWA version and migrated screens to make them suitable for smaller screens. I improved UI quality, where needed, and implemented missing UI elements. Also, I implemented a location picker and map view feature. 
+
+#### Documentation 
+
+For documentation, I mainly contributed to the mockups and user scenarios.
+https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups
+
+
+#### Demo
+
+Designed and implemented map view for post creation: 
+
+<img src="https://camo.githubusercontent.com/405fe6e54460652d472d04701b2ea5fa342a28566ce6ee6a7dd59e0ae66f2d47/68747470733a2f2f6c68372d72742e676f6f676c6575736572636f6e74656e742e636f6d2f646f63737a2f41445f346e586641654f6c624f7762686c4a2d386237326d38586d7159526d4d3548434954785849734d35374e59434e62427837577862534d4841796975754f75756155776b335f5167713248524d41345036714238787061367a48785443694b63596d5a44503158327a5438506d4c525132357a6f4c4d51415642764c694450775958426947463245626f3f6b65793d64783739477734664579726e5f595456744e394f2d553861" height="480px" width="auto"/>
+<img src="https://camo.githubusercontent.com/8b58e6a55d4f0ae845312f99f24e3a3cf1eb16692bac1f2de7831c62d8b96bd2/68747470733a2f2f6c68372d72742e676f6f676c6575736572636f6e74656e742e636f6d2f646f63737a2f41445f346e58655667385068594376686b4b77773265346c66496642345968746a4959473273787572675036306a3450377558796c39326b4f5630377a6e754d455242745973314c662d435f64494e5f364a6471737868564f502d33455139504a4c436c39416569645876554e464657727271507248523365586f3636744c6b7661454d6b61442d4a56695945513f6b65793d64783739477734664579726e5f595456744e394f2d553861" height="480px" width="auto"/>
+
+#### Challenges:
+
+The only challenge was to find a reliable source to serve our users a good quality map, while being on budget. Google Maps API could seem like the first choice but being costly and more complex to implement (Google API account creation, API implementation to project, fetching from an API, etc.) puts it below the list. We chose OpenStreetView, because it is open source and free. Also, it needs only a script import to the index file. Thus, it is basically the only contender.
+
+#### Code Review  
+
+#### Code Reviewed by Me  
+- **Pull Request:**  #111, #106 (frontend part)
+
+I reviewed most of the frontend code implemented to the project by our group.
+
+**Result:** Thanks to our talented group, the codes were already met up to the quality needs most of the time. If not, I either respond with a detailed description of the problem or if there is an urgency, i fix it myself and merge.
