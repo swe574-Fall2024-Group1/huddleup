@@ -1619,3 +1619,50 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
 2. **Code Reviews**:  
    - Reviewed pull requests, including [Feature/parameter-based-badge #80](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80) and [Adding the m2 customer report #87](https://github.com/swe574-Fall2024-Group1/huddleup/pull/87).  
    - Provided feedback, suggested improvements, and fixed backend issues where necessary.
+
+---
+
+### Aibek Aldabergenov
+
+#### **1. Backend Architecture Enhancements**
+
+- **Description:** Prepared the backend for group development in the early stages of the project. The major contributions are: switching the database system from MongoDB to PostgreSQL, changing the User model for registration and authentication using token, creating Docker files for local development by team members.
+- **Relevant Issue:** [#12](https://github.com/swe574-Fall2024-Group1/huddleup/issues/12) [#47](https://github.com/swe574-Fall2024-Group1/huddleup/issues/47)
+
+#### **2. Developing the Tagging system for Posts and Users**
+
+- **Description:** Added the functionality of attaching tags to User profiles and to Posts. The changes were made on the database side, backend side and the frontend.
+- **Relevant Issue:** [#46](https://github.com/swe574-Fall2024-Group1/huddleup/issues/46)
+
+#### **3. Developing the logic for Community recommendation based on cosine similarity**
+- **Description:** Added the logic for recommending communities to users based on the tag strings used by users and in communities. The method uses cosine similarity algorithm.
+- **Relevant Issue:** [#6](https://github.com/swe574-Fall2024-Group1/huddleup/issues/6)
+
+#### **4. Developing the logic for Community recommendation based on semantic tags from Wikidata**
+- **Description:** Adapting the existing database structure and functions for integrating labels from Wikidata for using as tags in posts and user profiles. The community recommendation system uses Wikidata properties P279 (subclass of) and P31 (instance of).
+- **Relevant Issue:** [#6](https://github.com/swe574-Fall2024-Group1/huddleup/issues/6) [#26](https://github.com/swe574-Fall2024-Group1/huddleup/issues/26)
+
+#### Executive Summary
+My major contribution to this project is adding the community recommendation system based on semantic tags powered by Wikidata labels.
+
+#### Documentation
+I did not make any major contributions to project documentation.
+
+#### Challenges
+The main challenge in this project for me was making changes to existing frontend code since I only focus on backend development. Specifically, when adding the functionality for tagging posts and user profiles, integrating the autocomplete component for tag searching into the UI required me to read ReactJS documentation and spend a considerable amount of time debugging and fixing code. You can see the component on the screenshot below.
+
+#### Demo
+Tagging system using semantic tags powered by Wikidata
+<img src="https://github.com/user-attachments/assets/7e894326-9033-4ec8-908c-d69dc9303fe1"/>
+
+#### Code review
+**Each pull request I reviewed was first ran by me locally to test if it does not break existing functionality. Also, if there were any conflicts with the target branch, they were fixed where needed**
+- PR[#79](https://github.com/swe574-Fall2024-Group1/huddleup/pull/79) Reviewed Övünç's pull request related to User recommendation. I approved the PR, and it was merged to dev from feature/user-recommendation branch.
+- PR[#111](https://github.com/swe574-Fall2024-Group1/huddleup/pull/111) Reviewed Mustafa's pull request related to enhancements in the User profile. The pull request was merged to dev from feature/user-profile-enhancement after being reviewed by me and Erkin.
+- PR[#112](https://github.com/swe574-Fall2024-Group1/huddleup/pull/112) Reviewed Övünç's pull request related to User recommendation based on Wikidata relationship data. I approved the PR, and it was merged to dev from feature/user-wikidata-recommendations branch.
+
+#### Pull requests
+- PR[#68](https://github.com/swe574-Fall2024-Group1/huddleup/pull/68) Includes the functionality for attaching tag strings to posts and user profiles
+- PR[#74](https://github.com/swe574-Fall2024-Group1/huddleup/pull/74) Adding the Recommended Communities section on the frontend
+- PR[#106](https://github.com/swe574-Fall2024-Group1/huddleup/pull/106) This PR includes the changes that integrate the Wikidata label usage as tags when creating posts or adding tags to user profiles
+
