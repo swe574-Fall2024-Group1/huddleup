@@ -553,6 +553,8 @@ Once the user is satisfied with the photo, the written content, and the metadata
 
 ## User Manual
 
+You can find a demonstration video of the app on [YouTube](https://youtu.be/XyLsM2wwD9o).
+
 ### Login/Registration
 
 ![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXdbzdGE-Ahqi9dgC2cQ9G8W_gw7ZmpsCpYzOV769bS0mYWYOoY64dIfkVhZTsU_hQ8bK7xusk7DmSAj4wNGtycggT4wHqL0F7NZxNU2BX0ypFWmRSBb59AL_MXHFb40ntOHsRnZGg?key=dx79Gw4fEyrn_YTVtN9O-U8a)
