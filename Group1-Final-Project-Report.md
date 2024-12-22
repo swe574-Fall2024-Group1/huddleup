@@ -353,6 +353,184 @@ The platform shall support two types of badges, default badges and community spe
 | F80                     |             |             | X         |
 
 
+## Software Design Mockups
+
+### 1.User Profile
+Scenario: Badges that user earned from different communities are listed on the user profile page.
+
+<img src="https://github.com/user-attachments/assets/ad00dd35-6e86-4bf5-a3ce-bc3464bc7da7" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/15397706-deee-4b67-bbf7-6a9e0f8fe209" height="480px" width="auto"/>
+
+### 2.Activity Feed
+
+<img src="https://github.com/user-attachments/assets/6bd92154-a9d2-48a5-bf34-401e1f1688d5" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/96d565ad-e33e-4c37-92f7-a558c8961583" height="480px" width="auto"/>
+
+### 3.Badges
+#### Manuel Badge Scenario: 
+The community owner Alan wants to create a Community Specific Badge, therefore he goes to the Badge Management.
+
+<img src="https://github.com/user-attachments/assets/a21d12a6-22aa-42f2-bcec-3a8783d43762" height="480px" width="auto"/>
+
+#### Community Specific Badges - Automatic Badges with Predefined Criteria Scenario:
+
+
+**Scenario 1:** The community owner Alan, creates community specific badge for the community Travel for Food.
+
+<img src="https://github.com/user-attachments/assets/d1432615-3232-4ce8-8477-7ded0c98e0fd" height="480px" width="auto"/>
+
+Ali has been a member of HuddleUp for a while now, primarily engaging with the “Travel for Food” community. He has been posting food recommendations from different locations.When he posted Köskeroglu post, he has earned the "Gourmet" badge, which is given to users by specifically posting food recommendations from 30 different locations.
+
+<img src="https://github.com/user-attachments/assets/9d320c4b-d3c2-405c-aa2a-1cff0ad5c85b" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/b8484aca-0525-4404-9de2-1c7d8f00103a" height="480px" width="auto"/>
+
+
+**Scenario 2:** The community owner Fred, creates community specific badge for the community Chill Soundscape.
+
+<img src="https://github.com/user-attachments/assets/96c42f47-08d0-46df-83fa-366a787c937c" height="480px" width="auto"/>
+
+Sarah, a passionate ambient music creator, posts her music composition “Echoes of Yesterday”. As days pass, Sarah's post gains attention. The upvotes climbs to 1,000. Therefore, the system assigns "Soul Whisperer" badge to her.
+
+<img src="https://github.com/user-attachments/assets/20ec15f3-103c-4a2b-94b4-eec53d3277f3" height="480px" width="auto"/>
+
+#### Community Specific Badges - Manual Badges:
+
+**Scenario:** In the "Healthy Living" community, owner Jamie decides to award the "Creative Genius" badge to member Alex for consistently sharing innovative recipes that have garnered enthusiastic responses from other members.
+After noticing that Alex's unique smoothie recipes not only received over 100 upvotes but also sparked a lively discussion on nutrient combinations, Jamie opens the badge assignment modal.
+
+<img src="https://github.com/user-attachments/assets/6f0d2502-126d-4f6c-9796-c0deaf6f5bf3" height="480px" width="auto"/>
+
+
+### 4.Tags
+
+**Scenario:** Ali logs into the HuddleUp app and navigates to the "Travel for Food" community. From there, they click on the "Tags" button for managing tags.Within the  panel, Ali finds the "Tags" section. This section allows community member to create and manage tags that users can apply to their posts. Ali clicks on the "Create New Tag" button and enters the following information: Tag Name: "Turkish Street Food",Description: "We eat on the streets of Türkiye."After filling out the details, Ali saves the tag. Once the new tags are created, Ali drafts an announcement to the huddleup. The message explains the purpose of the new tags and encourages users to start tagging their posts accordingly for better visibility and organization.
+
+<img src="https://github.com/user-attachments/assets/2222d924-86c0-4258-b0d0-1f87635bece0" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/29c5725f-197f-485e-be62-4a59cbbcdf4c" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/04f5227e-6427-4e6a-88ee-10ad9174091e" height="480px" width="auto"/>
+
+Sarah logs into the HuddleUp app and navigates to the "Travel for Food" community. She clicks the "Add Post" button.Sarah fills a location, restaurant name, detailing her experience with the food. Before publishing the post, Sarah sees a "Tags" section at the bottom of the post creation form. She clicks on the tag input field, and a dropdown list of available tags appears.Sarah selects the following tag from the list: French Cuisine. After assigning the tags, Sarah clicks the "Submit" button, and her post is published in the community feed. The tags are displayed under the post, and users can click on them to find related content.
+
+<img src="https://github.com/user-attachments/assets/06949896-4765-4071-a727-86b04667e33d" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/a71fe3ee-42d1-4cec-ae07-a7f2ac3373bf" height="480px" width="auto"/>
+
+**Scenario:** Adam discovers new posts through HuddleUp's tag system. He filters by selecting the tag street food.
+
+<img src="https://github.com/user-attachments/assets/4618b16c-35f8-4024-857f-99d1b0433d68" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/147cbe00-f82c-43e4-b946-3200d59a6b3e" height="480px" width="auto"/>
+
+### 5.Recommendation
+Scenario: Alan begins the registration process by entering her email, creating a password, and filling out basic profile information. After completing her profile setup, the system prompts Alan to select 3 tags that best reflect her interests. A message on the screen reads: “Pick 3 tags that describe your interests so we can recommend relevant content and communities.” Alan is presented with a list of available tags organized by categories. Alan scrolls through the list and selects the following tags: Italian Cuisine,Spicy Food and Breakfast.After selecting her 3 tags, Alan clicks “Continue” to complete the registration process. The system processes her preferences and tailors her experience based on these tags.Upon completing her registration, Alan is directed to the main feed. The system immediately shows her personalized recommendations: Posts, Communities.
+
+<img src="https://github.com/user-attachments/assets/8c547190-b21d-4ce7-94e8-96f47911516f" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/a2eef9ee-9bb1-4ce2-85aa-1901d0c15771" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/c2c51122-d31b-4dd2-93d7-eb6f1afa5123" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/f416ddfd-4ac2-4be3-9f92-ef348f05f5a1" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/a0556e97-d0a0-45dd-b20c-8b61436cd608" height="480px" width="auto"/>
+
+**Scenario:** David discovers new communities through HuddleUp’s recommendation system. The recommendations are relevant due to their shared tags with communities he already follows, and the platform helps him find both popular, active communities and new, exciting groups to join. By using the prioritized recommendation system, David stays engaged and connected to new communities that align with his passions.
+
+<img src="https://github.com/user-attachments/assets/1c4a183c-ec04-431d-b771-cf001430c8aa" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/aa434c99-c3ce-4d90-ad16-759dc3e20e20" height="480px" width="auto"/>
+
+
+## User Scenarios
+### 1. Coffee Fortune Telling
+
+Scenario: A user joins a coffee fortune-telling community, uploads a photo of their coffee cup, and asks the community for opinions about their fortune based on the coffee grounds.
+
+#### Step 1: Post Creation (Community-Specific Template)
+**"Create a Post"**
+
+1. Title: "What does my coffee fortune say?"
+2. Photo Upload: A button to upload the coffee photo (JPEG, JPG, PNG)
+3. Optional Description Field: "I've had this cup in the morning, and I’m curious about the fortune the grounds reveal!"
+4. Post Button: "Share with Community"
+
+Here, the user can quickly add a title, upload the photo, and describe what they're looking for in the community-specific template. The user can see that a default template is available with an optional photo and description field, tailored for coffee-related posts.
+
+#### Step 2: Community Engagement (Post Interaction)
+**"View Post"**
+
+1. Post Information: Displays the coffee photo, title, description, and user's name..
+2. Timestamp: Shows when the post was made.
+3. Upvote/Downvote Buttons: Allows members to vote on the post.
+4. Comment Section: Allows users to comment with interpretations like "I see wealth in your near future!" or "Looks like a journey is ahead."
+5. Reply Functionality: Enables users to reply to specific comments for more detailed discussions.
+
+This page encourages community members to engage with the user's coffee post and provide their own fortune-telling interpretations.
+
+<img src="https://github.com/user-attachments/assets/3205cb5e-470b-4aa3-8dfa-f9abc911ffd9" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/58915114-658f-4a5c-babc-039a155451e9" height="480px" width="auto"/>
+<img src="https://github.com/user-attachments/assets/5a3faa84-58f0-4c2e-9594-f3de0eb74750" height="480px" width="auto"/>
+
+### 2. Create Book Discussion Template
+
+<img src="https://github.com/user-attachments/assets/c75a4587-4f90-45d6-9a3b-7910336072a2" height="480px" width="auto"/>
+
+#### Step 1 - Access the Template Dashboard
+
+Ahmet (moderator) logs into the "Reading Community" and navigates to the "Reading Community Templates" section. He sees a list of existing templates like "Book Review" and "Reading Challenge.", created by other moderators before.
+
+#### Step 2 - Initiate New Template Creation
+He clicks the "Create Template" button at the top of the page. A modal window opens with a form to create a new template.
+
+#### Step 3 - Fill in Template Details and Add Additional Fields
+
+He enters "Book Club Discussion" as the template name and he writes a description "Start a discussion about the current book club selection."
+
+Ahmet needs specific input fields to guide the conversation:
+
+He adds "Book Title" (text) so members can specify the book and "Author" (text) for the author's name.
+For structuring the conversation, he adds "Discussion Topic" (text) and "Initial Thoughts" (textarea) to allow for free-form input.
+Finally, he adds "Meeting Date" (date) to schedule the in-person or online discussion.
+
+#### Step 4 - Review and Save the Template
+Before saving, he reviews the list of fields and confirms they cover all aspects of the discussion.
+
+He clicks "Create Template." The new "Book Club Discussion" template now appears in the template list, complete with fields like "Book Title," "Author," and "Discussion Topic."
+
+
+### 3. Post Creation Screen - Plant Identification Community
+
+This wiki page provides an overview of the post creation screen mockup designed for the Plant Identification Community app. The screen allows users to easily capture and share plant photos for identification by other community members.
+
+#### Overview
+The post creation process consists of two primary steps:  
+1. **Capturing a Photo**  
+2. **Writing the Post**  
+
+During the creation of a post, the app automatically gathers important metadata (location, altitude, time, date) from the user's phone, which can later be manually edited if needed.
+
+<img src="https://github.com/user-attachments/assets/87eeebdf-19f5-477e-aa58-cb764fbcbfe0" height="480px" width="auto"/>
+
+#### Step 1: Capturing the Plant Photo
+When the user initiates the post creation process, the app activates the phone's camera. The user is prompted to take a photo of the plant they want to post. This image will be the central piece of the post for the plant identification request.
+
+**Action:**  
+- Take a clear, focused photo of the plant to ensure other community members can accurately identify it.
+
+#### Step 2: Writing the Post
+After capturing the plant photo, the user is taken to the second step of the post creation process, where they can add more details to their post.
+
+##### Fields:
+- **Post Title:** A brief title summarizing the plant or the request for identification.
+- **Post Body:** A more detailed description where the user can add relevant information about the plant, such as its characteristics, the environment it was found in, or any other details that might help with identification.
+
+##### Automatically Filled Information
+In addition to the user-provided content, the following information is automatically gathered from the user's device and added to the post:
+
+- **Location:** The geographical coordinates or area where the plant photo was taken (e.g., "Eastern Aegean").
+- **Altitude:** The altitude at which the photo was taken.
+- **Time & Date:** The exact time and date of the photo.
+
+##### Editing Auto-filled Information
+The user can manually edit the automatically filled information by clicking on the respective fields (location, altitude, time, date) before submitting the post. This ensures flexibility in case any corrections are needed.
+
+##### Finalizing the Post
+Once the user is satisfied with the photo, the written content, and the metadata, they can submit the post for the community to view and assist with identification.
+
+
 # USER TESTS
 
 | **Test Case**            | **Steps**                                                                                                                                                 | **Expected**                                                                                          | **Actual** | **Notes** | **Post-condition**                                      |
