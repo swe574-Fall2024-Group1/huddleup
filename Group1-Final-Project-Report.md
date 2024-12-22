@@ -62,7 +62,7 @@ HuddleUp is built using:
 - **Frontend**: ReactJS (leveraging Ant Design components)  
 - **Backend**: Django  
 - **Database**: PostgreSQL  
-- **Deployment**: AWS  
+- **Deployment**: Google Cloud Platform
 
 ### **Future Enhancements**  
 Once the pending requirements are addressed, the platform will:  
