@@ -42,30 +42,7 @@ The primary goal of HuddleUp is to create a scalable and interactive platform wh
    - Optimized user experience for smaller screens with adaptive UI, including converting sidebars into drawers.  
 
 ---
-
-### **Pending Requirements**  
-
-While the core functionalities have been implemented, some critical features are yet to be addressed:  
-
-- **F5**: *Advanced Analytics*  
-   - Detailed insights into user and community activity metrics, such as post engagement, growth trends, and more.  
-
-- **F6**: *Personalized Notifications*  
-   - Implement notifications for events like replies, badges, and community updates.  
-
-- **F37**: *Community Discovery*  
-   - Build a recommendation system to help users discover communities based on their interests.  
-
-- **F38**: *Content Moderation Tools for Owners and Moderators*  
-   - Enhance content moderation, including AI-based flagging of inappropriate posts or comments.  
-
-- **F44**: *Search Functionality*  
-   - A robust search system allowing users to find communities, posts, and other users easily.  
-
-- **F48**: *Integration of Multimedia Posts*  
-   - Allow users to upload and share multimedia files like images, videos, and documents in posts.  
-
-
+  
 ### **Current Technology Stack**  
 HuddleUp is built using:  
 - **Frontend**: ReactJS (leveraging Ant Design components)  
