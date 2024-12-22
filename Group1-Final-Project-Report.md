@@ -12,6 +12,21 @@
 #### **Final Release Link**
 [https://github.com/swe574-Fall2024-Group1/huddleup/releases/tag/v0.9](https://github.com/swe574-Fall2024-Group1/huddleup/releases/tag/v0.9)
 
+### **System Manual - How to run project locally w/ Docker**
+The project is fully dockerized, with Docker Compose configured for seamless deployment and local execution.
+Requirements to run locally:
+- docker version 20.10.x or greater
+- docker compose version v2.2.x or greater
+- Internet connection to [Docker hub](https://hub.docker.com)
+
+To build the application locally:
+- The `docker compose up` command should be executed inside the top directory (`/huddleup`).
+- After executing the command, all necessary components (database, backend, and frontend instances) will be created and configured.
+- The required software packages will be downloaded during the initial `docker compose up` run, which may take some time during the first run. Following runs will take much less time due to Docker's caching feature.
+- The PostgreSQL database will run automatically and create `postgres_data:` folder for database files.
+- During the `docker compose up` the database migrations required by Django will run automatically.
+- Execute `docker compose down` to stop the project. After shutting down data in the database will be persistent under `postgres_data:` folder. Any user, user, community, etc. created in a previous run will be available if data under `postgres_data:` is not deleted.
+
 ### **Project Goals**  
 The primary goal of HuddleUp is to create a scalable and interactive platform where users can:  
 - Join and engage with communities of shared interests.  
