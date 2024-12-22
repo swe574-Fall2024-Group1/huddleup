@@ -1675,3 +1675,19 @@ Tagging system using semantic tags powered by Wikidata
 - PR[#74](https://github.com/swe574-Fall2024-Group1/huddleup/pull/74) Adding the Recommended Communities section on the frontend
 - PR[#106](https://github.com/swe574-Fall2024-Group1/huddleup/pull/106) This PR includes the changes that integrate the Wikidata label usage as tags when creating posts or adding tags to user profiles
 
+#### Issues  
+
+##### **Major Issues Created by Me**  
+
+| **Issue ID** | **Title** | **URL**                                                                     |
+|--------------|---------------------------|-----------------------------------------------------------------------------|
+| #1           | Decide if we should start the backend functionality from scratch or use one of our own repository as base| [Issue #1](https://github.com/swe574-Fall2024-Group1/huddleup/issues/1)    |
+---
+
+##### **Major Issues Assigned to Me**  
+ 
+
+| **Issue ID** | **Title** | **URL**                                                                   |
+|--------------|------------------------------------------------|---------------------------------------------------------------------------|
+| #6           | Decide how community recommendation should work| [Issue #6](https://github.com/swe574-Fall2024-Group1/huddleup/issues/6)   |
+| #12          | Change database from mongodb to postgresql | [Issue #12](https://github.com/swe574-Fall2024-Group1/huddleup/issues/12) |
