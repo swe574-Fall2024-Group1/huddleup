@@ -69,6 +69,9 @@
 [https://github.com/swe574-Fall2024-Group1/huddleup](https://github.com/swe574-Fall2024-Group1/huddleup/releases/tag/v0.9)
 #### **Deployment link**
 [https://group1.swe574.com](https://group1.swe574.com)
+#### **Example user**
+username: cibili
+password: Cibili.12345
 #### **Demonstration Video Link**
 [https://youtu.be/XyLsM2wwD9o](https://youtu.be/XyLsM2wwD9o)
 #### **Final Release Link**
@@ -1757,29 +1760,29 @@ Tagging system using semantic tags powered by Wikidata
 ###### Requirement: F35
 ###### Description: 
 F35 is about editing existing post. My part was about editing geolocation field.
-###### Related Issues: #96
+###### Related Issues: [#96](https://github.com/swe574-Fall2024-Group1/huddleup/issues/96)
 ###### Implementation: 
 I added the functionality to edit geolocation field via interactive map. [commit](https://github.com/swe574-Fall2024-Group1/huddleup/pull/97/commits/0e637e486670748eed1c2de6eeac040a598f3b9d)
-###### Pull request: #97
-PR #97 Erkin is reviewed and inform me that we lost map view adjustment when user selects "current location". And I revert the related function to bring it back. PR #101
+###### Pull request: [#97](https://github.com/swe574-Fall2024-Group1/huddleup/pull/97)
+PR #97 Erkin is reviewed and inform me that we lost map view adjustment when user selects "current location". And I revert the related function to bring it back. [#101](https://github.com/swe574-Fall2024-Group1/huddleup/issues/101)
 
 
 ##### 2. Redirect Users to User Page in Basic Search
 ###### Requirement: F40
 ###### Description: 
 F40 is related to basic search functionality. The basic search was implemented before. However, it was not redirecting for user profile.
-###### Related Issues: #113
+###### Related Issues: [#113](https://github.com/swe574-Fall2024-Group1/huddleup/issues/113)
 ###### Implementation:
 I added "else if" statement for "option type" user and I navigated users to user endpoint with the option id. "Option" comes from basic search result of the user. Type is community or user.
-###### Pull request: #111
-I included this in PR #111 with other related issues. This PR also has Mustafa's commits. Therefore, it is reviewed by other team members. Aibek reviewed backend side, and by Erkin reviewed frontend side. Both stated that everything is fine, and PR is merged to dev.
+###### Pull request: [#111](https://github.com/swe574-Fall2024-Group1/huddleup/pull/111)
+I included this in PR [#111](https://github.com/swe574-Fall2024-Group1/huddleup/pull/111) with other related issues. This PR also has Mustafa's commits. Therefore, it is reviewed by other team members. Aibek reviewed backend side, and by Erkin reviewed frontend side. Both stated that everything is fine, and PR is merged to dev.
 
 
 ##### 3. User Recommendations with Wikidata Tags
 ###### Requirement: F64
 ###### Description: 
 F64 states that user recommendation mechanism should include both user interactions and user tags. In MVP, we only had user interaction based user recommendations.
-###### Related Issues: #109
+###### Related Issues: [#109](https://github.com/swe574-Fall2024-Group1/huddleup/issues/109)
 ###### Implementation:
 In [update_recommendations.py](https://github.com/swe574-Fall2024-Group1/huddleup/huddleupAPI/communityAPI/management/commands/update_recommendations.py) file, Aibek has developed community recommendation logic. I improved the existing ones and added new functions for user to user recommendation. 
 1. get_user_interest_profile function gets user tags from both their profile and their posts. I improved this function to include get_all_ancestors function, which searches for ancestor wikidata tags.
@@ -1788,7 +1791,7 @@ In [update_recommendations.py](https://github.com/swe574-Fall2024-Group1/huddleu
 4. I called recommend_users(user) function inside handle function so that update_recommendation can also include user recommendation logic. It runs for every active user. If it finds any recommendation, it adds new record to UserUserRecommendation table in database. The table is created in django models with user and recommended_user fields as foreign keys of "authAPI.User" table. It also has score (cosine similarity score) and created_at date.
 ###### Unit tests: 
 This [commit](https://github.com/swe574-Fall2024-Group1/huddleup/commit/74c7edc33ee7c1a479080d62200a304a6bfa0756) includes unit tests for the get_recommended_users API to ensure it provides correct user recommendations. The setup involves creating four users, a community, posts, comments, likes, and follow connections to simulate a realistic environment. In the first test, the endpoint is tested with active interactions, where user1 should receive recommendations for user3 and user4 since they are not already followed but have interacted with user1’s posts or comments. The second test clears all interactions and follow connections, ensuring the endpoint returns no recommendations, validating that recommendations are based on existing interactions.
-###### Pull request: #112
+###### Pull request: [#112](https://github.com/swe574-Fall2024-Group1/huddleup/pull/112)
 PR #112 is reviewed by Aibek. He solved the merge conflicts. In this conflict, p31 relationship was removed in community recommendation. He readded this relationship. However, he removed p279 relationship in user recommendation system. And approved and merged this PR. After that we talked about that. He reverted p279 relationship to user recommendation system.
  
 
@@ -1796,26 +1799,26 @@ PR #112 is reviewed by Aibek. He solved the merge conflicts. In this conflict, p
 ###### Requirement:
 This section covers user interface enhancements. These are not explicitly stated in requirements, but they improve usability in the application.
 ###### Description and related issues: 
-Mustafa has initialized user profile picture functionality in user profile with other necessary fields. He also added user profile picture and user profile redirection in some parts of the application. I reviewed his code in PR #111 and I added the other remaning parts. These are can be listed as:
-1. Members in community members panel  were centered before, which was seen untidy (Can be seen in issue #114)
-2. User profile redirection was not set: #92
-3. User profile picture was not shown in some parts: #94, #115, #118
+Mustafa has initialized user profile picture functionality in user profile with other necessary fields. He also added user profile picture and user profile redirection in some parts of the application. I reviewed his code in PR [#111](https://github.com/swe574-Fall2024-Group1/huddleup/pull/111) and I added the other remaning parts. These are can be listed as:
+1. Members in community members panel  were centered before, which was seen untidy. Can be seen in issue [#114](https://github.com/swe574-Fall2024-Group1/huddleup/issues/114)
+2. User profile redirection was not set: [#92](https://github.com/swe574-Fall2024-Group1/huddleup/issues/92)
+3. User profile picture was not shown in some parts: [#94](https://github.com/swe574-Fall2024-Group1/huddleup/issues/94), [#115](https://github.com/swe574-Fall2024-Group1/huddleup/issues/115), [#118](https://github.com/swe574-Fall2024-Group1/huddleup/issues/118)
 
 ###### Implementation:
-1. Community members are aligned to be at left hand side. Issue: #114
+1. Community members are aligned to be at left hand side. Issue: [#114](https://github.com/swe574-Fall2024-Group1/huddleup/issues/114)
 In [Community Layout](https://github.com/swe574-Fall2024-Group1/huddleup/blob/main/huddleupui/src/layouts/CommunityLayout.jsx) row of Owners, Moderators and Members Card updated as justify "start".
 
-2. User profile redirection is set in community page in members section and in posts for author names. #92
+2. User profile redirection is set in community page in members section and in posts for author names. [#92](https://github.com/swe574-Fall2024-Group1/huddleup/issues/92)
 In Community Layout, row of Owners, Moderators and Members Card avatar link is added with users endpoint with user id. 
 
-3. User profile picture is set. #115
+3. User profile picture is set. [#115](https://github.com/swe574-Fall2024-Group1/huddleup/issues/115)
 3.1. Community members/moderators/owners profile picture is set.
 In Community Layout, row of Owners, Moderators and Members Card avatar is replaced by user profile_picture which comes from backend django views (get_community_members, get_community_owners, get_community_moderators).
 
-3.2. At posts, at right side bar connections list, at discover users page, at navigation bar. #94
+3.2. At posts, at right side bar connections list, at discover users page, at navigation bar. [#94](https://github.com/swe574-Fall2024-Group1/huddleup/issues/94)
 In [Post JS](https://github.com/swe574-Fall2024-Group1/huddleup/blob/main/huddleupui/src/components/Community/Post.js), card meta avatar is updated to include profile picture of the post author. Since backend sends profile_picture, I dont need to add any logic to backend side. Same logic is also added to [Feed Post](https://github.com/swe574-Fall2024-Group1/huddleup/blob/main/huddleupui/src/components/Feed/FeedPost.js), [RightSide bar](https://github.com/swe574-Fall2024-Group1/huddleup/blob/main/huddleupui/src/components/MainLayout/RightSidebar.jsx), [Nav bar](https://github.com/swe574-Fall2024-Group1/huddleup/blob/main/huddleupui/src/components/MainLayout/Navbar.jsx), [Discover User](https://github.com/swe574-Fall2024-Group1/huddleup/blob/main/huddleupui/src/pages/DiscoverUsers.jsx).
 
-###### Pull request: #111
+###### Pull request: [#111](https://github.com/swe574-Fall2024-Group1/huddleup/pull/111)
 I included this in PR #111 with other related issues. This PR also has Mustafa's commits. Therefore, it is reviewed by other team members. Aibek reviewed backend side, and by Erkin reviewed frontend side. Both stated that everything is fine, and PR is merged to dev.
 
 
@@ -1823,14 +1826,14 @@ I included this in PR #111 with other related issues. This PR also has Mustafa's
 ###### Requirement:
 This section covers user interface enhancements. These are not explicitly stated in requirements, but they improve usability in the application.
 ###### Description and related issues: 
-All default badge icons were the same picture. They should distinct icons and they should reflect its meaning. #117
+All default badge icons were the same picture. They should distinct icons and they should reflect its meaning. [#117](https://github.com/swe574-Fall2024-Group1/huddleup/issues/117)
 ###### Implementation:
 There was a static badge icon for default badges by stating src link with badge name. I created switch-case statement. For example, if badge name equals to "community name - Post Master", its icon link is a postman. In case "community name - Commentator", its icon is call center representative, because they answer people's questions. 
 This switch-case logic is added to the places where badges are shown. These are:
 1. At user profile page, there are awarded badges.
 2. In community page, at the right side bar, there is badges panel which shows available badges for that community.
 3. In community page, near post author name, we show awarded badges of the post author.
-###### Pull request: #119
+###### Pull request: [#119](https://github.com/swe574-Fall2024-Group1/huddleup/pull/119)
 Doruk reviewed the PR #119. He approved and merged to dev environment.
 
 
@@ -1843,13 +1846,13 @@ Erkin developed interactive map for geolocation field. However, when user wants 
 I enhanced the basic search functionality to redirect users to the profile pages. Its PR #111 includes other improvements, and 2 team members are reviewed both backend and frontend side and approved.
 
 ##### 3. User Recommendations with Wikidata Tags (F64)
-I introduced a robust user recommendation system by incorporating both user social interaction and semantic tags from Wikidata. I included multiple functions for tag analysis, similarity scoring, and user ranking based on Aibek's implementation of wikidata on community recommendation system. The unit tests validated the user social interaction logic. The PR #112 is reviewed by Aibek. He fixed the conflicts and merged to dev branch.
+I introduced a robust user recommendation system by incorporating both user social interaction and semantic tags from Wikidata. I included multiple functions for tag analysis, similarity scoring, and user ranking based on Aibek's implementation of wikidata on community recommendation system. The unit tests validated the user social interaction logic. The PR [#112](https://github.com/swe574-Fall2024-Group1/huddleup/pull/112) is reviewed by Aibek. He fixed the conflicts and merged to dev branch.
 
 ##### 4. User Interface Improvements
-For increasing user experience in the application, I populated user profile pictures and redirection links to user profile across multiple application sections. These changes are grouped in a collaborative pull request #111 and reviewed by 2 team members are reviewed both backend and frontend side, approved and merged.
+For increasing user experience in the application, I populated user profile pictures and redirection links to user profile across multiple application sections. These changes are grouped in a collaborative pull request [#111](https://github.com/swe574-Fall2024-Group1/huddleup/pull/111)and reviewed by 2 team members are reviewed both backend and frontend side, approved and merged.
 
 ##### 5. Badge Icon Enhancement
-I customized badge icons to reflect their themes, replacing default static images. This update enhanced visual clarity of default badges across profile pages, community sidebars, and post author details. Its PR #119 reviewed, approved and merged by Doruk.
+I customized badge icons to reflect their themes, replacing default static images. This update enhanced visual clarity of default badges across profile pages, community sidebars, and post author details. Its PR [#119](https://github.com/swe574-Fall2024-Group1/huddleup/pull/119) reviewed, approved and merged by Doruk.
 
 
 ### Issues  
