@@ -1763,8 +1763,6 @@ I added the functionality to edit geolocation field via interactive map. [commit
 ###### Pull request: #97
 PR #97 Erkin is reviewed and inform me that we lost map view adjustment when user selects "current location". And I revert the related function to bring it back. PR #101
 
-###### Demo:
-![alt text](image.png)
 
 ##### 2. Redirect Users to User Page in Basic Search
 ###### Requirement: F40
@@ -1775,8 +1773,7 @@ F40 is related to basic search functionality. The basic search was implemented b
 I added "else if" statement for "option type" user and I navigated users to user endpoint with the option id. "Option" comes from basic search result of the user. Type is community or user.
 ###### Pull request: #111
 I included this in PR #111 with other related issues. This PR also has Mustafa's commits. Therefore, it is reviewed by other team members. Aibek reviewed backend side, and by Erkin reviewed frontend side. Both stated that everything is fine, and PR is merged to dev.
-###### Demo:
-![alt text](report_assets/image-1.png)
+
 
 ##### 3. User Recommendations with Wikidata Tags
 ###### Requirement: F64
@@ -1820,10 +1817,6 @@ In [Post JS](https://github.com/swe574-Fall2024-Group1/huddleup/blob/main/huddle
 
 ###### Pull request: #111
 I included this in PR #111 with other related issues. This PR also has Mustafa's commits. Therefore, it is reviewed by other team members. Aibek reviewed backend side, and by Erkin reviewed frontend side. Both stated that everything is fine, and PR is merged to dev.
-###### Demo:
-![alt text](report_assets/image-2.png)
-![alt text](report_assets/image-3.png)
-![alt text](report_assets/image-4.png)
 
 
 ##### 5. Badge Icon Improvement
@@ -1839,10 +1832,6 @@ This switch-case logic is added to the places where badges are shown. These are:
 3. In community page, near post author name, we show awarded badges of the post author.
 ###### Pull request: #119
 Doruk reviewed the PR #119. He approved and merged to dev environment.
-###### Demo:
-![alt text](report_assets/image-5.png)
-![alt text](report_assets/image-6.png)
-![alt text](report_assets/image-7.png)
 
 
 #### Executive Summary:
