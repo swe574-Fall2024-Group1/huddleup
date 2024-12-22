@@ -1096,18 +1096,22 @@ I reviewed most of the frontend code implemented to the project by our group.
 
 ### Muharrem Ustaoğlu
 
-## Related Requirements
+#### Related Requirements
 
 **Activity Feed:** F45, F46, F47  
 **Badge:** F69, F70, F71, F72, F73, F74, F75, F76  
 
 ---
 
-## Description  
+**#### Description**  
 
 I actively contributed to key features of the project, focusing on the Activity Feed and Badge System functionalities. For the Activity Feed, I developed both backend and frontend components to display user activities with relative timestamps, showcasing the last ten actions. This feature supports a wide range of user and community actions, including creating posts, adding comments, earning badges, liking posts, following users, joining or creating communities, and performing administrative tasks such as assigning moderators or banning users. In the Badge System, I implemented backendside both default community-specific and criteria based community-specific badges, automating badge assignments based on predefined criteria. This included developing functionality to evaluate whether users meet badge criteria based on specific activity metrics within a defined period (e.g., the last year). The metrics tracked encompass the number of posts, comments, likes, templates created, and users followed within a community. By leveraging database queries and timestamp filtering, the system ensures real-time tracking and accurate badge assignments.
 ---
-## Issue URLs  
+
+**#### URLs** 
+
+---
+##### Issue URLs  
 
 - **#45**: [Determine Badge-User Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/45)  
 - **#46**: [Determine Post-Tag Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/46)  
@@ -1115,14 +1119,14 @@ I actively contributed to key features of the project, focusing on the Activity 
 - **#90**: [Community Activity Feed](https://github.com/swe574-Fall2024-Group1/huddleup/issues/90)  
 - **#107**: [Badge Like Action Logic](https://github.com/swe574-Fall2024-Group1/huddleup/issues/107)  
 ---
-## Source Code URLs  
+##### Source Code URLs  
 
 - **Branches:**  
   - [feature/parameter-based-badge](https://github.com/swe574-Fall2024-Group1/huddleup/tree/feature/parameter-based-badge)  
   - [feature/community-activity-feed](https://github.com/swe574-Fall2024-Group1/huddleup/tree/feature/community-activity-feed)  
   - bugfix/badge-like-action-logic  
 ---
-## Documentation URLs  
+##### Documentation URLs  
 
 - **Mockups:**  
   [Scenarios & Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)  
@@ -1130,9 +1134,16 @@ I actively contributed to key features of the project, focusing on the Activity 
   [Software Requirements Specification (SRS)](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Software-Requirements-Specification-(SRS))
 - **Requirements Review:** Reviewing old requirements to merge with new requirements.   
 ---
-## Pull Requests and Commits  
+##### Designing Entity Relationships  
 
-### **Pull Request:** Feature/community activity feed **#99**  
+- Developed entity relationships for newly added features such as badges, recommendations, and tags. 
+- **#45**: [Determine Badge-User Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/45)  
+- **#46**: [Determine Post-Tag Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/46)  
+
+---
+**#### Pull Requests and Commits**  
+
+**Pull Request:** Feature/community activity feed **#99**  
 - **Commits:**  
   - [`7ffe4f1`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/99/commits/7ffe4f1130d3de8766080ee0adc62e5512ab5b6c): feat: community activity model is added  
   - [`7bb027f`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/99/commits/7bb027fdc20a84b197336284705908c2a8d3a3c2): feat: community activity feed endpoint is added  
@@ -1142,11 +1153,11 @@ I actively contributed to key features of the project, focusing on the Activity 
   - [`f30f369`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/99/commits/f30f3699b43ead4ee87471036688c4b488d940c9): feat: user management (make owner, make moderator, banned) for activity feed  
   - [`e2e80c5`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/99/commits/e2e80c598199c770817852ec17593b96fbcbadf8): fix: duplicated description fields removed  
 
-### **Pull Request:** fix: badge like action logic is fixed **#108**  
+**Pull Request:** fix: badge like action logic is fixed **#108**  
 - **Commits:**  
   - [`b5723ec`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/108/commits/b5723ec): fix: badge like action logic is fixed  
 
-### **Pull Request:** Feature/parameter based badge **#80**  
+**Pull Request:** Feature/parameter based badge **#80**  
 - **Commits:**  
   - [`16f3fb0`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80/commits/16f3fb08f961f6fb86228ec62b4e8e57d1296cee): feat: community-based badge system is added  
   - [`cb4d40a`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80/commits/cb4d40a396ea65ed9255e5cc7859a8250ad8b659): feat: multiple parameter badge control is added  
@@ -1155,17 +1166,11 @@ I actively contributed to key features of the project, focusing on the Activity 
   - [`c8c7689`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80/commits/c8c768997f1f7c5607b4001d298ae10540d01c3a): fix: check_and_award_badges automatic badge filter is added  
   - [`63da640`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80/commits/63da6406b0f8114027272e788068d52465a17c21): fix: seeder intended block & multi-parameter null check  
 ---
-## Designing Entity Relationships  
-
-- Developed entity relationships for newly added features such as badges, recommendations, and tags. 
-- **#45**: [Determine Badge-User Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/45)  
-- **#46**: [Determine Post-Tag Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/46)  
-
-# Executive Summary  
+**#### Executive Summary**  
 
 I actively contributed to the Activity Feed, Badge System, and the design of Entity Relationships to develop newly added features such as badges, recommendations, and tags. My efforts focused on developing and integrating backend and frontend components to ensure seamless functionality and scalability.
 ---
-## Activity Feed  
+##### Activity Feed  
 
 - Developed a community activity feed to display user activities with relative timestamps (e.g., "2 minutes ago"), restricted to the last ten actions.  
 - Supported a diverse range of user and community actions, including:  
@@ -1187,7 +1192,7 @@ I actively contributed to the Activity Feed, Badge System, and the design of Ent
 **Related Scenario:** [Wiki Page: Scenarios & Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)  
 **Related Issues:** [#90](https://github.com/swe574-Fall2024-Group1/huddleup/issues/90)  
 ---
-## Badge System  
+##### Badge System  
 
 - Designed and implemented a **comprehensive badge system** supporting both default and community-specific badges with automatic and manual assignment.  
 - Developed functionality to evaluate user activity metrics within a defined timeframe (e.g., the last year) to determine badge eligibility.  
@@ -1210,7 +1215,7 @@ I actively contributed to the Activity Feed, Badge System, and the design of Ent
 **Related Scenario:** [Wiki Page: Scenarios & Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)  
 **Related Issues:** [#45](https://github.com/swe574-Fall2024-Group1/huddleup/issues/45), [#60](https://github.com/swe574-Fall2024-Group1/huddleup/issues/60), [#107](https://github.com/swe574-Fall2024-Group1/huddleup/issues/107)  
 ---
-## Entity Relationship Design  
+##### Entity Relationship Design  
 
 - Designed **entity relationships** for badges and tags to support new features.  
 - Developed models including **Badge**, **Tag**, **UserBadge**, and **CommunityActivity** to ensure compatibility with requirements.  
@@ -1220,20 +1225,20 @@ I actively contributed to the Activity Feed, Badge System, and the design of Ent
 - [Database Entity Decision #46](https://github.com/swe574-Fall2024-Group1/huddleup/issues/46)  
 
 ---
-## Documentation & Mockups  
+##### Documentation & Mockups  
 
 - Created scenarios and mockups for badges, recommendations, and tags in the [Wiki Scenarios & Mockups section](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups).  
 - Reviewed and merged new requirements with older specifications to maintain a coherent project scope.  
 - Determined the status of project requirements.  
 - Prepared the user manual in final report.  
 
-# Code Explanation  
+#### Code Explanation  
 
-## Activity Feed
+##### Activity Feed
 
-## Implemented Features
+###### Implemented Features
 
-### Real-time Activity Tracking
+###### Real-time Activity Tracking
 - **Feed Display**:
   - Displays user and community activities, such as:
     - Creating posts, comments, and templates.
@@ -1243,8 +1248,8 @@ I actively contributed to the Activity Feed, Badge System, and the design of Ent
   - Activities are displayed with relative timestamps (e.g., "2 minutes ago").
   - Limited to the last 10 actions for efficiency.
 
-## Backend Logic
-### CommunityActivity Model
+###### Backend Logic
+###### CommunityActivity Model
 A model to log user actions with detailed attributes:
 - **Fields**:
   - `activity_id`: A unique ID for the activity.
@@ -1254,8 +1259,8 @@ A model to log user actions with detailed attributes:
   - `target`: Additional context for the action (e.g., post ID, badge name).
   - `timestamp`: Auto-generated timestamp for the activity.
 
-### Functions
-#### `log_community_activity(user, community_id, action, target=None)`
+###### Functions
+###### `log_community_activity(user, community_id, action, target=None)`
 - Records a user action in the community activity feed.
 - Tracks actions such as:
   - Creating posts, comments, badges, and templates.
@@ -1267,27 +1272,27 @@ A model to log user actions with detailed attributes:
   - Creates a new record in the `CommunityActivity` model.
   - Stores optional details (e.g., badge name, post ID) as a JSON string in the `target` field.
 
-#### `@api_view(['POST'])`
-##### `get_community_activity_feed(request)`
+###### `@api_view(['POST'])`
+###### `get_community_activity_feed(request)`
 - Fetches the most recent activities in a community.
 - **Steps**:
   1. Parse the `community_id` from the request payload.
   2. Query the `CommunityActivity` model for the last 10 activities in the specified community.
   3. Return the data as a JSON response.
 
-### Related Requirements
+###### Related Requirements
 - **F45, F46, F47**
 
-### Issues and Pull Requests
+###### Issues and Pull Requests
 - **Issue**: #90 Community Activity Feed
 - **Pull Request**: Feature/community activity feed #99
 
 ---
-## Badge System
+##### Badge System
 
-## Implemented Features
+###### Implemented Features
 
-### Default Badges
+###### Default Badges
 - **Automated Assignment**:
   - Based on predefined criteria, such as:
     - Post Master
@@ -1297,7 +1302,7 @@ A model to log user actions with detailed attributes:
     - Appreciated
   - Criteria include activity metrics (e.g., post count, likes, templates created).
 
-### Community-Specific Badges
+###### Community-Specific Badges
 - **Manual Badges**:
   - Created and assigned by community owners.
 - **Automatic Badges**:
@@ -1306,15 +1311,15 @@ A model to log user actions with detailed attributes:
   - Function: `meets_badge_criteria`
   - Handles single and multiple criteria.
 
-### API Endpoints
+###### API Endpoints
 - **Badge Assignment**:
   - Automatically evaluates user activities and assigns badges.
 - **Default Badge Initialization**:
   - Creates default badges for new communities.
 
-## Backend Logic
+###### Backend Logic
 
-### Badge Model
+###### Badge Model
 - **Fields**:
   - `badge_id`: A unique ID for each badge.
   - `name`: Name of the badge (e.g., "Post Master").
@@ -1325,15 +1330,15 @@ A model to log user actions with detailed attributes:
   - `image_url`: Optional image for the badge.
   - `created_at`: Auto-generated timestamp when the badge is created.
 
-### UserBadge Model
+###### UserBadge Model
 - **Fields**:
   - `user_badge_id`: A unique ID for the record.
   - `user`: Links to the user who earned the badge.
   - `badge`: Links to the badge the user earned.
   - `awarded_at`: Auto-generated timestamp when the badge was awarded.
 
-### Functions
-#### `check_and_award_badges(user, community_id)`
+###### Functions
+###### `check_and_award_badges(user, community_id)`
 - Evaluates if a user qualifies for automatic badges in a community.
 - **Steps**:
   1. Fetch the community and its automatic badges.
@@ -1342,7 +1347,7 @@ A model to log user actions with detailed attributes:
   4. Award the badge by creating a `UserBadge` record.
   5. Log the event in the community activity feed via `log_community_activity`.
 
-#### `meets_badge_criteria(user, community, criteria)`
+###### `meets_badge_criteria(user, community, criteria)`
 - Determines if a user satisfies the conditions for earning a badge.
 - **Steps**:
   1. Define a one-year timeframe for evaluating user activities.
@@ -1350,7 +1355,7 @@ A model to log user actions with detailed attributes:
   3. Compare metrics against the badge criteria.
   4. Return `True` if all conditions are met, otherwise `False`.
 
-#### `create_default_badges_for_community(community)`
+###### `create_default_badges_for_community(community)`
 - Automatically generates standard badges with predefined criteria for new communities.
 - **Example**:
   - Community: "Foodies"
@@ -1359,7 +1364,7 @@ A model to log user actions with detailed attributes:
     - "Foodies - Commentator"
     - "Foodies - Social Butterfly"
 
-### Related Work  
+###### Related Work  
 - **F69-F70-F71-F72-F73-F74-F75-F76**  
 - **Issues**:
   - [#45 Badge-User Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/45)  
@@ -1371,9 +1376,9 @@ A model to log user actions with detailed attributes:
 - **Documentation**: [Scenarios & Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)  
 ---
 
-# Documentation  
+#### Documentation  
 
-## Contributions  
+##### Contributions  
 - Created scenarios and mockups for badges, recommendations, and tags in the [Wiki Scenarios & Mockups section](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups).  
 - Reviewed and merged new requirements with older specifications to maintain a coherent project scope.  
 - Formatted requirements and updated the status of project requirements.  
@@ -1381,55 +1386,55 @@ A model to log user actions with detailed attributes:
 
 ---
 
-## Demo  
+#### Demo  
 
-### **Activity Feed**  
+##### **Activity Feed**  
 ![Activity Feed Screenshot](https://i.ibb.co/YZM39tN/feed.png)
 - Developed a real-time activity feed displaying the latest user and community activities with relative timestamps (e.g., "2 minutes ago").  
 - Integrated scroll functionality with server-side pagination and frontend lazy loading for seamless user experience.  
 
-### **System Automatic Badge**  
+##### **System Automatic Badge**  
 ![System Automatic Badge Screenshot](https://i.ibb.co/q00jZfc/17-create-automatic-badge.png) 
 - Automated badge assignment based on predefined criteria (e.g., "Post Master" for creating a specific number of posts).  
 - Implemented dynamic real-time updates of badge achievements in the activity feed.
 
 ---
 
-## Challenges and Solutions  
+#### Challenges and Solutions  
 
 During the implementation, I faced several challenges that required careful attention and problem-solving. This was my first experience working collaboratively on the same repository with other team members, which made managing conflicts and integrating code a new and complex process. Resolving merge conflicts and maintaining coding standards was initially difficult, but I addressed this by adopting best practices, such as using feature branches, rebasing, and regularly synchronizing with the main branch. Adding scroll functionality to the activity feed was another significant challenge, as it required integrating real-time updates while ensuring smooth user experience and efficient data fetching.Displaying relative timestamps like "2 minutes ago" in the activity feed also presented difficulties, particularly in dynamically calculating time differences while considering time zones. I resolved this by using calculation to format timestamps. Badge integration was equally complex, as badges are used in various actions like earning or creating them, requiring real-time updates and linking badge data to the activity feed. Furthermore, the algorithm for evaluating badge criteria involved checking multiple parameters, such as posts, comments, and likes, within specific timeframes. This added complexity in querying large datasets efficiently and dynamically handling diverse conditions. I addressed this by optimizing database queries with Django’s ORM and structuring the criteria-checking logic to handle various combinations of conditions flexibly. These challenges taught me the importance of efficient problem-solving and effective collaboration in delivering robust features.
 
  
-# Code Review  
+#### Code Review  
 
-## Pull Requests Reviewed  
+##### Pull Requests Reviewed  
 
-### **1. Feature: Parameter-Based Badge System (#80)**  
+###### **1. Feature: Parameter-Based Badge System (#80)**  
 - **Author**: Mustafa Tuna  
 - **Scope**: Frontend implementation of the parameter-based badge system.  
 - **Review Process**:  
 I reviewed the pull request created by Mustafa Tuna for the parameter-based badge system. While I had already completed the backend development for this feature, Mustafa implemented the frontend side and created the pull request. Before merging, I performed a bugfix to address issues in the backend logic and then merged the pull request after ensuring the feature was fully functional. 
 
-### **2. Feature: Adding the M2 Customer Report (#87)**  
+###### **2. Feature: Adding the M2 Customer Report (#87)**  
 - **Author**: Aibek Aldabergenov  
 - **Scope**: Implementation of the M2 customer report functionality.  
 - **Review Process**:  
 I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 customer report" #87. During the review process, I carefully examined the code for functionality, adherence to project standards, and compatibility with existing modules. I did not find any bug and I approved the pull request.
 
-## Inferences  
+###### Inferences  
 - Collaborative reviews helped identify and fix issues early, ensuring high-quality deliverables.  
 - Enhanced features by addressing minor bugs and improving system performance during the review process.  
 
-# Results of Code Reviews  
+##### Results of Code Reviews  
 
-## Review Outcomes  
+###### Review Outcomes  
 
-### **1. Integration**  
+###### **1. Integration**  
   - I thoroughly reviewed the functionality, readability, and overall design.  
   - Upon confirming that the code met all criteria, I approved the changes without requesting modifications.  
   - This streamlined the development process, avoiding unnecessary delays and maintaining project momentum.
 
-### **2. Conflict Resolution and Bug Fixing**  
+###### **2. Conflict Resolution and Bug Fixing**  
 - When the submitted code contained issues, such as conflicts with the existing codebase or logical errors:  
   - I identified specific problems, including:  
     - **Merge conflicts**: Code inconsistencies arising from parallel changes.  
@@ -1441,7 +1446,7 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
     - Enhance test coverage.
  - I actively engaged in collaborative feedback, debugging, and validation processes, providing detailed guidance, resolving complex issues, and ensuring all updates met project standards before approval. 
 
-### **Resulting Code Improvements**  
+##### **Resulting Code Improvements**  
 - **Parameter-Based Badge System (#80)**:  
   - As a result of my review, backend bugs were identified and fixed to ensure compatibility with Mustafa Tuna’s frontend implementation.  
   - The finalized feature exhibited seamless integration between frontend and backend, offering a robust and user-friendly badge system.  
@@ -1450,11 +1455,11 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
   - During the review, I reviewed Aibek Aldabergenov’s implementation and did not find  any bug and I approved it.   
 
 
-# Major Pull Request: Activity Feed  
+#### Major Pull Request: Activity Feed  
 
-## **1. Feature/community-activity-feed (#99)**  
+##### **1. Feature/community-activity-feed (#99)**  
 
-### **Description**  
+###### **Description**  
 - Implemented the **Community Activity Feed**, a key feature that displays user and community activities in real-time.  
 - Activities are displayed with relative timestamps (e.g., "2 minutes ago") and include a wide range of actions, such as:  
   - Creating posts, comments, and templates.  
@@ -1475,7 +1480,7 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
   - Collaborated with frontend developers to ensure proper display and functionality.  
   - Supported lazy loading for efficient scrolling through the activity feed.  
 
-### **Challenges Addressed**  
+###### **Challenges Addressed**  
 1. **Real-Time Updates**:  
    - Implemented efficient logging and querying to ensure that activities are displayed in real-time without performance bottlenecks.  
    
@@ -1485,12 +1490,12 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
 3. **Diverse Actions**:  
    - Integrated support for various user and community actions, including administrative tasks like banning members and transferring ownership.  
 
-### **Outcome**  
+###### **Outcome**  
 - Delivered a fully functional, scalable activity feed that provides users with a real-time view of community actions.  
 - The feature was tested extensively for performance, usability, and compatibility with existing modules.  
 - Addressed all code review feedback to ensure the feature met project standards.
 
-### **Pull Request Details**  
+###### **Pull Request Details**  
 - **Pull Request**: [Feature/community-activity-feed #99](https://github.com/swe574-Fall2024-Group1/huddleup/pull/99)  
 - **Commits**:  
   - `7ffe4f1`: feat: community activity model is added.  
@@ -1501,9 +1506,9 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
   - `f30f369`: feat: user management (make owner, make moderator, banned) for activity feed.  
   - `e2e80c5`: fix: duplicated description fields are removed.  
 
-# Issues  
+#### Issues  
 
-## **Major Issues Created**  
+##### **Major Issues Created**  
 
 | **Issue ID** | **Title** | **URL** |
 |--------------|---------------------------|---------------------------------------------------------------------------------------------|
@@ -1514,9 +1519,8 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
 | #107         | Badge Like Action Logic| [Issue #107](https://github.com/swe574-Fall2024-Group1/huddleup/issues/107)|
 ---
 
-## **Major Issues Assigned to Me**  
-
-## Assigned Issues  
+##### **Major Issues Assigned to Me**  
+ 
 
 | **Issue ID** | **Title** | **URL**  |
 |--------------|------------------------------------------------|---------------------------------------------------------------------------------------|
@@ -1527,7 +1531,7 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
 
 ---
 
-# Other Work Performed  
+##### Other Work Performed  
 
 1. **Documentation**:  
    - Created detailed scenarios and mockups for badges, recommendations, and tags in the [Wiki Scenarios & Mockups section](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups).  
