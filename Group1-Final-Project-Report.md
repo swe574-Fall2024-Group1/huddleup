@@ -2,6 +2,15 @@
 ## Project Overview
 **HuddleUp** is an innovative social media platform tailored for building and engaging with communities. The platform fosters collaboration and interaction through structured post templates, user-driven communities, and gamified participation, creating a dynamic space for users to connect and share ideas.
 
+### **Project Links**
+#### **Repository Link**
+[https://github.com/swe574-Fall2024-Group1/huddleup](https://github.com/swe574-Fall2024-Group1/huddleup/releases/tag/v0.9)
+#### **Deployment link**
+[https://group1.swe574.com](https://group1.swe574.com)
+#### **Demonstration Video Link**
+[https://youtu.be/XyLsM2wwD9o](https://youtu.be/XyLsM2wwD9o)
+#### **Final Release Link**
+[https://github.com/swe574-Fall2024-Group1/huddleup/releases/tag/v0.9](https://github.com/swe574-Fall2024-Group1/huddleup/releases/tag/v0.9)
 
 ### **Project Goals**  
 The primary goal of HuddleUp is to create a scalable and interactive platform where users can:  
