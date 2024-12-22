@@ -1105,9 +1105,7 @@ I reviewed most of the frontend code implemented to the project by our group.
 
 ## Description  
 
-I actively contributed to key features of the project, focusing on the **Activity Feed** and **Badge System** functionalities. For the **Activity Feed**, I developed both backend and frontend components to display user activities with relative timestamps, showcasing the last ten actions. This feature supports a wide range of user and community actions, including creating posts, adding comments, earning badges, liking posts, following users, joining or creating communities, and performing administrative tasks such as assigning moderators or banning users.
-
-In the **Badge System**, I implemented backendside both default community-specific and criteria based community-specific badges, automating badge assignments based on predefined criteria. This included developing functionality to evaluate whether users meet badge criteria based on specific activity metrics within a defined period (e.g., the last year). The metrics tracked encompass the number of posts, comments, likes, templates created, and users followed within a community. By leveraging database queries and timestamp filtering, the system ensures real-time tracking and accurate badge assignments.
+I actively contributed to key features of the project, focusing on the Activity Feed and Badge System functionalities. For the Activity Feed, I developed both backend and frontend components to display user activities with relative timestamps, showcasing the last ten actions. This feature supports a wide range of user and community actions, including creating posts, adding comments, earning badges, liking posts, following users, joining or creating communities, and performing administrative tasks such as assigning moderators or banning users. In the Badge System, I implemented backendside both default community-specific and criteria based community-specific badges, automating badge assignments based on predefined criteria. This included developing functionality to evaluate whether users meet badge criteria based on specific activity metrics within a defined period (e.g., the last year). The metrics tracked encompass the number of posts, comments, likes, templates created, and users followed within a community. By leveraging database queries and timestamp filtering, the system ensures real-time tracking and accurate badge assignments.
 ---
 ## Issue URLs  
 
@@ -1165,11 +1163,11 @@ In the **Badge System**, I implemented backendside both default community-specif
 
 # Executive Summary  
 
-I actively contributed to the **Activity Feed**, **Badge System**, and the design of **Entity Relationships** to develop newly added features such as badges, recommendations, and tags. My efforts focused on developing and integrating backend and frontend components to ensure seamless functionality and scalability.
+I actively contributed to the Activity Feed, Badge System, and the design of Entity Relationships to develop newly added features such as badges, recommendations, and tags. My efforts focused on developing and integrating backend and frontend components to ensure seamless functionality and scalability.
 ---
 ## Activity Feed  
 
-- Developed a **community activity feed** to display user activities with relative timestamps (e.g., "2 minutes ago"), restricted to the last ten actions.  
+- Developed a community activity feed to display user activities with relative timestamps (e.g., "2 minutes ago"), restricted to the last ten actions.  
 - Supported a diverse range of user and community actions, including:  
   - Creating posts  
   - Adding comments  
@@ -1231,7 +1229,7 @@ I actively contributed to the **Activity Feed**, **Badge System**, and the desig
 
 # Code Explanation  
 
-# Activity Feed
+## Activity Feed
 
 ## Implemented Features
 
@@ -1285,7 +1283,7 @@ A model to log user actions with detailed attributes:
 - **Pull Request**: Feature/community activity feed #99
 
 ---
-# Badge System
+## Badge System
 
 ## Implemented Features
 
@@ -1386,12 +1384,12 @@ A model to log user actions with detailed attributes:
 ## Demo  
 
 ### **Activity Feed**  
-![Activity Feed Screenshot](https://ibb.co/JvP3RQJ)
+![Activity Feed Screenshot](https://i.ibb.co/YZM39tN/feed.png)
 - Developed a real-time activity feed displaying the latest user and community activities with relative timestamps (e.g., "2 minutes ago").  
 - Integrated scroll functionality with server-side pagination and frontend lazy loading for seamless user experience.  
 
 ### **System Automatic Badge**  
-![System Automatic Badge Screenshot](https://ibb.co/BZXrdX7) 
+![System Automatic Badge Screenshot](https://i.ibb.co/q00jZfc/17-create-automatic-badge.png) 
 - Automated badge assignment based on predefined criteria (e.g., "Post Master" for creating a specific number of posts).  
 - Implemented dynamic real-time updates of badge achievements in the activity feed.
 
