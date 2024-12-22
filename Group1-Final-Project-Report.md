@@ -1619,3 +1619,62 @@ I reviewed the pull request created by Aibek Aldabergenov titled "Adding the m2 
 2. **Code Reviews**:  
    - Reviewed pull requests, including [Feature/parameter-based-badge #80](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80) and [Adding the m2 customer report #87](https://github.com/swe574-Fall2024-Group1/huddleup/pull/87).  
    - Provided feedback, suggested improvements, and fixed backend issues where necessary.
+
+### Mustafa Tuna
+#### Badge System
+**Related Requirements:** F69, F70, F71, F72, F73, F74, F75, F76 \
+**Related Scenario:** [Wiki Page: Badge Scenario](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups#3badges)\
+**Related Issues:** [#69](https://github.com/swe574-Fall2024-Group1/huddleup/issues/69), [#89](https://github.com/swe574-Fall2024-Group1/huddleup/issues/69)
+
+**Manual Badges**: I created the manual badge functionality in both backend and frontend. I created the badge model and userbadge model in the backend. Prepared the badge creation and badge assignment endpoints in the backend. \
+**Automatic (Parameter Based) Badges**: I scaffolded the automatic badge functionality in the frontend. \
+**Demo**: \
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeEA-3ii_jRija5n0EkNeFIBYJENucUn8rkKRgNRt8F8oOvmM6cgz7ZrDMuL67fJztQFqtIU6-95QH6pDwRgBi_xWzje9JY1IdTZg2TVE_O08uS-y-8D6yjRVNtZBTNpzZKoACrZw?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+#### Enhance Profile Page
+**Related Requirements:** F4 \
+**Related Scenario:** [Wiki Page: Profile Page](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups#1user-profile)
+**Related Issues:** [#92](https://github.com/swe574-Fall2024-Group1/huddleup/issues/92), [#93](https://github.com/swe574-Fall2024-Group1/huddleup/issues/93), [#94](https://github.com/swe574-Fall2024-Group1/huddleup/issues/94)
+
+Profile page was enhanced with the following features: Editing profile information, setting tags for the user, and changing profile picture. Fixed the bugs in the profile page. \
+**Demo**: \
+![](https://lh7-rt.googleusercontent.com/docsz/AD_4nXeLfXVD9NhFBQDrkmvFWVDIs7X-Bclw8Hzj3KL3jlYKjaJ-XVWw2lCmo4mpq2i3JKtrsTWOnaAzy01yjwW8677Z4NoMoT45Ryw0Q4JwU4eBCrmG0FT8s46MErK4dIKcBD9fIed5NQ?key=dx79Gw4fEyrn_YTVtN9O-U8a)
+
+#### Optimizing the Development Environment and Containerization
+**Related Requirements:** - (Non-functional) \
+**Related Scenario:** - \
+**Related Issues:** [#53](https://github.com/swe574-Fall2024-Group1/huddleup/issues/53)
+
+Since our project is a Single Page Application, it is important to have a fast and steady development environment. I optimized the development environment by adding hot reloading to the frontend and backend. This way the changes are reflected immediately without the need to restart the server. I also fixed some bugs related to the local containerization of the project via creating docker-compose-dev and dockerfile-dev files.
+
+#### Documentation
+- Created the mockups and scenarios for the templating system: [Wiki Page: Book Discussion Template](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups#2-create-book-discussion-template)
+- Added the related docker development command to the readme file
+
+#### Code Review
+| **Title**                               | **PR #** | **Author**       |
+| --------------------------------------- | -------- | ---------------- |
+| fix: badge like action logic is fixed.  | #108     | ustaoglumuharrem |
+| Feature: adding tags to posts and users | #68      | aaldaber         |
+| Feature/mobile UI enhancement           | #55      | erkingonultas    |
+
+#### Major Pull Requests 
+| **Title**                        | **PR #** |
+| -------------------------------- | -------- |
+| Feature/user profile enhancement | #111     |
+| Feature/parameter based badge    | #80      |
+| Feature/manual badge             | #70      |
+| Feature/docker dev enhancement   | #54      |
+
+#### Issues
+| **ID** | **Issue**                                                                                | **Category**                    |
+| ------ | ---------------------------------------------------------------------------------------- | ------------------------------- |
+| #94    | User profile picture should be populated in all applicable areas.                        | User Profile                    |
+| #93    | User profile should include name, surname, birthday, profile picture                     | User Profile                    |
+| #92    | Bug: In community page, user profile redirection is not set for members and post authors | Bug, Community                  |
+| #89    | Badges UI Improvements                                                                   | Frontend                        |
+| #69    | Manual Badges Backend Implementation                                                     | Backend, Enhancement            |
+| #53    | Enable Recompiling and Hot Reloading for React in Dockerized Dev Environment             | Enhancement                     |
+| #52    | Use of TailwindCSS Framework                                                             | Decision, Frontend              |
+| #18    | Create Mockup Screens from Requirements                                                  | Documentation, Frontend, Mobile |
+| #3     | Check each others swe573 repositories                                                    | Decision                        |
