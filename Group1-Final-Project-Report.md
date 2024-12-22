@@ -1103,12 +1103,13 @@ I reviewed most of the frontend code implemented to the project by our group.
 
 ---
 
-**#### Description**  
+#### Description 
 
 I actively contributed to key features of the project, focusing on the Activity Feed and Badge System functionalities. For the Activity Feed, I developed both backend and frontend components to display user activities with relative timestamps, showcasing the last ten actions. This feature supports a wide range of user and community actions, including creating posts, adding comments, earning badges, liking posts, following users, joining or creating communities, and performing administrative tasks such as assigning moderators or banning users. In the Badge System, I implemented backendside both default community-specific and criteria based community-specific badges, automating badge assignments based on predefined criteria. This included developing functionality to evaluate whether users meet badge criteria based on specific activity metrics within a defined period (e.g., the last year). The metrics tracked encompass the number of posts, comments, likes, templates created, and users followed within a community. By leveraging database queries and timestamp filtering, the system ensures real-time tracking and accurate badge assignments.
+
 ---
 
-**#### URLs** 
+#### URLs
 
 ---
 ##### Issue URLs  
@@ -1141,7 +1142,7 @@ I actively contributed to key features of the project, focusing on the Activity 
 - **#46**: [Determine Post-Tag Entity Relation](https://github.com/swe574-Fall2024-Group1/huddleup/issues/46)  
 
 ---
-**#### Pull Requests and Commits**  
+#### Pull Requests and Commits  
 
 **Pull Request:** Feature/community activity feed **#99**  
 - **Commits:**  
@@ -1166,9 +1167,11 @@ I actively contributed to key features of the project, focusing on the Activity 
   - [`c8c7689`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80/commits/c8c768997f1f7c5607b4001d298ae10540d01c3a): fix: check_and_award_badges automatic badge filter is added  
   - [`63da640`](https://github.com/swe574-Fall2024-Group1/huddleup/pull/80/commits/63da6406b0f8114027272e788068d52465a17c21): fix: seeder intended block & multi-parameter null check  
 ---
-**#### Executive Summary**  
+#### Executive Summary  
 
 I actively contributed to the Activity Feed, Badge System, and the design of Entity Relationships to develop newly added features such as badges, recommendations, and tags. My efforts focused on developing and integrating backend and frontend components to ensure seamless functionality and scalability.
+
+
 ---
 ##### Activity Feed  
 
@@ -1188,9 +1191,11 @@ I actively contributed to the Activity Feed, Badge System, and the design of Ent
 - Implemented real-time tracking and pagination for efficient scrolling through the feed.  
 - Leveraged optimized database queries for time filtering and activity categorization, ensuring high performance and scalability.  
 
+
 **Related Requirements:** F45, F46, F47  
 **Related Scenario:** [Wiki Page: Scenarios & Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)  
 **Related Issues:** [#90](https://github.com/swe574-Fall2024-Group1/huddleup/issues/90)  
+
 ---
 ##### Badge System  
 
@@ -1214,6 +1219,8 @@ I actively contributed to the Activity Feed, Badge System, and the design of Ent
 **Related Requirements:** F69, F70, F71, F72, F73, F74, F75, F76  
 **Related Scenario:** [Wiki Page: Scenarios & Mockups](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups)  
 **Related Issues:** [#45](https://github.com/swe574-Fall2024-Group1/huddleup/issues/45), [#60](https://github.com/swe574-Fall2024-Group1/huddleup/issues/60), [#107](https://github.com/swe574-Fall2024-Group1/huddleup/issues/107)  
+
+
 ---
 ##### Entity Relationship Design  
 
