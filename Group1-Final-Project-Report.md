@@ -7,7 +7,7 @@
 The primary goal of HuddleUp is to create a scalable and interactive platform where users can:  
 - Join and engage with communities of shared interests.  
 - Build structured and meaningful posts using predefined templates.  
-- Foster participation through comments, voting, and rewards (badges).  
+- Foster participation through comments, voting and rewards (badges).  
 - Empower community leaders with moderation tools to ensure a healthy and safe environment.  
 
 ### **Key Features Completed**  
@@ -15,11 +15,11 @@ The primary goal of HuddleUp is to create a scalable and interactive platform wh
 1. **Community Management**  
    - Public and private communities allow users to join based on their interests.  
    - Owners can manage the structure and hierarchy of communities by assigning moderators.  
-   - Moderators have robust tools to create templates, moderate content, and manage member participation.  
+   - Moderators have robust tools to create templates, moderate content and manage member participation.  
 
 2. **Post Templates and User Interaction**  
    - Post templates streamline user-generated content, making it relevant and engaging.  
-   - Members can upvote or downvote posts, comment on them, and engage in discussions.  
+   - Members can upvote or downvote posts, comment on them and engage in discussions.  
 
 3. **Badge System (Partially Completed)**  
    - Badges incentivize activity within communities.  
@@ -704,3 +704,168 @@ Save Changes
 <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXdxwFoE8yW5LpACEEODNNJHUKvFhR0q14HmPfjopiin4qJ16GVDNH93gLDLv0RI-bvX_v4Fm-hG2QKlSXChwHevja7413RFDuqRFGBwF78qsWnjMkLvmmp5udfFCPk2g5bqeh5ePQ?key=dx79Gw4fEyrn_YTVtN9O-U8a" width="250" />
 <img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXcrRYCLHqmH4n_DrJihEZMKB1y1r4srop3xvhs6ZNdSj4OxtI2lFTGv1MxuNfhpQLG5w9dMZ5CxtBbliKLgnNGqvL8lP33HlOKOFu6JUMSgPLrM7AQVuxKvT1WO5z-zhib0rvn_?key=dx79Gw4fEyrn_YTVtN9O-U8a" width="250" />
 </div>
+
+
+
+## Individual Contributions
+
+---
+
+### Ömer Aslan
+
+#### **1. User Profile Page Enhancement**
+- **Related Requirements:** F77, F79  
+- **Description:** Developed a user profile page accessible via user ID, displaying all the communities a user has joined and the badges they have earned. Implemented both backend APIs and frontend UI components. Additionally, added clickable links to all usernames throughout the application for seamless navigation.  
+- **Issue URLs:**  
+   - [#86](https://github.com/swe574-Fall2024-Group1/huddleup/issues/86)  
+   - [#85](https://github.com/swe574-Fall2024-Group1/huddleup/issues/85)  
+- **Relevant Content:** [Pull Request #84](https://github.com/swe574-Fall2024-Group1/huddleup/pull/84)  
+
+---
+
+#### **2. Badge System Improvements**
+- **Related Requirements:** F77, F79, F69, F75  
+- **Description:** Enhanced the automatic badge assignment process by introducing date limitations. Added a dedicated badges section on community pages, allowing users to view potential badges and earned ones. Unacquired badges are displayed in a blurred state. Improved the overall badge UI based on customer feedback.  
+- **Issue URLs:**  
+   - [#89](https://github.com/swe574-Fall2024-Group1/huddleup/issues/89)  
+- **Relevant Content:** [Pull Request #104](https://github.com/swe574-Fall2024-Group1/huddleup/pull/104)
+
+#### Executive Summary  
+
+Throughout the project, I have contributed significantly to both backend and frontend development, focusing on enhancing user experience and improving core functionalities. My contributions align closely with the defined requirements, design specifications and overall project management goals.  
+
+##### Key Contributions:  
+1. **User Profile Page Enhancement**  
+   - Designed and implemented a user profile page accessible by user ID, showcasing user-specific details such as joined communities and earned badges.  
+   - Ensured seamless navigation by adding clickable links to usernames across the application.  
+   - **Related Requirements:** F77, F79  
+   - **Issue URLs:** [#86](https://github.com/swe574-Fall2024-Group1/huddleup/issues/86), [#85](https://github.com/swe574-Fall2024-Group1/huddleup/issues/85)  
+   - **Relevant Content:** [Pull Request #84](https://github.com/swe574-Fall2024-Group1/huddleup/pull/84)  
+
+2. **Badge System Improvements**  
+   - Enhanced the automatic badge assignment system with date restrictions.  
+   - Added a dedicated badge section on community pages, displaying earned and potential badges, with unearned badges shown in a blurred state.  
+   - Refined the badge UI based on customer feedback to improve clarity and usability.  
+   - **Related Requirements:** F77, F79, F69, F75  
+   - **Issue URLs:** [#89](https://github.com/swe574-Fall2024-Group1/huddleup/issues/89)  
+   - **Relevant Content:** [Pull Request #104](https://github.com/swe574-Fall2024-Group1/huddleup/pull/104)  
+
+3. **Project Foundation and Team Onboarding**  
+   - The project was built on my individual work from the previous term, forming the foundation for the current implementation.  
+   - Onboarded team members by introducing them to the codebase, explaining architectural decisions, and ensuring a smooth transition into active development.  
+   - Actively participated in team ideation sessions, contributing to discussions on how to approach and implement project requirements effectively.  
+   - Managed meetings on multiple occasions, assigned action items to team members, and ensured alignment with project milestones.  
+   - Authored the **user scenario** for the final demonstration, providing a clear narrative to showcase project functionalities.  
+
+##### Alignment with Project Goals:  
+- **Requirements:** Delivered features that directly address key functional requirements (e.g., F77, F79).  
+- **Design:** Ensured UI/UX consistency across profile and badge-related pages while maintaining technical integrity in backend API design.  
+- **Management:** Proactively addressed key issues, onboarded team members, facilitated meetings, co-wrote the final demonstration scenario and contributed to strategic planning during ideation sessions.  
+
+#### Documentation 
+
+For the SRS document I merged all requirements from the all team members and ensured consistency. Found and listed the incomplete requirements:
+https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Software-Requirements-Specification-(SRS)
+https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Archive#missing-or-incomplete-functionalities
+
+For mockups I designed and created mockup for user profile section:
+https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups
+
+#### Demo
+
+Designed and implemented a user profile page accessible by user ID, showcasing user-specific details such as joined communities and earned badges: 
+
+![](https://i.ibb.co/4W3f5wB/Screenshot-2024-12-22-at-12-42-13.png)
+
+#### Challenges:
+
+One significant challenge arose while adding the **badge section** to the community page, where users can view potential badges, including earned and unearned ones (with unearned badges displayed in a blurred state).  
+
+While waiting for my **pull request** to be reviewed and merged, another team member introduced **UI changes** to the same frontend components. This resulted in **merge conflicts**, requiring careful reconciliation to ensure both sets of changes were properly integrated without breaking existing functionality or design consistency.  
+
+To address this, I:  
+- Thoroughly reviewed the conflicting changes to understand their intent and impact.  
+- Manually resolved the merge conflicts, ensuring both features coexisted seamlessly.  
+- Conducted additional testing to verify that no regressions were introduced.  
+
+This experience highlighted the importance of **team communication** and **timely code reviews** to prevent overlapping changes in shared components.  
+
+#### Code Review  
+
+#### Code Reviewed by Me  
+- **Pull Request:** [#14](https://github.com/swe574-Fall2024-Group1/huddleup/pull/14)  
+
+During the **initial phase** of the project, I reviewed a **major architectural change** introduced by Ovunc. After carefully analyzing the structure, implementation, and potential impacts on the system, everything appeared to be in order. I left a comment stating **"perfect"**, indicating no issues were found during my review.  
+
+**Result:** The pull request was successfully **merged into the main branch** without requiring any further adjustments.  
+
+##### Code Reviewed by Ovunc  
+- **Pull Request:** [#104](https://github.com/swe574-Fall2024-Group1/huddleup/pull/104)  
+
+While implementing the **badge improvements and community badge section**, Ovunc reviewed my changes. She initially noticed a **merge conflict** caused by overlapping changes in the frontend components. I addressed these conflicts and **requested another review**.  
+
+In the second review, Ovunc identified **additional issues** related to the integration, which she clearly detailed in her feedback. I carefully resolved each issue, conducted tests to ensure functionality remained intact, and **requested review again**.  
+
+**Result:** After confirming that all problems were addressed, Ovunc **approved the pull request**, and it was successfully **merged into the main branch**.  
+
+This challenge was also explained in detail in the **Challenges Faced** section, highlighting the importance of **effective collaboration and iterative review processes**.  
+
+### Issues  
+
+#### Issues Created by Me  
+
+| **Title** | **URL** |  
+|-----------|---------|  
+| Decide how community recommendation should work | [#6](https://github.com/swe574-Fall2024-Group1/huddleup/issues/6) |  
+| Decide how post recommendation should work | [#7](https://github.com/swe574-Fall2024-Group1/huddleup/issues/7) |  
+| Decide how user recommendation should work | [#8](https://github.com/swe574-Fall2024-Group1/huddleup/issues/8) |  
+| Decide how badges should work | [#10](https://github.com/swe574-Fall2024-Group1/huddleup/issues/10) |  
+| Change database from MongoDB to PostgreSQL | [#12](https://github.com/swe574-Fall2024-Group1/huddleup/issues/12) |  
+| Implementing existing frontend to backend | [#15](https://github.com/swe574-Fall2024-Group1/huddleup/issues/15) |  
+| Add user profile page backend | [#85](https://github.com/swe574-Fall2024-Group1/huddleup/issues/85) |  
+| Add user profile page frontend | [#86](https://github.com/swe574-Fall2024-Group1/huddleup/issues/86) |  
+| Decide how user reputation should work | [#9](https://github.com/swe574-Fall2024-Group1/huddleup/issues/9) |  
+| Research about Wikidata for use in recommendations and tagging | [#26](https://github.com/swe574-Fall2024-Group1/huddleup/issues/26) |  
+| Enforce Password Complexity in Registration | [#28](https://github.com/swe574-Fall2024-Group1/huddleup/issues/28) |  
+| Implement Profile Editing Functionality | [#29](https://github.com/swe574-Fall2024-Group1/huddleup/issues/29) |  
+| Add Nickname Change Feature | [#30](https://github.com/swe574-Fall2024-Group1/huddleup/issues/30) |  
+| Support Anonymous Participation for Users | [#31](https://github.com/swe574-Fall2024-Group1/huddleup/issues/31) |  
+| Add Community Rules Publishing and Editing | [#32](https://github.com/swe574-Fall2024-Group1/huddleup/issues/32) |  
+| Ban Users Based on Community Rule Violations | [#33](https://github.com/swe574-Fall2024-Group1/huddleup/issues/33) |  
+| Implement Content Reporting Mechanism | [#34](https://github.com/swe574-Fall2024-Group1/huddleup/issues/34) |  
+| Implement Post Sorting by Views and Comments | [#35](https://github.com/swe574-Fall2024-Group1/huddleup/issues/35) |  
+| Provide Analytics for User Engagement and Popular Posts | [#36](https://github.com/swe574-Fall2024-Group1/huddleup/issues/36) |  
+| Add Password Validation on Registration Form | [#37](https://github.com/swe574-Fall2024-Group1/huddleup/issues/37) |  
+| Implement Profile Editing UI | [#38](https://github.com/swe574-Fall2024-Group1/huddleup/issues/38) |  
+| Add Nickname Change Feature in Profile | [#39](https://github.com/swe574-Fall2024-Group1/huddleup/issues/39) |  
+| Add Option for Anonymous Participation in Posts and Comments | [#40](https://github.com/swe574-Fall2024-Group1/huddleup/issues/40) |  
+| Implement UI for Publishing and Editing Community Rules | [#41](https://github.com/swe574-Fall2024-Group1/huddleup/issues/41) |  
+| Add UI for Reporting Content | [#42](https://github.com/swe574-Fall2024-Group1/huddleup/issues/42) |  
+| Add Sorting Options for Posts by Views and Comments | [#43](https://github.com/swe574-Fall2024-Group1/huddleup/issues/43) |  
+| Display User Engagement and Popular Post Analytics | [#44](https://github.com/swe574-Fall2024-Group1/huddleup/issues/44) |  
+
+---
+
+#### Issues Assigned to Me  
+
+| **Title** | **URL** |  
+|-----------|---------|  
+| Decide if we should start the backend functionality from scratch or use one of our own repository as base | [#1](https://github.com/swe574-Fall2024-Group1/huddleup/issues/1) |  
+| Decide on labeling strategy | [#2](https://github.com/swe574-Fall2024-Group1/huddleup/issues/2) |  
+| Check each other's SWE573 repositories | [#3](https://github.com/swe574-Fall2024-Group1/huddleup/issues/3) |  
+| Decide how community recommendation should work | [#6](https://github.com/swe574-Fall2024-Group1/huddleup/issues/6) |  
+| Decide how post recommendation should work | [#7](https://github.com/swe574-Fall2024-Group1/huddleup/issues/7) |  
+| Decide how user recommendation should work | [#8](https://github.com/swe574-Fall2024-Group1/huddleup/issues/8) |  
+| Create requirements for Huddleup application | [#17](https://github.com/swe574-Fall2024-Group1/huddleup/issues/17) |  
+| Add user profile page backend | [#85](https://github.com/swe574-Fall2024-Group1/huddleup/issues/85) |  
+| Add user profile page frontend | [#86](https://github.com/swe574-Fall2024-Group1/huddleup/issues/86) |  
+| Badges UI Improvements | [#89](https://github.com/swe574-Fall2024-Group1/huddleup/issues/89) |  
+
+---
+
+This structured table provides a clear overview of the **major issues** I created and was **assigned to** during the project.  
+
+
+---
+
+
