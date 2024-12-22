@@ -1048,6 +1048,77 @@ This structured table provides a clear overview of the **major issues** I create
 
 ---
 
+### Doruk Büyükyıldırım
+
+#### **1. Cloud Infrastructure**
+- **Description:** Created and managed public cloud accounts across multiple providers, including Microsoft Azure and Google Cloud Platform, while facilitating migrations between them. Set up essential cloud services to host the project, managed cloud and server users, configured DNS records, implemented redirection, and handled TLS certificates.
+- **Issue URLs:**  
+   - [#48](https://github.com/swe574-Fall2024-Group1/huddleup/issues/48)  
+   - [#57](https://github.com/swe574-Fall2024-Group1/huddleup/issues/57)  
+- **Challenges:** To avoid incurring costs, free credits were prioritized when creating public cloud accounts. This necessitated setting up infrastructure and gaining a thorough understanding of cloud service pricing.
+#### **2. Deployment and Test Automation**
+- **Description:** Automated the deployment of source code to cloud resources and integrated unit tests as a prerequisite for approving merge requests.
+- **Issue URLs:**  
+   - [#58](https://github.com/swe574-Fall2024-Group1/huddleup/issues/58)  
+   - [#59](https://github.com/swe574-Fall2024-Group1/huddleup/issues/59)
+- **Relevant Content:**
+   - [Test Automation Pipeline](https://github.com/swe574-Fall2024-Group1/huddleup/blob/dev/.github/workflows/ci-test.yaml) executes the unit tests whenever a merge request is created into dev or main branches. The script is also added as a requirement (PR Check) to the merging behaviour of the repository resulting with a mandatory prequisite for any merging activity into important branches.
+   - [Deployment Automation Script](https://github.com/swe574-Fall2024-Group1/huddleup/blob/dev/.github/workflows/ci-test.yaml)  runs unit tests automatically whenever a merge request is created for the dev or main branches. Additionally, the pipeline is configured as a repository prerequisite (PR Check), making it a mandatory requirement for any merge activity into these critical branches.
+#### **3. Containerization Efforts**
+- **Description:** Provided guidance on containerized code, performed testing, and debugged containerized deployments on cloud infrastructure.
+- **Issue URLs:**  
+   - [#13](https://github.com/swe574-Fall2024-Group1/huddleup/issues/13)  
+   - [#64](https://github.com/swe574-Fall2024-Group1/huddleup/issues/64)
+   - [#66](https://github.com/swe574-Fall2024-Group1/huddleup/issues/66)
+#### Executive Summary
+I managed cloud infrastructure, automated deployments and testing, and provided support for containerized code to ensure efficient and reliable project delivery.
+#### Documentation
+For the SRS document I added the [Software Design Diagrams](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Software-Design)
+For mockups I designed and created the [Plant Identification Community Mockup](https://github.com/swe574-Fall2024-Group1/huddleup/wiki/Scenarios-&-Mockups#3-post-creation-screen---plant-identification-community)
+#### Major Pull Requests by Me
+-[#121](https://github.com/swe574-Fall2024-Group1/huddleup/pull/121)
+-[#81](https://github.com/swe574-Fall2024-Group1/huddleup/pull/81)
+-[#72](https://github.com/swe574-Fall2024-Group1/huddleup/pull/72)
+-[#63](https://github.com/swe574-Fall2024-Group1/huddleup/pull/63)
+#### Issues Created by Me  
+| **Title** | **URL** |
+|-----------|---------|
+| Decide on labeling strategy | [#2](https://github.com/swe574-Fall2024-Group1/huddleup/issues/2) |
+| Add branch protection for default (main) branch decision enhancement | [#67](https://github.com/swe574-Fall2024-Group1/huddleup/issues/67) |
+| Delete container_name parameters from docker compose files | [#66](https://github.com/swe574-Fall2024-Group1/huddleup/issues/66) |
+| Should add backend to ALLOWED_HOSTS on .env.sample file in dev branch | [#64](https://github.com/swe574-Fall2024-Group1/huddleup/issues/64) |
+| Set up a CD pipeline on GitHub Actions for deployment and release management | [#59](https://github.com/swe574-Fall2024-Group1/huddleup/issues/59) |
+| Create CI pipeline for unit tests | [#58](https://github.com/swe574-Fall2024-Group1/huddleup/issues/58) |
+| Migrate infrastructure to another cloud account | [#57](https://github.com/swe574-Fall2024-Group1/huddleup/issues/57) |
+| Spin up a VM and deploy last semester's version just in case | [#48](https://github.com/swe574-Fall2024-Group1/huddleup/issues/48) |
+| CSS and HTML files should be kept in Nginx, not in built container | [#47](https://github.com/swe574-Fall2024-Group1/huddleup/issues/47) |
+| Create docker compose file to spin up the project and the required database | [#13](https://github.com/swe574-Fall2024-Group1/huddleup/issues/13) |
+| Create infrastructure diagram (proposal) | [#5](https://github.com/swe574-Fall2024-Group1/huddleup/issues/5) |
+| Decide on branching strategy | [#4](https://github.com/swe574-Fall2024-Group1/huddleup/issues/4) |
+| Check each other's SWE573 repositories | [#3](https://github.com/swe574-Fall2024-Group1/huddleup/issues/3) |
+#### Issues Assigned to Me  
+| **Title** | **URL** |
+|-----------|---------|
+| Add branch protection for default (main) branch decision enhancement | [#67](https://github.com/swe574-Fall2024-Group1/huddleup/issues/67) |
+| Delete container_name parameters from docker compose files | [#66](https://github.com/swe574-Fall2024-Group1/huddleup/issues/66) |
+| Set up a CD pipeline on GitHub Actions for deployment and release management | [#59](https://github.com/swe574-Fall2024-Group1/huddleup/issues/59) |
+| Create CI pipeline for unit tests | [#58](https://github.com/swe574-Fall2024-Group1/huddleup/issues/58) |
+| Migrate infrastructure to another cloud account | [#57](https://github.com/swe574-Fall2024-Group1/huddleup/issues/57) |
+| Spin up a VM and deploy last semester's version just in case | [#48](https://github.com/swe574-Fall2024-Group1/huddleup/issues/48) |
+| Research about wikidata for use in recommendations and tagging | [#26](https://github.com/swe574-Fall2024-Group1/huddleup/issues/26) |
+| Create Mockup Screens from Requirements documentation | [#18](https://github.com/swe574-Fall2024-Group1/huddleup/issues/18) |
+| Create docker compose file to spin up the project and the required database | [#13](https://github.com/swe574-Fall2024-Group1/huddleup/issues/13) |
+| Decide how user reputation should work | [#9](https://github.com/swe574-Fall2024-Group1/huddleup/issues/9) |
+| Decide how user recommendation should work | [#8](https://github.com/swe574-Fall2024-Group1/huddleup/issues/8) |
+| Decide how post recommendation should work | [#7](https://github.com/swe574-Fall2024-Group1/huddleup/issues/7) |
+| Decide how community recommendation should work | [#6](https://github.com/swe574-Fall2024-Group1/huddleup/issues/6) |
+| Create infrastructure diagram (proposal) | [#5](https://github.com/swe574-Fall2024-Group1/huddleup/issues/5) |
+| Check each other's SWE573 repositories | [#3](https://github.com/swe574-Fall2024-Group1/huddleup/issues/3) |
+| Decide on labeling strategy | [#2](https://github.com/swe574-Fall2024-Group1/huddleup/issues/2) |
+| Decide if we should start the backend functionality from scratch or use one of our own repositories as base | [#1](https://github.com/swe574-Fall2024-Group1/huddleup/issues/1) |
+
+
+---
 
 ### Erkin Gönültaş
 
