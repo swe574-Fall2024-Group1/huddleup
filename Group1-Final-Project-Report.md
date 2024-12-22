@@ -1,3 +1,27 @@
+# SWE 574: Software Development as a Team - 2024 Fall
+
+## Project Report – Group 1
+
+### Authors: Aibek Aldabergenov, Ömer Aslan, Doruk Büyükyıldırım, Övünç Ertunç, Erkin Gönültaş, Mustafa Tuna, Muharrem Ustaoğlu
+**Date**: 22.12.2024
+
+# Honor Code
+
+Related to the submission of all the project deliverables for the SWE574 2024 Fall semester project reported in this report, we, the undersigned, declare that:
+
+- We are students in the Software Engineering MS program at Bogazici University and are registered for the SWE574 course during the 2024 Fall semester.
+- All the material that we are submitting related to our project (including but not limited to the project repository, the final project report, and supplementary documents) has been exclusively prepared by us.
+- We have prepared this material individually without the assistance of anyone else, with the exception of permitted peer assistance which we have explicitly disclosed in this report.
+
+### Group Members:
+- Aibek Aldabergenov
+- Ömer Aslan
+- Doruk Büyükyıldırım
+- Övünç Ertunç
+- Erkin Gönültaş
+- Mustafa Tuna
+- Muharrem Ustaoğlu
+
 # Table of Contents
 
 1. [Project Overview](#project-overview)
