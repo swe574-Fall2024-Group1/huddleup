@@ -165,68 +165,6 @@ export default function CreatePost() {
     }
   }, [tagInput, debouncedFetchTags]);
 
-const renderGeolocationField = () => {
-  const handleMapClick = ({ latlng }) => {
-    setLatitude(latlng.lat);
-    setLongitude(latlng.lng);
-    form.setFieldsValue({ geolocation: [latlng.lat, latlng.lng] });
-  };
-
-  const LocationMarker = () => {
-    const map = useMapEvents({
-      click: handleMapClick,
-    });
-    return (
-      <Marker position={[latitude, longitude]}>
-        <Popup>Selected Location</Popup>
-      </Marker>
-    );
-  };
-
-const RecenterAutomatically = ({lat,lng}) => {
-    const map = useMap();
-     useEffect(() => {
-       map.setView([lat, lng]);
-     }, [lat, lng]);
-     return null;
-   }
-
-  return (
-    <div>
-      <MapContainer
-        center={[latitude, longitude]}
-        zoom={14}
-        style={{ height: 400, width: "100%", marginBottom: "1rem" }}
-      >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-        <LocationMarker />
-        <RecenterAutomatically lat={latitude} lng={longitude} />
-      </MapContainer>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
-        <span>
-          Latitude: {latitude.toFixed(6)}, Longitude: {longitude.toFixed(6)}
-        </span>
-        <Button
-          icon={<AimOutlined />}
-          onClick={() => {
-            navigator.geolocation.getCurrentPosition(({ coords }) => {
-              setLatitude(coords.latitude);
-              setLongitude(coords.longitude);
-              form.setFieldsValue({ geolocation: [coords.latitude, coords.longitude] });
-            });
-          }}
-        >
-          Use Current Location
-        </Button>
-      </div>
-    </div>
-  );
-};
-
-
 
 	const renderFormrows = (rows) => {
 		if (rows.length > 0) {
@@ -1064,16 +1002,202 @@ const RecenterAutomatically = ({lat,lng}) => {
 							</Form.Item>
 						);
 					case 'geolocation':
+						const handleLongitude = (e, isAuto = false) => {
+							let longitude = 0.0;
+							if (isAuto) {
+								longitude = e;	
+							} else {
+								longitude = e.target.valueAsNumber;
+							}
+							const errors = form.getFieldError(index);
+							if (Number.isFinite(longitude) && longitude >= -180 && longitude <= 180) {
+								const currentValue = form.getFieldValue(index) || [];
+								form.setFieldsValue({ [index]: [longitude, currentValue[1]] });
+								setLongitude(longitude);
+								if (errors.length > 0) {
+									// Remove longitude error from errors array
+									const newErrors = errors.filter(e => e !== 'Longitude must be a valid number between -180 and 180')
+
+									form.setFields([
+										{
+											name: index,
+											errors: newErrors,
+										},
+									]);
+								}
+							} else {
+								// Display error message for invalid latitude
+
+								let newErrors = [...errors]
+								if (!errors.includes('Longitude must be a valid number between -180 and 180')) {
+									newErrors.push('Longitude must be a valid number between -180 and 180')
+								}
+
+								form.setFields([
+									{
+										name: index,
+										errors: newErrors,
+									},
+								]);
+							}
+						};
+
+						const handleLatitude = (e, isAuto = false) => {
+							let latitude = 0.0;
+							if (isAuto) {
+								latitude = e;	
+							} else {
+								latitude = e.target.valueAsNumber;
+							}
+							const errors = form.getFieldError(index);
+
+							if (Number.isFinite(latitude) && latitude >= -90 && latitude <= 90) {
+								const currentValue = form.getFieldValue(index) || [];
+								form.setFieldsValue({ [index]: [currentValue[0], latitude] });
+								setLatitude(latitude);
+								if (errors.length > 0) {
+									// Remove longitude error from errors array
+									const newErrors = errors.filter(e => e !== 'Latitude must be a valid number between -90 and 90')
+									form.setFields([
+										{
+											name: index,
+											errors: newErrors,
+										},
+									]);
+								}
+							} else {
+								// Display error message for invalid latitude
+								const errors = form.getFieldError(index);
+								let newErrors = [...errors]
+								if (!errors.includes('Latitude must be a valid number between -90 and 90')) {
+									newErrors.push('Latitude must be a valid number between -90 and 90')
+								}
+
+								form.setFields([
+									{
+										name: index,
+										errors: newErrors,
+									},
+								]);
+							}
+						};
+
+						const resetLocation = () => {
+							const defaultLocation =  [41.039040946957925, 28.994504653991893];
+							setLatitude(defaultLocation[0]);
+							setLongitude(defaultLocation[1]);
+							setIsLoadingLoc(false);
+						}
+
+						const setLocation = (e) => {
+							handleLongitude(e.lng, true);
+							handleLatitude(e.lat, true);
+							setIsLoadingLoc(true);
+						}
+
+						const getUserLocation = () => {
+							// if geolocation is supported by the users browser
+							if (navigator.geolocation) {
+
+								// get the current users location
+							  navigator.geolocation.getCurrentPosition(
+								(position) => {
+								  // save the geolocation coordinates in two variables
+								  const { latitude, longitude } = position.coords;
+								  console.log({ latitude, longitude });
+								  // update the value of userlocation variable
+								  handleLongitude(longitude, true);
+								  handleLatitude(latitude, true);
+								  setIsLoadingLoc(true);
+								},
+								// if there was an error getting the users location
+								(error) => {
+								  console.error('Error getting user location:', error);
+								},
+								{
+									enableHighAccuracy: true,
+									timeout: 5000,
+									maximumAge: 0,
+								}
+							  );
+
+							}
+							// if geolocation is not supported by the users browser
+							else {
+							  console.error('Geolocation is not supported by this browser.');
+							}
+						  };
+
+						function LocationMarker() {
+							const map = useMapEvents({
+								click(e) {
+								setLocation(e.latlng);
+									map.flyTo(e.latlng, map.getZoom());
+								},
+							});
+							return <Marker position={[latitude, longitude]}>
+								<Popup>Selected Location</Popup>
+							</Marker>;
+						}
+						const RecenterAutomatically = ({lat,lng}) => {
+							const map = useMap();
+							 useEffect(() => {
+							   map.setView([lat, lng]);
+							 }, [lat, lng]);
+							 return null;
+						   }
 						return (
-                            <Form.Item
-                              key={index}
-                              name="geolocation"
-                              label={row.title}
-                              rules={[{ required: row.required, message: "Please select a location on the map!" }]}
-                            >
-                              {renderGeolocationField()}
-                            </Form.Item>
-                        );
+<>
+								<Form.Item
+									key={index}
+									name={index}
+									label={row.title + `  (${labelValue})`}
+									validateStatus={form.getFieldError(index).length > 0 ? 'error' : 'success'}
+									help={form.getFieldError(index).length > 0 ? form.getFieldError(index) : null}
+								>
+									<Input.Group style={{display: "none", justifyContent: "space-between"}}>
+										<Input
+											key='longitude'
+											name='longitude'
+											style={{ width: '15%' }}
+											addonBefore="LON"
+											type="number"
+											disabled={isLoadingLoc}
+											onChange={(e) => { handleLongitude(e) }}
+											required={row.required}
+										/>
+										<Input
+											key='latitude'
+											name='latitude'
+											style={{ width: '15%' }}
+											addonBefore="LAT"
+											type="number"
+											disabled={isLoadingLoc}
+											onChange={(e) => { handleLatitude(e) }}
+											required={row.required}
+										/>
+									</Input.Group>
+								</Form.Item>
+								<div style={{ display: "flex", marginBottom: "1rem" }}>
+									<Button 
+										onClick={() => isLoadingLoc ? resetLocation() : getUserLocation()}
+										style={{marginLeft: 5, display: screens.md ? "none" : "block", marginRight: 10}}>
+											{isLoadingLoc ? <CloseOutlined /> :<AimOutlined />}
+									</Button>
+									<span style={{display: !isLoadingLoc ? "none": "block", alignSelf: "center"}}>
+										Geolocation set. LAT: {latitude} LON: {longitude}
+									</span>
+								</div>
+								<MapContainer center={[latitude, longitude]} zoom={14} scrollWheelZoom={false} style={{height: 400 ,width: "100%", marginBottom: "1rem"}}>
+								<TileLayer
+									attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+									url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+								/>
+									<LocationMarker />
+									<RecenterAutomatically lat={latitude} lng={longitude} />
+								</MapContainer>
+							</>
+						);
 					default:
 						return null;
 				}
@@ -1163,13 +1287,6 @@ const RecenterAutomatically = ({lat,lng}) => {
 										{tag.name}
 									</Tag>
 								))}
-								<link
-                                  rel="stylesheet"
-                                  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-                                  integrity="sha512-xodZBNTC5n17Xt2vOTI4g9E74pI1IzRIcOa2fTUmJa65Df9acm0o7K4w5p1u7n5V6hk6K3szr5P5u7Oo1X3Mxg=="
-                                  crossorigin=""
-                                />
-
 							</div>
 							<Form.Item style={{float: 'right'}}>
 

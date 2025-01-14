@@ -124,11 +124,11 @@ const FeedPost = ({ postData }) => {
 					<Text>
 						{longitude && latitude ? `Longitude: ${longitude}, Latitude: ${latitude}` : 'N/A'}
 					</Text>
-					<MapContainer center={[longitude, latitude]} zoom={14} scrollWheelZoom={false} style={{height: 250 ,width: "100%", marginBottom: "1rem"}}>
+					<MapContainer center={[latitude, longitude ]} zoom={14} scrollWheelZoom={false} style={{height: 250 ,width: "100%", marginBottom: "1rem"}}>
 						<TileLayer
 							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"/>
-						<Marker position={[longitude, latitude]}>
+						<Marker position={[latitude, longitude]}>
 							<Popup>Selected Location</Popup>
 						</Marker>
 					</MapContainer>
