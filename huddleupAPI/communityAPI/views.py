@@ -5,6 +5,7 @@ from django.http.response import JsonResponse
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q,Count
 from django.utils import timezone
+from dateutil import parser
 
 
 
@@ -684,10 +685,10 @@ def get_community_posts(request):
 						max_value = advanced_search.get(f"{row_title}_max")
 						actual_value = row_values.get(row_title)
 						if actual_value:
-							actual_datetime = datetime.datetime.strptime(actual_value, "%Y-%m-%dT%H:%M:%S")
-							if min_value and actual_datetime < datetime.datetime.strptime(min_value, "%Y-%m-%dT%H:%M:%S.%fZ"):
+							actual_datetime = parser.isoparse(actual_value)
+							if min_value and actual_datetime < parser.isoparse(min_value):
 								return False
-							if max_value and actual_datetime > datetime.datetime.strptime(max_value, "%Y-%m-%dT%H:%M:%S.%fZ"):
+							if max_value and actual_datetime > parser.isoparse(max_value):
 								return False
 						else:
 							return False
